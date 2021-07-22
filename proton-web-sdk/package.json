@@ -1,0 +1,56 @@
+{
+  "name": "@proton/web-sdk",
+  "author": "metallicus",
+  "publishConfig": {
+    "access": "public"
+  },
+  "module": "dist/index.js",
+  "unpkg": "dist/bundle.js",
+  "types": "dist/index.d.ts",
+  "source": "src/index.ts",
+  "version": "2.7.23",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "watch": "tsdx watch  --verbose --noClean",
+    "build": "tsdx build",
+    "test": "tsdx test",
+    "lint": "tsdx lint",
+    "prepare": "tsdx build",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
+  },
+  "dependencies": {
+    "@bloks/browser-transport": "^3.2.1-4",
+    "@bloks/link": "^3.2.3-7",
+    "@bloks/provider-axios": "^0.0.1",
+    "@proton/browser-transport": "^2.5.22",
+    "@proton/js": "22.0.64",
+    "@proton/link": "^2.5.38"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsdx lint"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "gitHead": "0fbf8d35e95fab0e42dc396b9398d34b1872a7c9",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.28.4",
+    "eslint": "^7.31.0",
+    "typescript": "^4.3.5"
+  }
+}
