@@ -8,7 +8,7 @@
   "unpkg": "dist/bundle.js",
   "types": "dist/index.d.ts",
   "source": "src/index.ts",
-  "version": "2.7.23-8",
+  "version": "2.7.23-9",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
