@@ -51,7 +51,7 @@ const link = await ConnectWallet({
   });
   this.link = link;
   this.session = session;
-  return { auth: session.auth, accountData: session.accountData[0] };
+  return { auth: session.auth };
 
 // Send Transaction
 const result = await session.transact({
