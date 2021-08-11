@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { ConnectWallet } from '@proton/web-sdk'
+import { ConnectWallet } from '@bloks/web-sdk'
 
 // Constants
 const appIdentifier = 'taskly'
@@ -30,8 +30,8 @@ export default {
     async createLink ({ restoreSession }) {
       const { link, session } = await ConnectWallet({
         linkOptions: {
-          endpoints: ['https://proton.greymass.com'],
-          chainId: '384da888112027f0321850a169f737c33e53b388aad48b5adace4bab97f437e0',
+          endpoints: ['https://protontestnet.greymass.com'],
+          chainId: '71ee83bcf52142d61019d95f9cc5427ba6a0d7ff8accd9e2088ae2abeaf3d3dd',
           restoreSession,
           // service: 'https://buoy.ngrok.io'
         },
@@ -42,8 +42,8 @@ export default {
         selectorOptions: {
           appName: 'Taskly',
           appLogo: 'https://taskly.protonchain.com/static/media/taskly-logo.ad0bfb0f.svg',
-          modalBackgroundColor: 'pink',
-          optionBackgroundColor: 'white',
+
+          enabledWalletTypes: ['proton', 'anchor'],
           customStyleOptions: {
             modalBackgroundColor: '#F4F7FA',
             logoBackgroundColor: 'white',

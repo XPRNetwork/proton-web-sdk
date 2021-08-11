@@ -1,5 +1,5 @@
 import getStyleText from './styles'
-import { CustomStyleOptions } from './index'
+import { CustomStyleOptions } from './connect'
 
 export default class SupportedWallets {
     constructor(public readonly name?: string, logo?: string, customStyleOptions?: CustomStyleOptions) {
@@ -107,7 +107,7 @@ export default class SupportedWallets {
     /**
      * Only Proton and Anchor are available
      */
-    public displayWalletSelector(): Promise<string> {
+    public displayWalletSelector(enabledWalletTypes: { key: string, value: string }[]): Promise<string> {
         return new Promise((resolve, reject) => {
             this.setUpSelectorContainer(reject)
             const header = this.createEl({class: 'connect-header'})
@@ -126,41 +126,25 @@ export default class SupportedWallets {
             const titleEl = this.createEl({class: 'title', tag: 'span', text: title})
             const subtitleEl = this.createEl({class: 'subtitle', tag: 'span', text: subtitle})
 
-            const walletList = this.createEl({class: 'wallet-list', tag: 'ul'})
-            const protonWallet = this.createEl({class: 'proton-wallet', tag: 'li'})
-            const anchorWallet = this.createEl({class: 'anchor-wallet', tag: 'li'})
-            anchorWallet.onclick = (event) => {
+            const walletList = this.createEl({class: 'wallet-list', tag: 'ul'})            
+
+            const eventGenerator = (walletName: string) => (event: MouseEvent) => {
                 event.stopPropagation()
                 this.hideSelector()
-                resolve('anchor')
+                resolve(walletName)
             }
 
-            protonWallet.onclick = (event) => {
-                event.stopPropagation()
-                this.hideSelector()
-                resolve('proton')
+            for (const { key, value } of enabledWalletTypes) {
+                const wallet = this.createEl({class: `${key}-wallet`, tag: 'li'})
+                wallet.onclick = eventGenerator(key)
+                const logo = this.createEl({class: `${key}-logo`})
+                const name = this.createEl({class: 'wallet-name', tag: 'span', text: value})
+                const rightArrow = this.createEl({class: 'right-arrow'})
+                wallet.appendChild(logo)
+                wallet.appendChild(name)
+                wallet.appendChild(rightArrow)
+                walletList.appendChild(wallet)
             }
-            const protonLogo = this.createEl({class: 'proton-logo'})
-            const anchorLogo = this.createEl({class: 'anchor-logo'})
-            const protonName = this.createEl({
-                class: 'wallet-name',
-                tag: 'span',
-                text: 'Proton Wallet',
-            })
-            const anchorName = this.createEl({class: 'wallet-name', tag: 'span', text: 'Anchor'})
-            const protonRightArrow = this.createEl({class: 'right-arrow'})
-            const anchorRightArrow = protonRightArrow.cloneNode()
-
-            protonWallet.appendChild(protonLogo)
-            protonWallet.appendChild(protonName)
-            protonWallet.appendChild(protonRightArrow)
-
-            anchorWallet.appendChild(anchorLogo)
-            anchorWallet.appendChild(anchorName)
-            anchorWallet.appendChild(anchorRightArrow)
-
-            walletList.appendChild(protonWallet)
-            walletList.appendChild(anchorWallet)
 
             const tosLinkEl = this.createEl({
                 class: 'tos-link',
