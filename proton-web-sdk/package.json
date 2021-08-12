@@ -8,7 +8,7 @@
   "unpkg": "dist/bundle.js",
   "types": "dist/index.d.ts",
   "source": "src/index.ts",
-  "version": "2.7.23-17",
+  "version": "2.7.23-18",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -31,7 +31,7 @@
   "dependencies": {
     "@bloks/browser-transport": "^3.2.1-12",
     "@bloks/link": "^3.2.3-15",
-    "@bloks/provider-axios": "^0.0.1"
+    "@bloks/provider-axios": "^2.2.2-3"
   },
   "husky": {
     "hooks": {
