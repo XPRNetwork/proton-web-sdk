@@ -33,11 +33,10 @@ export class ProtonWebLink {
   }
 
   childUrl (path: string) {
-    const base = 'https://cryptowebauth.com'
-    const url = `${base}${path}`
-    return this.scheme === 'proton'
-      ? url
-      : `${url}?test=true`
+    const base = this.scheme === 'proton'
+      ? 'https://cryptowebauth.com'
+      : 'https://testnet.cryptowebauth.com'
+    return `${base}${path}`
   }
 
   closeChild (force = false) {
