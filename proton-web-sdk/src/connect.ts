@@ -44,6 +44,7 @@ interface ConnectWalletArgs {
     storage?: LinkStorage,
     storagePrefix?: string,
     restoreSession?: boolean,
+    testUrl?: string
   },
   transportOptions?: BrowserTransportOptions;
   selectorOptions?: {
@@ -55,9 +56,16 @@ interface ConnectWalletArgs {
   }
 }
 
+interface ConnectWalletRet {
+  session?: LinkSession;
+  link?: ProtonWebLink | Link;
+  loginResult?: LoginResult;
+  error?: any
+}
+
 const ALL_WALLETS = [
   { key: 'proton', value: 'Proton Wallet' },
-  { key: 'protonweb', value: 'Proton Web' },
+  { key: 'webauth', value: 'WebAuth.com' },
   { key: 'anchor', value: 'Anchor Wallet' },
 ]
 
@@ -65,7 +73,7 @@ export const ConnectWallet = async ({
     linkOptions,
     transportOptions = {},
     selectorOptions = {}
-}: ConnectWalletArgs): Promise<{ session?: LinkSession, link?: ProtonWebLink | Link, loginResult?: LoginResult }> => {
+}: ConnectWalletArgs): Promise<ConnectWalletRet> => {
   // Add RPC
   linkOptions.client = new APIClient({
     provider: new AxiosProvider(linkOptions.endpoints)
@@ -84,114 +92,131 @@ export const ConnectWallet = async ({
 
   let session: any, link, loginResult: any
 
-  return await new Promise((resolve, reject) => {
-    const login = async (): Promise<void> => {
-      // Create Modal Class
-      const wallets = new SupportedWallets(selectorOptions.appName, selectorOptions.appLogo, selectorOptions.customStyleOptions)
+  try {
+    const res: ConnectWalletRet = await new Promise((resolve) => {
+      const login = async (): Promise<void> => {
+        // Create Modal Class
+        const wallets = new SupportedWallets(selectorOptions.appName, selectorOptions.appLogo, selectorOptions.customStyleOptions)
+  
+        // Determine wallet type from storage or selector modal
+        let walletType: string | null | undefined = selectorOptions.walletType
 
-      // Determine wallet type from storage or selector modal
-      let walletType = selectorOptions.walletType || (await linkOptions.storage!.read('wallet-type'))
-      if (!walletType && !linkOptions.restoreSession) {
-        const enabledWalletTypes = selectorOptions.enabledWalletTypes
-          ? ALL_WALLETS.filter(wallet => selectorOptions.enabledWalletTypes?.includes(wallet.key))
-          : ALL_WALLETS
-        walletType = await wallets.displayWalletSelector(enabledWalletTypes)
-      }
-
-      if (!walletType) {
-        throw new Error('Wallet Type Unavailable: No walletType provided')
-      }
-
-      // Set scheme
-      let scheme
-      switch (walletType) {
-        case 'anchor':
-          scheme = 'esr'
-          break
-        case 'proton':
-        case 'protonweb': {
-          // Proton Testnet
-          if (linkOptions.chainId === '71ee83bcf52142d61019d95f9cc5427ba6a0d7ff8accd9e2088ae2abeaf3d3dd') {
-            scheme = 'proton-dev'
+        if (!walletType) {
+          if (linkOptions.restoreSession) {
+            walletType = await linkOptions.storage!.read('wallet-type')
           } else {
+            const enabledWalletTypes = selectorOptions.enabledWalletTypes
+              ? ALL_WALLETS.filter(wallet => selectorOptions.enabledWalletTypes?.includes(wallet.key))
+              : ALL_WALLETS
+            walletType = await wallets.displayWalletSelector(enabledWalletTypes)
+          }
+        }
+  
+        if (!walletType) {
+          resolve({ error: new Error('Wallet Type Unavailable: No walletType provided') })
+          return
+        }
+  
+        // Set scheme
+        let scheme
+        switch (walletType) {
+          case 'anchor':
+            scheme = 'esr'
+            break
+          case 'proton':
+          case 'webauth': {
+            // Proton Testnet
+            if (linkOptions.chainId === '71ee83bcf52142d61019d95f9cc5427ba6a0d7ff8accd9e2088ae2abeaf3d3dd') {
+              scheme = 'proton-dev'
+            } else {
+              scheme = 'proton'
+            }
+            break;
+          }
+          default:
             scheme = 'proton'
-          }
-          break;
+            break
         }
-        default:
-          scheme = 'proton'
-          break
-      }
-
-      console.log('SCHEME', scheme)
-
-      const options = {
-        ...linkOptions,
-        scheme,
-        transport: new ProtonLinkBrowserTransport({
-          ...transportOptions,
-          walletType
-        }) as any,
-        walletType,
-        chains: []
-      }
-
-      // Create link
-      if (walletType === 'protonweb') {
-        link = new ProtonWebLink(options as LinkOptions)
-      } else {
-        console.log(options)
-        link = new ProtonLink(options as LinkOptions)
-      }
-
-      // Session from login
-      if (!linkOptions.restoreSession) {
-        let backToSelector = false
-        document.addEventListener('backToSelector', () => {backToSelector = true})
-        try {
-          console.log(11)
-          loginResult = await link.login(transportOptions.requestAccount || '')
-          session = loginResult.session
-          const stringAuth = JSON.stringify({
-            actor: loginResult.session.auth.actor.toString(),
-            permission: loginResult.session.auth.permission.toString(),
-          })
-          linkOptions.storage!.write('user-auth', stringAuth)
-        } catch(e) {
-          console.error(e)
-          console.log('backToSelector', backToSelector)
-          if (backToSelector) {
-            document.removeEventListener('backToSelector', () => {backToSelector = true})
-            return login()
-          } else {
-            reject(e);
-          }
+  
+        console.log('SCHEME', scheme)
+  
+        const options = {
+          ...linkOptions,
+          scheme,
+          transport: new ProtonLinkBrowserTransport({
+            ...transportOptions,
+            walletType
+          }) as any,
+          walletType,
+          chains: []
         }
-      // Session from restore
-      } else {
-        const stringifiedUserAuth = await linkOptions.storage!.read('user-auth')
-        const parsedUserAuth = stringifiedUserAuth ? JSON.parse(stringifiedUserAuth) : {}
-        const savedUserAuth : PermissionLevel = Object.keys(parsedUserAuth).length > 0 ? parsedUserAuth : null
-        if (savedUserAuth) {
-          session = await link.restoreSession(transportOptions.requestAccount || '', savedUserAuth)
-
-          // Could not restore
-          if (!session) {
-            // clean storage to remove unexpected side effects if session restore fails
-            linkOptions.storage!.remove('wallet-type')
-            linkOptions.storage!.remove('user-auth')
-            resolve({ link: undefined, session: undefined })
+  
+        // Create link
+        if (walletType === 'webauth') {
+          link = new ProtonWebLink(options as LinkOptions)
+        } else {
+          link = new ProtonLink(options as LinkOptions)
+        }
+  
+        // Session from login
+        if (!linkOptions.restoreSession) {
+          let backToSelector = false
+          document.addEventListener('backToSelector', () => {backToSelector = true})
+          try {
+            loginResult = await link.login(transportOptions.requestAccount || '')
+            session = loginResult.session
+            console.log('loginResult', loginResult)
+            const stringAuth = JSON.stringify({
+              actor: loginResult.session.auth.actor.toString(),
+              permission: loginResult.session.auth.permission.toString(),
+            })
+            linkOptions.storage!.write('user-auth', stringAuth)
+          } catch(e) {
+            console.log('restoreSession Error:')
+            console.error(e)
+            console.log('backToSelector', backToSelector)
+            if (backToSelector) {
+              document.removeEventListener('backToSelector', () => {backToSelector = true})
+              return login()
+            } else {
+              resolve({ error: e })
+              return
+            }
+          }
+        // Session from restore
+        } else {
+          const stringifiedUserAuth = await linkOptions.storage!.read('user-auth')
+          const parsedUserAuth = stringifiedUserAuth ? JSON.parse(stringifiedUserAuth) : {}
+          const savedUserAuth : PermissionLevel = Object.keys(parsedUserAuth).length > 0 ? parsedUserAuth : null
+          if (savedUserAuth) {
+            session = await link.restoreSession(transportOptions.requestAccount || '', savedUserAuth)
+  
+            // Could not restore
+            if (!session) {
+              // clean storage to remove unexpected side effects if session restore fails
+              linkOptions.storage!.remove('wallet-type')
+              linkOptions.storage!.remove('user-auth')
+              resolve({ link: undefined, session: undefined })
+              return
+            }
           }
         }
+  
+        resolve({
+          session,
+          link,
+          loginResult
+        })
+        return
       }
+  
+      login()
+    })
 
-      resolve({
-        session,
-        link,
-        loginResult
-      })
+    return res
+  } catch (e) {
+    return {
+      error: e
     }
-
-    login()
-  })
+  }
 }
