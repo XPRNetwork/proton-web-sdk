@@ -62,34 +62,32 @@ export class ProtonWebLink {
     }
   }
 
-  async transact (args: TransactArgs, options?: TransactOptions) {
-    if (this.deferredLogin) {
-      this.closeChild(true)
-      this.deferredLogin.reject('Trying to login')
-      this.deferredLogin = undefined
-    }
-
-    this.deferredTransact = {
-      deferral: new Deferred(),
-      transaction: args.transaction || { actions: args.actions },
-      params: options,
-      waitingForOpen: true
-    }
-
-    this.childWindow = window.open(this.childUrl('/auth'), '_blank', OPEN_SETTINGS)
-
-    try {
-      return await this.deferredTransact.deferral.promise
-    } catch (e) {
-      console.error(e)
-      throw e
-    }
-  }
-
   createSession (auth: Authorization) {
     return {
       auth,
-      transact: (args: TransactArgs, options?: TransactOptions) => this.transact(args, options),
+      transact: (args: TransactArgs, options?: TransactOptions): Promise<any> => {
+        if (this.deferredLogin) {
+          this.closeChild(true)
+          this.deferredLogin.reject('Trying to login')
+          this.deferredLogin = undefined
+        }
+    
+        this.deferredTransact = {
+          deferral: new Deferred(),
+          transaction: args.transaction || { actions: args.actions },
+          params: options,
+          waitingForOpen: true
+        }
+    
+        this.childWindow = window.open(this.childUrl('/auth'), '_blank', OPEN_SETTINGS)
+    
+        try {
+          return this.deferredTransact.deferral.promise
+        } catch (e) {
+          console.error(e)
+          throw e
+        }
+      },
       link: {
         walletType: 'webauth'
       }

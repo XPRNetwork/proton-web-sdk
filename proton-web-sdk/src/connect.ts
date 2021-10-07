@@ -108,7 +108,12 @@ export const ConnectWallet = async ({
             const enabledWalletTypes = selectorOptions.enabledWalletTypes
               ? ALL_WALLETS.filter(wallet => selectorOptions.enabledWalletTypes?.includes(wallet.key))
               : ALL_WALLETS
-            walletType = await wallets.displayWalletSelector(enabledWalletTypes)
+
+            try {
+              walletType = await wallets.displayWalletSelector(enabledWalletTypes)
+            } catch (e) {
+              resolve({ error: e })
+            }
           }
         }
   
