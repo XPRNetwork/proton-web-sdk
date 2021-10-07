@@ -23,20 +23,20 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@bloks/browser-transport@^3.2.1-12":
-  version "3.2.1-12"
-  resolved "https://registry.yarnpkg.com/@bloks/browser-transport/-/browser-transport-3.2.1-12.tgz#469fa49195b4e063bc4654bda4837113ad10959e"
-  integrity sha512-8QMJ2I0c7a5nKxOCgUlYJsnMBzH8QiCuYJFuUjeCCHoZ/NDQXXVkoPM7lmSV8GsosfVFMCtUraVNV0L6pW3yKw==
+"@bloks/browser-transport@^3.2.1-14":
+  version "3.2.1-14"
+  resolved "https://registry.yarnpkg.com/@bloks/browser-transport/-/browser-transport-3.2.1-14.tgz#d5203de01a8b5f5b7d24d790cff2aa9c36a3aaf4"
+  integrity sha512-LPLVFF+v8sV8Et8b/2l+Y2OxO8e0v9sdiP4mofLFV/jy5hw624MZztAr/q3pX24CHtLDnYyVwdczXQ+ZjvUZnw==
   dependencies:
     "@bloks/qrcode" "^0.1.0"
     tslib "^2.0.3"
 
-"@bloks/link@^3.2.3-15":
-  version "3.2.3-15"
-  resolved "https://registry.yarnpkg.com/@bloks/link/-/link-3.2.3-15.tgz#05857c9d201c44870a752859eb1d4867dc34c3cc"
-  integrity sha512-jIayUReYbipVap8VYp8uq+CC8fXKiupRgWjS8aUROoSYxG3HgdYaM2sff9WCg9ODGU0eVmIKtLzEtx/1sCgHyQ==
+"@bloks/link@^3.2.3-17":
+  version "3.2.3-17"
+  resolved "https://registry.yarnpkg.com/@bloks/link/-/link-3.2.3-17.tgz#81031a294482a81011100f6e28815694352be0ae"
+  integrity sha512-nutBsB/4lFI4+3qkE3RZVDhWfH7AemVJacl/RQV9S5T0YIujK04xqTWxrXNBCiamcthezV47SESFg6p1w6M3tw==
   dependencies:
-    "@bloks/signing-request" "^2.2.2-5"
+    "@bloks/signing-request" "^2.2.2-6"
     "@greymass/eosio" "^0.4.7"
     "@jafri/asmcrypto.js" "^2.3.2"
     fetch-ponyfill "^7.1.0"
@@ -61,10 +61,10 @@
   dependencies:
     qrcode "^1.4.4"
 
-"@bloks/signing-request@^2.2.2-5":
-  version "2.2.2-5"
-  resolved "https://registry.yarnpkg.com/@bloks/signing-request/-/signing-request-2.2.2-5.tgz#38efaa85bfc3dc5cab8d9a1fbdd173520f3c1e65"
-  integrity sha512-GEtHpYmEIDkCTtBWwyuVcFYu5+z51OqgVTZzeULTvlstTk4ob8l73oG9qN4y17qMAewXEScWZGRTtYbUO3PNSQ==
+"@bloks/signing-request@^2.2.2-6":
+  version "2.2.2-6"
+  resolved "https://registry.yarnpkg.com/@bloks/signing-request/-/signing-request-2.2.2-6.tgz#18d61f000fcda58da11bf66fd773d725325f6f34"
+  integrity sha512-//xEHDyQEg0mXvnTzim+QMm7DthQRmxxquXdywMxl1G4u9sq/Omuzff+3WVQUuOAaJzYTOrmkZ0KxgZs6H3YRg==
   dependencies:
     "@greymass/eosio" "^0.4.7"
     tslib "^2.0.3"
