@@ -1,0 +1,15 @@
+[submodule "proton-browser-transport"]
+path = proton-browser-transport
+url = git@github.com:ProtonProtocol/proton-browser-transport.git
+
+[submodule "proton-link"]
+path = proton-link
+url = git@github.com:ProtonProtocol/proton-link.git
+
+[submodule "proton-provider-axios"]
+path = proton-provider-axios
+url = git@github.com:ProtonProtocol/proton-provider-axios.git
+
+[submodule "proton-signing-request"]
+path = proton-signing-request
+url = git@github.com:ProtonProtocol/proton-signing-request.git
