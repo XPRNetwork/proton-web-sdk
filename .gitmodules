@@ -13,3 +13,11 @@ url = git@github.com:ProtonProtocol/proton-provider-axios.git
 [submodule "proton-signing-request"]
 path = proton-signing-request
 url = git@github.com:ProtonProtocol/proton-signing-request.git
+
+[submodule "proton-test-app-html"]
+path = proton-test-app-html
+url = git@github.com:ProtonProtocol/proton-test-app-html.git
+
+[submodule "proton-test-app-vue"]
+path = proton-test-app-vue
+url = git@github.com:ProtonProtocol/proton-test-app-vue.git
