@@ -1,6 +1,6 @@
-import ProtonLinkBrowserTransport, { BrowserTransportOptions } from '@bloks/browser-transport'
-import ProtonLink, { Link, LinkOptions, LinkSession, LinkStorage, LoginResult, PermissionLevel } from '@bloks/link'
-import { AxiosProvider } from '@bloks/provider-axios'
+import ProtonLinkBrowserTransport, { BrowserTransportOptions } from '@proton/browser-transport'
+import ProtonLink, { Link, LinkOptions, LinkSession, LinkStorage, LoginResult, PermissionLevel } from '@proton/link'
+import { AxiosProvider } from '@proton/provider-axios'
 import { APIClient } from '@greymass/eosio'
 import SupportedWallets from './supported-wallets'
 import { ProtonWebLink } from './protonWeb'
@@ -208,7 +208,14 @@ export const ConnectWallet = async ({
         }
   
         resolve({
-          session,
+          session: {
+            ...session,
+            auth: {
+              actor: session.auth.actor.toString(),
+              permission: session.auth.permission.toString(),
+            },
+            publicKey: session.publicKey ? session.publicKey.toString() : undefined,
+          },
           link,
           loginResult
         })

@@ -23,51 +23,12 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@bloks/browser-transport@^3.2.1-22":
-  version "3.2.1-22"
-  resolved "https://registry.yarnpkg.com/@bloks/browser-transport/-/browser-transport-3.2.1-22.tgz#9a3d0cc1facd1e31331f901bbc78c422c085126b"
-  integrity sha512-31KU1g2soYnDWdx077QPn17SDkQLDN9WT8srjLpDfhKKUHzICWRS1riepgEwPHPn4KT+/7A5nLupKBG9p/bwxA==
-  dependencies:
-    "@bloks/qrcode" "^0.1.0"
-    tslib "^2.0.3"
-
-"@bloks/link@^3.2.3-22":
-  version "3.2.3-22"
-  resolved "https://registry.yarnpkg.com/@bloks/link/-/link-3.2.3-22.tgz#2a8afb32d7fce1e0eb8c8881e8349f806a7d7864"
-  integrity sha512-U1ZMs6gE4OOScStCR8jPoRl/CUTHv+1h02bdxFEmWEaf1Z6s6QqLVkiLfz7GnDE8wErXo1CgX0zlpeeLOqhzYw==
-  dependencies:
-    "@bloks/signing-request" "^2.2.2-8"
-    "@greymass/eosio" "^0.4.7"
-    "@jafri/asmcrypto.js" "^2.3.2"
-    fetch-ponyfill "^7.1.0"
-    isomorphic-ws "^4.0.1"
-    pako "^2.0.3"
-    tslib "^2.1.0"
-    uuid "^8.3.2"
-    ws "^7.4.3"
-
-"@bloks/provider-axios@^2.2.2-3":
-  version "2.2.2-3"
-  resolved "https://registry.yarnpkg.com/@bloks/provider-axios/-/provider-axios-2.2.2-3.tgz#147d813293b6c6b23bff547b7354bfb3126bf6ff"
-  integrity sha512-jr7a2pQf1SZHPWbKcEpHbJq9o0l7SeaQAjFE8nOzjR3A1mI9U9IQwJ9663EVyI4wUjgjr03fyZakMVfkJ2DF6w==
-  dependencies:
-    axios "^0.21.1"
-    tslib "^2.0.3"
-
-"@bloks/qrcode@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@bloks/qrcode/-/qrcode-0.1.0.tgz#8921e9928b3b4d5b50522ee825f64db646dfa4d6"
-  integrity sha512-VpP2ZFgsmd5I7hGvtvldTHKgdoqAeP1kLuJvIC1AinvTYqajhUCcNH0UBZ9QdzglYhDiRE+DIsjGPwxlSMvotg==
+"@bloks/qrcode@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@bloks/qrcode/-/qrcode-0.1.1.tgz#a67f1c966d5da6c972b9c84641e68379bc0e5d8b"
+  integrity sha512-1VAhgZTctj7egdspsqgiqAmxFf7wWgv4diPOdSdHueLiKlE8S/RdB/GW2Tzv3sQiiAhDB/F47Ikq1PjzBfb4Ng==
   dependencies:
     qrcode "^1.4.4"
-
-"@bloks/signing-request@^2.2.2-8":
-  version "2.2.2-8"
-  resolved "https://registry.yarnpkg.com/@bloks/signing-request/-/signing-request-2.2.2-8.tgz#ce0ccbac1251980701563c45ecc195f80b3fa5a3"
-  integrity sha512-uqlpab4wwW0/yt4BQB0xQB1orwHVmumf202lBb7O03X6JZ1gYe5n3YFfRWK1B+yxwDXxfIjKgBLKpYNGAvUKiA==
-  dependencies:
-    "@greymass/eosio" "^0.4.7"
-    tslib "^2.0.3"
 
 "@eslint/eslintrc@^0.4.3":
   version "0.4.3"
@@ -134,6 +95,45 @@
   dependencies:
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
+
+"@proton/browser-transport@^3.2.1-25":
+  version "3.2.1-26"
+  resolved "https://registry.yarnpkg.com/@proton/browser-transport/-/browser-transport-3.2.1-26.tgz#a1762568fc09a532eda6cbecf3fc09393e3712ce"
+  integrity sha512-Ulf4iXK1v/FvJ0rOgTBcaJr4rPB4rQOi1osgocSnLphCD27qoF8lIzyixZ3boRTgZqL46qbjWYOrrBrYrqD/LQ==
+  dependencies:
+    "@bloks/qrcode" "^0.1.1"
+    tslib "^2.0.3"
+
+"@proton/link@^3.2.3-25":
+  version "3.2.3-25"
+  resolved "https://registry.yarnpkg.com/@proton/link/-/link-3.2.3-25.tgz#771eb8f7d10905f3124ba51c96a13594339e0efc"
+  integrity sha512-5L4faGTABnjqSKWUtwEaOf0bIDI+FLzhsVNNI+gFQ7lILTXpvvjoe1IsmrhqVHc8slbU5s6uDRvon9RJbldxuQ==
+  dependencies:
+    "@greymass/eosio" "^0.4.7"
+    "@jafri/asmcrypto.js" "^2.3.2"
+    "@proton/signing-request" "^2.2.2-9"
+    fetch-ponyfill "^7.1.0"
+    isomorphic-ws "^4.0.1"
+    pako "^2.0.3"
+    tslib "^2.1.0"
+    uuid "^8.3.2"
+    ws "^7.4.3"
+
+"@proton/provider-axios@^2.2.2-4":
+  version "2.2.2-5"
+  resolved "https://registry.yarnpkg.com/@proton/provider-axios/-/provider-axios-2.2.2-5.tgz#c884ff5e13a264929c258ea51b9627a4259136e1"
+  integrity sha512-9C2uUX78DjuHA2PCg6m72VFcQ2o99NkR6DcqQ9AOOKkYG4L/Q32NPbD6Cz3Vh9r+uSrh6DossABDQTG+jB7OJg==
+  dependencies:
+    axios "^0.21.1"
+    tslib "^2.0.3"
+
+"@proton/signing-request@^2.2.2-9":
+  version "2.2.2-9"
+  resolved "https://registry.yarnpkg.com/@proton/signing-request/-/signing-request-2.2.2-9.tgz#9d1f49d97ce79e735e7ff6a0a5e4233dfd5f1ba7"
+  integrity sha512-JeIyyoqDNtHT703KexUeZ1Igv8WAkLah6+DRqagI/ftJRSlXiLPC/p/8WRzUUlYJHmYIgMrVxKiqtmEK+uG82A==
+  dependencies:
+    "@greymass/eosio" "^0.4.7"
+    tslib "^2.0.3"
 
 "@types/json-schema@^7.0.7":
   version "7.0.9"

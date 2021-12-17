@@ -1,4 +1,4 @@
-import { LinkOptions, LinkStorage, TransactArgs, TransactOptions } from "@bloks/link"
+import { LinkOptions, LinkStorage, TransactArgs, TransactOptions } from "@proton/link"
 
 const OPEN_SETTINGS = 'menubar=1,resizable=1,width=400,height=600'
 
