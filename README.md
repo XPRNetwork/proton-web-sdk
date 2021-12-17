@@ -39,7 +39,6 @@ const link = await ConnectWallet({
             secondaryFontColor: '#6B727F',
             linkColor: '#752EEB'
         }
-        // walletType: 'proton' /* Optional: Connect to only specified wallet (e.g. 'proton', 'anchor') */
     }
 })
 
