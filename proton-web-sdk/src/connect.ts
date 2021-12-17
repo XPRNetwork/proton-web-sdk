@@ -64,9 +64,9 @@ interface ConnectWalletRet {
 }
 
 const ALL_WALLETS = [
-  { key: 'proton', value: 'Proton Wallet' },
-  { key: 'webauth', value: 'WebAuth.com' },
-  { key: 'anchor', value: 'Anchor Wallet' },
+  { key: 'proton', value: 'Mobile Wallet' },
+  { key: 'webauth', value: 'Web Wallet' },
+  { key: 'anchor', value: 'Anchor' },
 ]
 
 export const ConnectWallet = async ({

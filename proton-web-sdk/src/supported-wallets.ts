@@ -165,7 +165,7 @@ export default class SupportedWallets {
             body.appendChild(walletList)
             body.appendChild(tosAgreementEl)
 
-            const footnoteEl = this.createEl({class: 'footnote', text: `Don't have Proton Wallet? `})
+            const footnoteEl = this.createEl({class: 'footnote', text: `Don't have a wallet? `})
             const footnoteLink = this.createEl({
                 tag: 'a',
                 target: '_blank',
