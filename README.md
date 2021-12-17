@@ -44,14 +44,14 @@ const link = await ConnectWallet({
 })
 
 //Login
-  const { link, session } = await ConnectWallet({
+const { link, session } = await ConnectWallet({
     linkOptions: { chainId: this.chainId, endpoints: this.endpoints },
     transportOptions: { requestAccount: this.requestAccount, backButton: true },
     selectorOptions: { appName: this.appName, appLogo: appLogo}
-  });
-  this.link = link;
-  this.session = session;
-  return { auth: session.auth };
+});
+this.link = link;
+this.session = session;
+return { auth: session.auth };
 
 // Send Transaction
 const result = await session.transact({
