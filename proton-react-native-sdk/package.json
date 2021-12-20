@@ -5,7 +5,7 @@
   "unpkg": "dist/bundle.js",
   "types": "dist/index.d.ts",
   "source": "src/index.ts",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -25,7 +25,7 @@
     "analyze": "size-limit --why"
   },
   "dependencies": {
-    "@proton/js": "22.0.64",
+    "@proton/js": "25.0.69",
     "@proton/link": "^3.2.3-25",
     "@proton/signing-request": "^2.2.2-9",
     "@react-native-community/async-storage": "^1.12.1",
