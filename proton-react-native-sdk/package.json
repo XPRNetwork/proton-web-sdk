@@ -1,11 +1,11 @@
 {
   "name": "@proton/react-native-sdk",
-  "author": "philolo1",
+  "author": "jafri",
   "module": "dist/index.js",
   "unpkg": "dist/bundle.js",
   "types": "dist/index.d.ts",
   "source": "src/index.ts",
-  "version": "1.0.4",
+  "version": "1.0.4-test",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -26,10 +26,14 @@
   },
   "dependencies": {
     "@proton/js": "25.0.69",
-    "@proton/link": "^3.2.3-25",
+    "@proton/link": "3.2.3-25-test",
+    "@proton/provider-axios": "^2.2.2-5",
     "@proton/signing-request": "^2.2.2-9",
     "@react-native-community/async-storage": "^1.12.1",
-    "react-native": "^0.63.4"
+    "buffer": "^6.0.3",
+    "react-native": "^0.63.4",
+    "react-native-get-random-values": "^1.7.1",
+    "text-encoding-shim": "^1.0.5"
   },
   "husky": {
     "hooks": {
