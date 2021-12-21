@@ -207,15 +207,16 @@ export const ConnectWallet = async ({
           }
         }
   
+        if (session && session.auth) {
+          session.auth = {
+            actor: session.auth.actor.toString(),
+            permission: session.auth.permission.toString(),
+          }
+          session.publicKey = session.publicKey ? session.publicKey.toString() : undefined
+        }
+
         resolve({
-          session: {
-            ...session,
-            auth: {
-              actor: session.auth.actor.toString(),
-              permission: session.auth.permission.toString(),
-            },
-            publicKey: session.publicKey ? session.publicKey.toString() : undefined,
-          },
+          session,
           link,
           loginResult
         })
