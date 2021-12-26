@@ -8,7 +8,7 @@
   "unpkg": "dist/bundle.js",
   "types": "dist/index.d.ts",
   "source": "src/index.ts",
-  "version": "2.7.23-67",
+  "version": "3.2.2",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -29,9 +29,9 @@
     "analyze": "size-limit --why"
   },
   "dependencies": {
-    "@proton/browser-transport": "^3.2.1-25",
-    "@proton/link": "^3.2.3-25",
-    "@proton/provider-axios": "^2.2.2-4"
+    "@proton/browser-transport": "^3.2.2",
+    "@proton/link": "^3.2.4",
+    "@proton/provider-axios": "^3.2.2"
   },
   "husky": {
     "hooks": {
