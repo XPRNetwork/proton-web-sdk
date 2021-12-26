@@ -22,6 +22,10 @@ url = git@github.com:ProtonProtocol/proton-test-app-html.git
 path = proton-test-app-vue
 url = git@github.com:ProtonProtocol/proton-test-app-vue.git
 
+[submodule "proton-test-app-react"]
+path = proton-test-app-react
+url = git@github.com:ProtonProtocol/proton-test-app-react.git
+
 [submodule "proton-react-native-sdk"]
 path = proton-react-native-sdk
 url = git@github.com:ProtonProtocol/proton-react-native-sdk.git
