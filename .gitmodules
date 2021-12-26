@@ -1,31 +1,31 @@
 [submodule "proton-browser-transport"]
-path = proton-browser-transport
-url = git@github.com:ProtonProtocol/proton-browser-transport.git
+    path = proton-browser-transport
+    url = git@github.com:ProtonProtocol/proton-browser-transport.git
 
 [submodule "proton-link"]
-path = proton-link
-url = git@github.com:ProtonProtocol/proton-link.git
+    path = proton-link
+    url = git@github.com:ProtonProtocol/proton-link.git
 
 [submodule "proton-provider-axios"]
-path = proton-provider-axios
-url = git@github.com:ProtonProtocol/proton-provider-axios.git
+    path = proton-provider-axios
+    url = git@github.com:ProtonProtocol/proton-provider-axios.git
 
 [submodule "proton-signing-request"]
-path = proton-signing-request
-url = git@github.com:ProtonProtocol/proton-signing-request.git
+    path = proton-signing-request
+    url = git@github.com:ProtonProtocol/proton-signing-request.git
 
 [submodule "proton-test-app-html"]
-path = proton-test-app-html
-url = git@github.com:ProtonProtocol/proton-test-app-html.git
+    path = proton-test-app-html
+    url = git@github.com:ProtonProtocol/proton-test-app-html.git
 
 [submodule "proton-test-app-vue"]
-path = proton-test-app-vue
-url = git@github.com:ProtonProtocol/proton-test-app-vue.git
-
-[submodule "proton-test-app-react"]
-path = proton-test-app-react
-url = git@github.com:ProtonProtocol/proton-test-app-react.git
+    path = proton-test-app-vue
+    url = git@github.com:ProtonProtocol/proton-test-app-vue.git
 
 [submodule "proton-react-native-sdk"]
-path = proton-react-native-sdk
-url = git@github.com:ProtonProtocol/proton-react-native-sdk.git
+    path = proton-react-native-sdk
+    url = git@github.com:ProtonProtocol/proton-react-native-sdk.git
+
+[submodule "proton-test-app-react"]
+	path = proton-test-app-react
+	url = https://github.com/ProtonProtocol/proton-test-app-react
