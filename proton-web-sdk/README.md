@@ -6,30 +6,38 @@ npm i @proton/web-sdk
 yarn add @proton/web-sdk
 ```
 
-Full Documentation:
-https://docs.protonchain.com/sdk/proton-web-sdk
-
 Usage
 ```javascript
-import { ConnectWallet } from '@proton/web-sdk'
+import ProtonWebSDK from '@proton/web-sdk'
 
 // Constants
 const appIdentifier = 'taskly'
 
-// Pop up modal
-const link = await ConnectWallet({
+// Login
+const { link, session } = await ProtonWebSDK({
     linkOptions: {
+        /* RPC endpoints */
         endpoints: ['https://proton.greymass.com'],
-        // rpc: rpc /* Optional: if you wish to provide rpc directly instead of endpoints */
+
+        /* Recommended: false if first time connecting, true if trying to reconnect */
+        restoreSession: false
     },
     transportOptions: {
-        requestAccount: 'myprotonacc', /* Optional: Your proton account */
-        requestStatus: true, /* Optional: Display request success and error messages, Default true */
+        /* Recommended: Your proton account */
+        requestAccount: appIdentifier,
+
+        /* Optional: Display request success and error messages, Default true */
+        requestStatus: true,
     },
     selectorOptions: {
-        appName: 'Taskly', /* Optional: Name to show in modal, Default 'app' */
-        appLogo: 'https://protondemos.com/static/media/taskly-logo.ad0bfb0f.svg', /* Optional: Logo to show in modal */
-        customStyleOptions: { /* Optional: Custom style options for modal */
+        /* Optional: Name to show in modal, Default 'app' */
+        appName: 'Taskly',
+
+        /* Optional: Logo to show in modal */
+        appLogo: 'https://protondemos.com/static/media/taskly-logo.ad0bfb0f.svg', 
+
+        /* Optional: Custom style options for modal */
+        customStyleOptions: {
             modalBackgroundColor: '#F4F7FA',
             logoBackgroundColor: 'white',
             isLogoRound: true,
@@ -42,15 +50,9 @@ const link = await ConnectWallet({
     }
 })
 
-//Login
-const { link, session } = await ConnectWallet({
-    linkOptions: { chainId: this.chainId, endpoints: this.endpoints },
-    transportOptions: { requestAccount: this.requestAccount, backButton: true },
-    selectorOptions: { appName: this.appName, appLogo: appLogo}
-});
-this.link = link;
-this.session = session;
-return { auth: session.auth };
+// Actor and permission
+console.log(session.auth.actor) // e.g. "metal"
+console.log(session.auth.permission) // e.g. "active"
 
 // Send Transaction
 const result = await session.transact({
@@ -58,32 +60,25 @@ const result = await session.transact({
         actions: [{
             // Token contract for XUSDT
             account: 'xtokens',
+
             // Action name
             name: 'transfer',
+
             // Action parameters
             data: {
                 from: session.auth.actor,
-                to: 'syed',
+                to: 'token.burn',
                 quantity: '0.000001 XUSDT',
                 memo: 'Tip!'
             },
             authorization: [session.auth]
         }]
     },
-    broadcast: true
-})
+}, { broadcast: true })
 console.log('Transaction ID', result.processed.id)
-
-// Restore session after refresh (must recreate link first with restoreSession as true)
-const { link, session } = await ConnectWallet({
-    linkOptions: { chainId: this.chainId, endpoints: this.endpoints, restoreSession: true},
-    transportOptions: { requestAccount: this.requestAccount },
-    selectorOptions: { appName: this.appName, appLogo: appLogo}
-  });
-  this.link = link;
-  this.session = session;
       
 // Logout
 await link.removeSession(appIdentifier, session.auth)
+link = undefined
 session = undefined
 ```

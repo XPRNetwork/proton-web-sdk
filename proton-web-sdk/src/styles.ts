@@ -1,6 +1,3 @@
-/* I do not see any ttf files for fonts, so assuming they need to be added (marking as TODO for later) */
-import { CustomStyleOptions } from './index';
-
 export default (customStyleOptions: CustomStyleOptions | undefined): string => {
     const defaultOptions = {
         modalBackgroundColor: '#ffffff',
