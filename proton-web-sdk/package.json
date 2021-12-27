@@ -8,12 +8,13 @@
   "unpkg": "dist/bundle.js",
   "types": "dist/index.d.ts",
   "source": "src/index.ts",
-  "version": "3.2.4",
+  "version": "3.2.7",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
+    "cdn",
     "src"
   ],
   "engines": {
@@ -24,11 +25,12 @@
     "build": "tsdx build",
     "test": "tsdx test",
     "lint": "tsdx lint",
-    "prepare": "tsdx build",
+    "prepare": "make",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
   "dependencies": {
+    "@greymass/eosio": "^0.4.7",
     "@proton/browser-transport": "^3.2.4",
     "@proton/link": "^3.2.4",
     "@proton/provider-axios": "^3.2.4"
@@ -46,8 +48,19 @@
   },
   "gitHead": "0fbf8d35e95fab0e42dc396b9398d34b1872a7c9",
   "devDependencies": {
+    "@babel/core": "^7.12.9",
+    "@babel/preset-env": "^7.16.5",
+    "@rollup/plugin-babel": "^5.2.3",
+    "@rollup/plugin-commonjs": "^19.0.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.0.0",
+    "@rollup/plugin-replace": "^2.3.4",
+    "@rollup/plugin-typescript": "^8.1.1",
     "@typescript-eslint/eslint-plugin": "^4.28.4",
     "eslint": "^7.31.0",
+    "rollup": "^2.38.5",
+    "rollup-plugin-dts": "^3.0.1",
+    "rollup-plugin-terser": "^7.0.2",
     "typescript": "^4.3.5"
   }
 }
