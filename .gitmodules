@@ -17,3 +17,18 @@
 [submodule "proton-react-native-sdk"]
 	path = packages/proton-react-native-sdk
     url = git@github.com:ProtonProtocol/proton-react-native-sdk.git
+[submodule "packages/proton-link"]
+	path = packages/proton-link
+	url = https://github.com/ProtonProtocol/proton-link
+[submodule "packages/proton-browser-transport"]
+	path = packages/proton-browser-transport
+	url = https://github.com/ProtonProtocol/proton-browser-transport
+[submodule "packages/proton-provider-axios"]
+	path = packages/proton-provider-axios
+	url = https://github.com/ProtonProtocol/proton-provider-axios
+[submodule "packages/proton-signing-request"]
+	path = packages/proton-signing-request
+	url = https://github.com/ProtonProtocol/proton-signing-request
+[submodule "packages/proton-react-native-sdk"]
+	path = packages/proton-react-native-sdk
+	url = https://github.com/ProtonProtocol/proton-react-native-sdk
