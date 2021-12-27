@@ -1,19 +1,19 @@
 [submodule "proton-browser-transport"]
-    path = proton-browser-transport
+	path = packages/proton-browser-transport
     url = git@github.com:ProtonProtocol/proton-browser-transport.git
 
 [submodule "proton-link"]
-    path = proton-link
+	path = packages/proton-link
     url = git@github.com:ProtonProtocol/proton-link.git
 
 [submodule "proton-provider-axios"]
-    path = proton-provider-axios
+	path = packages/proton-provider-axios
     url = git@github.com:ProtonProtocol/proton-provider-axios.git
 
 [submodule "proton-signing-request"]
-    path = proton-signing-request
+	path = packages/proton-signing-request
     url = git@github.com:ProtonProtocol/proton-signing-request.git
 
 [submodule "proton-react-native-sdk"]
-    path = proton-react-native-sdk
+	path = packages/proton-react-native-sdk
     url = git@github.com:ProtonProtocol/proton-react-native-sdk.git
