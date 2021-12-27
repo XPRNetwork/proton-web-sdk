@@ -25,7 +25,7 @@
             id="to"
             class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
             placeholder="e.g. token.burn"
-            @model="to"
+            v-model="to"
           >
         </div>
       </div>
@@ -38,7 +38,7 @@
             id="amount"
             class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
             placeholder="e.g. 1.3"
-            @model="amount"
+            v-model="amount"
           >
         </div>
       </div>
@@ -70,6 +70,8 @@ export default {
 
     return {
       actor: computed(() => store.state.actor),
+      to,
+      amount,
       transfer: () => {
         if (!store.state.actor) {
           return store.dispatch('login')
