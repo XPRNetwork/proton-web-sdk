@@ -1,7 +1,6 @@
 import getStyleText from './styles'
-import { CustomStyleOptions } from './connect'
 
-export default class SupportedWallets {
+export default class WalletTypeSelector {
     constructor(public readonly name?: string, logo?: string, customStyleOptions?: CustomStyleOptions) {
         this.appLogo = logo
         this.appName = name || 'app'

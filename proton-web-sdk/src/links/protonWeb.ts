@@ -165,8 +165,6 @@ export class ProtonWebLink {
         return
       }
 
-      console.log(type, data, error)
-
       // Ready to receive transaction
       if (type === 'isReady')
       {
