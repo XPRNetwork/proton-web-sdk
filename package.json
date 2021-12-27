@@ -4,11 +4,12 @@
   "publishConfig": {
     "access": "public"
   },
+  "type": "module",
   "module": "dist/index.js",
   "unpkg": "dist/bundle.js",
   "types": "dist/index.d.ts",
   "source": "src/index.ts",
-  "version": "3.3.2",
+  "version": "3.3.3",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
