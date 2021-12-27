@@ -1,7 +1,7 @@
 SRC_FILES := $(shell find src -name '*.ts')
 
 lib: ${SRC_FILES} package.json tsconfig.json node_modules rollup.config.js
-	@./node_modules/.bin/rollup -c && touch lib
+	@./node_modules/.bin/rollup -c
 
 .PHONY: test
 test: node_modules
