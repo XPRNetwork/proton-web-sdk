@@ -8,7 +8,7 @@
   "unpkg": "dist/bundle.js",
   "types": "dist/index.d.ts",
   "source": "src/index.ts",
-  "version": "3.2.7",
+  "version": "3.2.8",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -22,7 +22,7 @@
   },
   "scripts": {
     "watch": "tsdx watch  --verbose --noClean",
-    "build": "tsdx build",
+    "build": "make",
     "test": "tsdx test",
     "lint": "tsdx lint",
     "prepare": "make",
@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@greymass/eosio": "^0.4.7",
-    "@proton/browser-transport": "^3.2.4",
+    "@proton/browser-transport": "^3.2.5",
     "@proton/link": "^3.2.4",
     "@proton/provider-axios": "^3.2.4"
   },
