@@ -69,15 +69,13 @@ export const logout = async (): Promise<void> => {
   link = undefined;
 };
 
-export const reconnect = async (): Promise<LinkSession> => {
+export const reconnect = async (): Promise<LinkSession | undefined> => {
   if (!session) {
     await createLink({ restoreSession: true });
   }
 
   if (session) {
     return session;
-  } else {
-    throw new Error('No Session');
   }
 };
 
