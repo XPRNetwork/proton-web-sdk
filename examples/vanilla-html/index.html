@@ -146,7 +146,7 @@
       const appIdentifier = "taskly"
       const chainId = "384da888112027f0321850a169f737c33e53b388aad48b5adace4bab97f437e0"
       const endpoints = ["https://proton.greymass.com"]
-      
+
       const loginButton = document.querySelector('#login-button')
       const avatar = document.querySelector('#avatar')
       const avatarName = document.querySelector('#avatar-name')
@@ -236,8 +236,11 @@
 
         return await session.transact({
           actions: [{
-            // Token contract for only XPR
-            // Other tokens like XUSDC have contract "xtokens"
+            /**
+             * The token contract, precision and symbol for tokens can be seen at protonscan.io/tokens
+             */
+
+            // Token contract
             account: "eosio.token",
 
             // Action name
@@ -245,10 +248,16 @@
             
             // Action parameters
             data: {
+              // Sender
               from: session.auth.actor,
+
+              // Receiver
               to: to,
-              // Change precision from 4 for other assets, e.g. 6 for USDC
+
+              // 4 is precision, XPR is symbol
               quantity: `${(+amount).toFixed(4)} XPR`,
+
+              // Optional memo
               memo: ""
             },
             authorization: [session.auth]
