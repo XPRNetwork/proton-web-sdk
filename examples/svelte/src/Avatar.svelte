@@ -1,10 +1,10 @@
 <script lang="ts">
-import { login, logout, actor, avatar } from './userState'
-import { onMount } from 'svelte';
+	import { login, logout, actor, avatar } from "./userState";
+	import { onMount } from "svelte";
 
-onMount(async () => {
-	login(true)
-});
+	onMount(async () => {
+	  login(true);
+	});
 </script>
 
 <div>
