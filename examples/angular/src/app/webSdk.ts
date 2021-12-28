@@ -38,8 +38,6 @@ export const login = async (): Promise<LinkSession> => {
   await createLink({ restoreSession: false });
   if (session) {
     return session;
-  } else {
-    throw new Error('No Session');
   }
 };
 
