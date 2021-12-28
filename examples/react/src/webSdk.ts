@@ -86,22 +86,31 @@ export const transfer = async ({ to, amount }: { to: string, amount: string }) =
 
   return await session.transact({
     actions: [{
-        // Token contract for only XPR
-        // Other tokens like XUSDC have contract "xtokens"
-        account: "eosio.token",
+      /**
+       * The token contract, precision and symbol for tokens can be seen at protonscan.io/tokens
+       */
 
-        // Action name
-        name: "transfer",
-        
-        // Action parameters
-        data: {
-            from: session.auth.actor,
-            to: to,
-            // Change precision from 4 for other assets, e.g. 6 for USDC
-            quantity: `${(+amount).toFixed(4)} XPR`,
-            memo: ""
-        },
-        authorization: [session.auth]
+      // Token contract
+      account: "eosio.token",
+
+      // Action name
+      name: "transfer",
+      
+      // Action parameters
+      data: {
+        // Sender
+        from: session.auth.actor,
+
+        // Receiver
+        to: to,
+
+        // 4 is precision, XPR is symbol
+        quantity: `${(+amount).toFixed(4)} XPR`,
+
+        // Optional memo
+        memo: ""
+      },
+      authorization: [session.auth]
     }]
   }, {
     broadcast: true

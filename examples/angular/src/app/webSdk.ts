@@ -76,6 +76,8 @@ export const reconnect = async (): Promise<LinkSession | undefined> => {
 
   if (session) {
     return session;
+  } else {
+    return undefined
   }
 };
 
