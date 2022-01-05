@@ -1,3 +1,5 @@
+import { CustomStyleOptions } from ".";
+
 export default (customStyleOptions: CustomStyleOptions | undefined): string => {
     const defaultOptions = {
         modalBackgroundColor: '#ffffff',
