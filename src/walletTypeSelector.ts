@@ -1,4 +1,5 @@
 import getStyleText from './styles'
+import { CustomStyleOptions } from '.';
 
 export default class WalletTypeSelector {
     constructor(public readonly name?: string, logo?: string, customStyleOptions?: CustomStyleOptions) {
