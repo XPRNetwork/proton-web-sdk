@@ -54,7 +54,7 @@ const login = async (selectorOptions: SelectorOptions, linkOptions: LocalLinkOpt
       walletType = await linkOptions.storage!.read('wallet-type')
     } else {
       const enabledWalletTypes = selectorOptions.enabledWalletTypes
-        ? WALLET_TYPES.filter(wallet => selectorOptions.enabledWalletTypes?.includes(wallet.key))
+        ? WALLET_TYPES.filter(wallet => selectorOptions.enabledWalletTypes && selectorOptions.enabledWalletTypes.includes(wallet.key))
         : WALLET_TYPES
 
       try {
