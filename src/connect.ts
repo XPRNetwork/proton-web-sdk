@@ -6,6 +6,7 @@ import WalletTypeSelector from './walletTypeSelector'
 import { ProtonWebLink } from './links/protonWeb'
 import { Storage } from './storage'
 import { WALLET_TYPES } from './constants'
+import { ConnectWalletArgs, ConnectWalletRet, SelectorOptions, LocalLinkOptions } from './types'
 
 export const ConnectWallet = async ({
   linkOptions,
