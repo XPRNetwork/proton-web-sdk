@@ -82,10 +82,10 @@ const login = async (selectorOptions: SelectorOptions, linkOptions: LocalLinkOpt
 
   // Set scheme
   let scheme = 'proton'
-  if (chain === 'proton-test') {
-    scheme = 'proton-dev'
-  } else if (walletType === 'anchor') {
+  if (walletType === 'anchor') {
     scheme = 'esr'
+  } else if (chain === 'proton-test') {
+    scheme = 'proton-dev'
   }
 
   const options = {
