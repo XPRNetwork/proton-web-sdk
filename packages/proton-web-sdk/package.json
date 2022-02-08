@@ -32,8 +32,11 @@
   "dependencies": {
     "@greymass/eosio": "^0.4.7",
     "@proton/browser-transport": "^3.2.5",
+    "@proton/js": "^25.0.76",
     "@proton/link": "^3.2.4",
-    "@proton/provider-axios": "^3.2.4"
+    "@proton/provider-axios": "^3.2.4",
+    "core-js": "^3.21.0",
+    "tslib": "^2.3.1"
   },
   "husky": {
     "hooks": {
@@ -57,6 +60,7 @@
     "@rollup/plugin-replace": "^2.3.4",
     "@rollup/plugin-typescript": "^8.1.1",
     "@typescript-eslint/eslint-plugin": "^4.28.4",
+    "@typescript-eslint/parser": "^5.11.0",
     "eslint": "^7.31.0",
     "rollup": "^2.38.5",
     "rollup-plugin-dts": "^3.0.1",

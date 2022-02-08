@@ -656,10 +656,10 @@
     "@babel/helper-validator-identifier" "^7.15.7"
     to-fast-properties "^2.0.0"
 
-"@bloks/constants@^25.0.67":
-  version "25.0.67"
-  resolved "https://registry.yarnpkg.com/@bloks/constants/-/constants-25.0.67.tgz#d61221badb86548b4074ddd95185cf4fc5eee3f4"
-  integrity sha512-OUKGdzWw0Xoej4ra0wc4k2aC6WlMaCe6exJQxIkeF7kTzf6Bf4oXlfzQ7l+XSXWWDlBiL1HJm6C3TpTvBqy0wA==
+"@bloks/constants@^25.0.76":
+  version "25.0.76"
+  resolved "https://registry.yarnpkg.com/@bloks/constants/-/constants-25.0.76.tgz#5eeba1572aec47c54c09b7b41d9dcd72c5432de8"
+  integrity sha512-r4YrwduQP/5YXBS8KqjcpOiwmyWL0GbN7FbB4oLBMUiBO9Uaw/cweHYneU7RBnoImj5dAVmsUuoeBrqJnFr37A==
 
 "@cnakazawa/watch@^1.0.3":
   version "1.0.4"
@@ -772,12 +772,12 @@
     "@types/yargs" "^15.0.0"
     chalk "^3.0.0"
 
-"@proton/js@25.0.69":
-  version "25.0.69"
-  resolved "https://registry.yarnpkg.com/@proton/js/-/js-25.0.69.tgz#989508a16cee772f260c7622e4c663d24c05483e"
-  integrity sha512-4D5Djb8RFxUAyCNYWDFxnLHK6ATVRcUs2EpLuxSthrIzN/kRx8buMLEXDrEpJWMkykPu5quA7uflGejlkQAQog==
+"@proton/js@^25.0.76":
+  version "25.0.76"
+  resolved "https://registry.yarnpkg.com/@proton/js/-/js-25.0.76.tgz#bb92c1ba30e811b4054000ab81860e4ea63f43bb"
+  integrity sha512-1fQyH3Mp41lL71sVFzQOLsNVMceAUlQofLDFsJRp/WzYyz0TSPynazi13aFN5AkDVFTecbTlq+9rG0OERMXppQ==
   dependencies:
-    "@bloks/constants" "^25.0.67"
+    "@bloks/constants" "^25.0.76"
     base64url "^3.0.1"
     cross-fetch "^3.1.4"
     elliptic "^6.5.4"

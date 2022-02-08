@@ -17,6 +17,7 @@
   ],
   "dependencies": {
     "@bloks/qrcode": "^0.1.2",
+    "@proton/link": "^3.2.4",
     "tslib": "^2.0.3"
   },
   "peerDependencies": {

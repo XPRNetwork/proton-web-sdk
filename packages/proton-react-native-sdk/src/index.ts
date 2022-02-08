@@ -8,8 +8,6 @@ import ProtonLink, {
   PermissionLevel,
 } from '@proton/link'
 import { JsonRpc } from '@proton/js'
-import { AxiosProvider } from '@proton/provider-axios'
-import { APIClient } from '@greymass/eosio'
 
 import Storage from './storage'
 
@@ -31,9 +29,7 @@ const ConnectWallet = async ({
   transportOptions,
 }: ConnectWalletArgs) => {
   // Add RPC
-  linkOptions.client = new APIClient({
-    provider: new AxiosProvider(linkOptions.endpoints)
-  })
+  linkOptions.client = new JsonRpc(linkOptions.endpoints)
   
   // Add chain ID if not present
   if (!linkOptions.chainId) {

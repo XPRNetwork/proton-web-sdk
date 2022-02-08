@@ -1,4 +1,5 @@
 {
+  "extends": "../../tsconfig.json",
   // see https://www.typescriptlang.org/tsconfig to better understand tsconfigs
   "include": ["src", "types"],
   "compilerOptions": {
@@ -11,6 +12,7 @@
     "sourceMap": true,
     // match output dir to input dir. e.g. dist/index instead of dist/src/index
     "rootDir": "./src",
+    "declarationDir": "./dist/types",
     // stricter type-checking for stronger correctness. Recommended by TS
     "strict": true,
     // linter checks for common issues
