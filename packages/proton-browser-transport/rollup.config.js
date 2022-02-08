@@ -6,6 +6,7 @@ import commonjs from '@rollup/plugin-commonjs'
 import typescript from '@rollup/plugin-typescript'
 import replace from '@rollup/plugin-replace'
 import {terser} from 'rollup-plugin-terser'
+import json from '@rollup/plugin-json'
 import nodePolyfills from 'rollup-plugin-polyfill-node';
 
 import pkg from './package.json'
@@ -75,6 +76,7 @@ export default [
             replaceVersion,
             resolve({extensions}),
             commonjs(),
+            json(),
             babel({
                 extensions,
                 babelHelpers: 'bundled',

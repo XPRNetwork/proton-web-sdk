@@ -17,11 +17,10 @@
   ],
   "dependencies": {
     "@bloks/qrcode": "^0.1.2",
-    "@proton/link": "^4.0.0",
     "tslib": "^2.0.3"
   },
   "peerDependencies": {
-    "@proton/link": "^3.2.3-22"
+    "@proton/link": "^4.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
@@ -30,6 +29,7 @@
     "@babel/preset-typescript": "^7.12.7",
     "@rollup/plugin-babel": "^5.2.2",
     "@rollup/plugin-commonjs": "^19.0.0",
+    "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.0.0",
     "@rollup/plugin-replace": "^3.0.0",
     "@rollup/plugin-typescript": "^8.0.0",
