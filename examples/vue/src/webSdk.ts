@@ -34,7 +34,7 @@ export const createLink = async ({
   session = localSession;
 };
 
-export const login = async (): Promise<LinkSession> => {
+export const login = async (): Promise<LinkSession | undefined> => {
   await createLink({ restoreSession: false });
   if (session) {
     return session;
