@@ -27,7 +27,6 @@
   "dependencies": {
     "@proton/js": "^25.0.76",
     "@proton/link": "^4.0.2",
-    "@proton/provider-axios": "^2.2.2-5",
     "@proton/signing-request": "^2.2.2-9",
     "@react-native-community/async-storage": "^1.12.1",
     "buffer": "^6.0.3",

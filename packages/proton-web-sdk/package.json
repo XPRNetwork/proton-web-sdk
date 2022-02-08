@@ -34,7 +34,6 @@
     "@proton/browser-transport": "^4.0.2",
     "@proton/js": "^25.0.76",
     "@proton/link": "^4.0.2",
-    "@proton/provider-axios": "^3.2.4",
     "core-js": "^3.21.0",
     "tslib": "^2.3.1"
   },
