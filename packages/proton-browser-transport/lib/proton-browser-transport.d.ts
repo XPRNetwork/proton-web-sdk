@@ -1,5 +1,5 @@
 /**
- * Proton Browser Transport v3.2.5
+ * Proton Browser Transport v4.0.0
  * https://github.com/protonprotocol/proton-browser-transport
  *
  * @license

@@ -1,0 +1,25 @@
+export declare const getContractConstants: (chain?: string, systemDomain?: string) => {
+    EOSIO: string;
+    EOSIO_TOKEN: string;
+    ACCOUNT_INFO: string;
+    PROXY_INFO_ACCOUNT: string | undefined;
+    EOSIO_MSIG: string;
+    EOSIO_RAM: string;
+    EOSIO_STAKE: string;
+    EOSIO_PRODS: string;
+    EOSIO_NULL: string;
+    EOSIO_RAMFEE: string;
+    EOSIO_VPAY: string;
+    EOSIO_BPAY: string;
+    EOSIO_REX: string;
+    NEWACCOUNT_NAME_PARAM: string;
+    EOSIO_MSIG_APPROVALS_TABLE: string;
+    EOSIO_MSIG_PROPOSALS_TABLE: string;
+    TRANSFER_ACTION: string;
+    DELEGATE_BW_ACTION: string;
+    UNDELEGATE_BW_ACTION: string;
+    VOTE_PRODUCER_ACTION: string;
+    BUY_RAM_ACTION: string;
+    BUY_RAM_BYTES_ACTION: string;
+    SELL_RAM_ACTION: string;
+};
