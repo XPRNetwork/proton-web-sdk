@@ -1,5 +1,5 @@
 /**
- * Proton Browser Transport v4.0.2
+ * Proton Browser Transport v4.1.0
  * https://github.com/protonprotocol/proton-browser-transport
  *
  * @license
@@ -984,7 +984,7 @@ class BrowserTransport {
     }
 }
 /** Package version. */
-BrowserTransport.version = '4.0.2'; // replaced by build script
+BrowserTransport.version = '4.1.0'; // replaced by build script
 function waitForEvent(element, eventName, timeout) {
     return new Promise((resolve, reject) => {
         const listener = (event) => {
