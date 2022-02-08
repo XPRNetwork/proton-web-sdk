@@ -10,6 +10,7 @@ import {
     Bytes,
     Name,
     NameType,
+    PackedTransaction,
     PermissionLevel,
     PermissionLevelType,
     PrivateKey,
@@ -422,7 +423,14 @@ export class Link {
                     ...resolved.transaction,
                     signatures,
                 }).toJSON()
-                const res = await c.client.push_transaction(signedTx)
+                const signedTxParsed = Serializer.objectify(signedTx)
+                const packedTx = PackedTransaction.fromSigned(signedTx)
+                const res = await c.client.push_transaction({
+                    serializedTransaction: packedTx.packed_trx.array,
+                    serializedContextFreeData: packedTx.packed_context_free_data.array,
+                    signatures: signedTxParsed.signatures,
+                    transactionHeader: signedTxParsed
+                })
                 result.processed = res.processed
             }
             if (t.onSuccess) {
