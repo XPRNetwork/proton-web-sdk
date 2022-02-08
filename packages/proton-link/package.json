@@ -8,6 +8,7 @@
     "types": "lib/proton-link.d.ts",
     "unpkg": "lib/proton-link.bundle.js",
     "scripts": {
+        "watch": "rollup -c -w",
         "prepare": "make"
     },
     "directories": {
