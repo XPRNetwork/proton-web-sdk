@@ -9,6 +9,7 @@
   "unpkg": "lib/proton-browser-transport.bundle.js",
   "types": "lib/proton-browser-transport.d.ts",
   "scripts": {
+    "watch": "rollup -c -w",
     "prepare": "make"
   },
   "files": [
