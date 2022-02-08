@@ -1238,13 +1238,12 @@
   resolved "https://registry.yarnpkg.com/@polka/url/-/url-1.0.0-next.21.tgz#5de5a2385a35309427f6011992b544514d559aa1"
   integrity sha512-a5Sab1C4/icpTZVzZc5Ghpz88yQtGOyNqYXcZgOssB2uuAr+wF/MvN6bgtW32q7HHrvBki+BsZ0OuNv6EV3K9g==
 
-"@proton/browser-transport@^4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@proton/browser-transport/-/browser-transport-4.0.0.tgz#923c96da8c8d609fcbe7742bff41a3a4ba638889"
-  integrity sha512-D7iwvy7QewZosrHIYN3IQK/rLy7UrlmvUXPXKtHPNlKCSTVM/yqZXHOU9FptBifLkz9+EZAyzB44/Zn/GoTmGA==
+"@proton/browser-transport@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@proton/browser-transport/-/browser-transport-4.0.1.tgz#44a1d836c208e9efe414b6d1f393ce648f94e3b0"
+  integrity sha512-GycIOuJt7MtlLD2mVN/NIWnAlbWdQa4ux1LCIyBNC56G21a39oA+ZoAbq/QZqbqeOlinAWKuMPATNFgM3i68tQ==
   dependencies:
     "@bloks/qrcode" "^0.1.2"
-    "@proton/link" "^4.0.0"
     tslib "^2.0.3"
 
 "@proton/js@^25.0.73":
@@ -1309,13 +1308,13 @@
     core-js "^3.21.0"
     tslib "^2.0.3"
 
-"@proton/web-sdk@^4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@proton/web-sdk/-/web-sdk-4.0.0.tgz#ebecda3df2b0ec493a15913060f8adc70531c1b6"
-  integrity sha512-fp4FgMLvuvhuQb7Q62H3tPbWJRCBSgFedROoBVtOBSw/XngHRhKrMpsHJB+WuUYeTtv9dCTvBGh61HBPnsFUug==
+"@proton/web-sdk@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@proton/web-sdk/-/web-sdk-4.0.1.tgz#9c0ff64603772aa73c690628c120de5523b2173b"
+  integrity sha512-hpRmjlmqhXi5zUHciqnY5FmMVGJOQj+/QGs+0lMtI3ChI9OLl9qsNWuIqC5AcJE7wCbSKzokY6SFCGkkdeCUAQ==
   dependencies:
     "@greymass/eosio" "^0.4.7"
-    "@proton/browser-transport" "^4.0.0"
+    "@proton/browser-transport" "^4.0.1"
     "@proton/js" "^25.0.76"
     "@proton/link" "^4.0.0"
     "@proton/provider-axios" "^3.2.4"

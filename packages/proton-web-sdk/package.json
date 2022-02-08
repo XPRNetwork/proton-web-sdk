@@ -22,7 +22,7 @@
     "node": ">=10"
   },
   "scripts": {
-    "watch": "tsdx watch  --verbose --noClean",
+    "watch": "rollup -c -w",
     "build": "make",
     "lint": "tsdx lint",
     "prepare": "make",
