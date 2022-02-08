@@ -74,6 +74,7 @@ export default [
         output: {
             banner,
             footer: exportFix,
+            globals: {'@proton/link': 'ProtonLink'},
             name: 'ProtonWebSDK',
             file: pkg.unpkg,
             format: 'iife',

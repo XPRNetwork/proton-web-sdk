@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@proton/js": "^25.0.73",
-    "@proton/web-sdk": "^3.3.3"
+    "@proton/web-sdk": "^3.3.2"
   },
   "devDependencies": {
     "@tsconfig/svelte": "^1.0.10",

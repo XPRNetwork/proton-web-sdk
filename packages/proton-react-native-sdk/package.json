@@ -25,7 +25,7 @@
     "analyze": "size-limit --why"
   },
   "dependencies": {
-    "@proton/js": "25.0.69",
+    "@proton/js": "^25.0.76",
     "@proton/link": "^3.2.3-27",
     "@proton/provider-axios": "^2.2.2-5",
     "@proton/signing-request": "^2.2.2-9",

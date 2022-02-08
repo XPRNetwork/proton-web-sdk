@@ -1,2 +1,4 @@
-node_modules/
-lib/
+*.log
+.DS_Store
+node_modules
+dist

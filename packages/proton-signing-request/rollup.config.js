@@ -1,6 +1,13 @@
 import fs from 'fs'
 import dts from 'rollup-plugin-dts'
+import babel from '@rollup/plugin-babel'
+import resolve from '@rollup/plugin-node-resolve'
+import commonjs from '@rollup/plugin-commonjs'
 import typescript from '@rollup/plugin-typescript'
+import {terser} from 'rollup-plugin-terser'
+import json from '@rollup/plugin-json'
+import replace from '@rollup/plugin-replace'
+import nodePolyfills from 'rollup-plugin-polyfill-node';
 
 import pkg from './package.json'
 
@@ -15,7 +22,12 @@ const banner = `
  */
 `.trim()
 
-const external = Object.keys(pkg.dependencies)
+const extensions = ['.js', '.mjs', '.ts']
+
+const replaceVersion = replace({
+    preventAssignment: true,
+    __ver: pkg.version,
+})
 
 export default [
     {
@@ -25,9 +37,10 @@ export default [
             file: pkg.main,
             format: 'cjs',
             sourcemap: true,
+            exports: 'named',
         },
         plugins: [typescript({target: 'es6'})],
-        external,
+        external: Object.keys({...pkg.dependencies, ...pkg.peerDependencies}),
         onwarn,
     },
     {
@@ -39,7 +52,7 @@ export default [
             sourcemap: true,
         },
         plugins: [typescript({target: 'es2020'})],
-        external,
+        external: Object.keys({...pkg.dependencies, ...pkg.peerDependencies}),
         onwarn,
     },
     {
@@ -47,6 +60,57 @@ export default [
         output: {banner, file: pkg.types, format: 'esm'},
         onwarn,
         plugins: [dts()],
+    },
+    {
+        input: 'src/index.ts',
+        output: {
+            globals: {'@proton/link': 'ProtonLink'},
+            banner,
+            name: 'ProtonSigningRequest',
+            file: pkg.unpkg,
+            format: 'iife',
+            sourcemap: true,
+            exports: 'named'
+        },
+        plugins: [
+            nodePolyfills(),
+            replaceVersion,
+            resolve({extensions}),
+            commonjs(),
+            json(),
+            babel({
+                extensions,
+                babelHelpers: 'bundled',
+                include: ['src/**/*'],
+                exclude: /node_modules\/core-js.*/,
+                presets: [
+                    '@babel/preset-typescript',
+                    [
+                        '@babel/preset-env',
+                        {
+                            targets: '>0.25%, not dead',
+                            useBuiltIns: 'usage',
+                            corejs: '3',
+                            loose: true
+                        },
+                    ],
+                ],
+                plugins: [
+                    ["@babel/plugin-proposal-decorators", { "legacy": true }],
+                    ["@babel/plugin-proposal-class-properties", { "loose": true }]
+                ],
+            }),
+            terser({
+                format: {
+                    comments(_, comment) {
+                        return comment.type === 'comment2' && /@license/.test(comment.value)
+                    },
+                    max_line_len: 500,
+                },
+            }),
+        ],
+        external: Object.keys({...pkg.peerDependencies}),
+        onwarn,
     },
 ]
 

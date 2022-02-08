@@ -1,12 +1,11 @@
 import ProtonLinkBrowserTransport, { BrowserTransportOptions } from '@proton/browser-transport'
 import ProtonLink, { LinkOptions, PermissionLevel } from '@proton/link'
-import { AxiosProvider } from '@proton/provider-axios'
-import { APIClient } from '@greymass/eosio'
 import WalletTypeSelector from './walletTypeSelector'
 import { ProtonWebLink } from './links/protonWeb'
 import { Storage } from './storage'
 import { WALLET_TYPES } from './constants'
 import { ConnectWalletArgs, ConnectWalletRet, SelectorOptions, LocalLinkOptions } from './types'
+import { JsonRpc } from '@proton/js'
 
 export const ConnectWallet = async ({
   linkOptions,
@@ -14,13 +13,12 @@ export const ConnectWallet = async ({
   selectorOptions = {}
 }: ConnectWalletArgs): Promise<ConnectWalletRet> => {
   // Add RPC
-  linkOptions.client = new APIClient({
-    provider: new AxiosProvider(linkOptions.endpoints)
-  })
+  const rpc = new JsonRpc(linkOptions.endpoints)
+  linkOptions.client = rpc
 
   // Add Chain ID
   if (!linkOptions.chainId) {
-    const info = await linkOptions.client.get_info();;
+    const info = await rpc.get_info();;
     linkOptions.chainId = info.chain_id
   }
     
