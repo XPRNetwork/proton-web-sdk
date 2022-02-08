@@ -1,0 +1,41 @@
+{
+    "name": "@proton/signing-request",
+    "version": "3.2.4",
+    "description": "Proton Signing Request (ESR / EEP-7) encoder and decoder",
+    "homepage": "https://github.com/ProtonProtocol/proton-signing-request",
+    "license": "MIT",
+    "main": "lib/esr.js",
+    "module": "lib/esr.m.js",
+    "types": "lib/esr.d.ts",
+    "sideEffects": false,
+    "files": [
+        "src/*",
+        "lib/*"
+    ],
+    "scripts": {
+        "prepare": "make"
+    },
+    "dependencies": {
+        "@greymass/eosio": "^0.4.7",
+        "tslib": "^2.0.3"
+    },
+    "devDependencies": {
+        "@rollup/plugin-typescript": "^8.1.1",
+        "@types/bn.js": "^5.1.0",
+        "@types/mocha": "^8.0.4",
+        "@types/node": "^14.14.9",
+        "@typescript-eslint/eslint-plugin": "^4.9.0",
+        "@typescript-eslint/parser": "^4.9.0",
+        "eslint": "^7.15.0",
+        "eslint-config-prettier": "^8.1.0",
+        "eslint-plugin-prettier": "^3.2.0",
+        "mocha": "^8.0.1",
+        "node-fetch": "^2.6.0",
+        "nyc": "^15.1.0",
+        "prettier": "^2.2.1",
+        "rollup": "^2.38.1",
+        "rollup-plugin-dts": "^3.0.1",
+        "ts-node": "^10.0.0",
+        "typescript": "^4.3.2"
+    }
+}
