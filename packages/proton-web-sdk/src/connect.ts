@@ -20,7 +20,7 @@ export const ConnectWallet = async ({
 
   // Add Chain ID
   if (!linkOptions.chainId) {
-    const info = await linkOptions.client.v1.chain.get_info();;
+    const info = await linkOptions.client.get_info();;
     linkOptions.chainId = info.chain_id
   }
     
