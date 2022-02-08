@@ -1,6 +1,6 @@
 {
   "name": "test-app-vue",
-  "version": "0.1.0",
+  "version": "4.0.2",
   "private": true,
   "scripts": {
     "start": "vue-cli-service serve",
@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@proton/js": "^25.0.73",
-    "@proton/web-sdk": "^4.0.1",
+    "@proton/web-sdk": "^4.0.2",
     "@tailwindcss/forms": "^0.4.0",
     "vue": "^3.2.26",
     "vue-router": "^4.0.0-0",
