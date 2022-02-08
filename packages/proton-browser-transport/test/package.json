@@ -1,0 +1,14 @@
+{
+    "private": true,
+    "scripts": {
+        "dev": "snowpack dev",
+        "build": "snowpack build"
+    },
+    "dependencies": {
+        "@proton/link": "3.2.3-3",
+        "@proton/signing-request": "2.2.2-1",
+        "@snowpack/plugin-typescript": "^1.1.1",
+        "snowpack": "3.0.x",
+        "typescript": "^4.1.2"
+    }
+}

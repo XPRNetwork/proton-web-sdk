@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "downlevelIteration": true,
+        "esModuleInterop": true,
+        "experimentalDecorators": true,
+        "importHelpers": true,
+        "isolatedModules": true,
+        "lib": ["dom", "es2020"],
+        "module": "es2020",
+        "moduleResolution": "node",
+        "noImplicitAny": false,
+        "useDefineForClassFields": false,
+        "sourceMap": true,
+        "strict": true,
+        "target": "es2020"
+    },
+    "include": ["src/**/*"]
+}
