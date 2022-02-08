@@ -1,6 +1,6 @@
 {
   "name": "@proton/browser-transport",
-  "version": "3.2.5",
+  "version": "4.0.0",
   "description": "Vanilla JS browser transport for Proton Link",
   "homepage": "https://github.com/protonprotocol/proton-browser-transport",
   "license": "BSD-3-Clause",
@@ -17,7 +17,7 @@
   ],
   "dependencies": {
     "@bloks/qrcode": "^0.1.2",
-    "@proton/link": "^3.2.4",
+    "@proton/link": "^4.0.0",
     "tslib": "^2.0.3"
   },
   "peerDependencies": {
