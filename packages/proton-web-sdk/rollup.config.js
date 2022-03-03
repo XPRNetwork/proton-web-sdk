@@ -7,7 +7,7 @@ import typescript from '@rollup/plugin-typescript'
 import {terser} from 'rollup-plugin-terser'
 import json from '@rollup/plugin-json'
 import replace from '@rollup/plugin-replace'
-import nodePolyfills from 'rollup-plugin-polyfill-node';
+import nodePolyfills from 'rollup-plugin-node-globals';
 
 import pkg from './package.json'
 
@@ -83,9 +83,7 @@ export default [
             exports: 'named',
         },
         plugins: [
-            nodePolyfills({
-                sourceMap: false
-            }),
+            nodePolyfills(),
             replaceVersion,
             resolve({browser: true}),
             commonjs(),
