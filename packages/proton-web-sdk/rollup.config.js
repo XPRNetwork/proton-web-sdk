@@ -82,6 +82,9 @@ export default [
             exports: 'named',
         },
         plugins: [
+            replace({
+                'process.env.NODE_ENV': JSON.stringify('production'),
+            }),
             replaceVersion,
             resolve({browser: true}),
             commonjs(),
