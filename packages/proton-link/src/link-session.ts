@@ -208,7 +208,8 @@ export class LinkChannelSession extends LinkSession implements LinkTransport {
                 if (Math.floor(response.status / 100) !== 2) {
                     clearTimeout(timer)
                     if (response.status === 202) {
-                        logWarn('Missing delivery ack from session channel')
+                       // eslint-disable-next-line no-console
+                       console.warn('Missing delivery ack from session channel')
                     }
                     cancel(new SessionError('Unable to push message', 'E_DELIVERY', this))
                 } else {

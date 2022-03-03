@@ -17,7 +17,7 @@ import {join as pathJoin} from 'path'
 import {LinkCreate} from '../src/link-types'
 
 const now = TimePointSec.fromMilliseconds(Date.now())
-const expiration = TimePointSec.fromMilliseconds(Date.now() + 60 * 1000)
+const expiration = TimePointSec.fromMilliseconds(Date.now() + (2 * 60 * 1000))
 
 class TestManager implements LinkTransport, APIProvider, LinkCallbackService, LinkCallback {
     key = PrivateKey.generate('K1')
