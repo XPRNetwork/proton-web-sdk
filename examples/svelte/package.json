@@ -1,6 +1,6 @@
 {
   "name": "svelte-demo-app",
-  "version": "4.1.0",
+  "version": "4.1.1",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
     "dev": "webpack serve --content-base public",
@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@proton/js": "^25.0.73",
-    "@proton/web-sdk": "^4.1.0"
+    "@proton/web-sdk": "^4.1.1"
   },
   "devDependencies": {
     "@tsconfig/svelte": "^1.0.10",
