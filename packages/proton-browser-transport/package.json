@@ -49,5 +49,6 @@
     "rollup-plugin-terser": "^7.0.2",
     "ts-node": "^10.0.0",
     "typescript": "^4.1.2"
-  }
+  },
+  "gitHead": "a9caf34cca0c9ade0398b4f96ae1677c9327c1e2"
 }

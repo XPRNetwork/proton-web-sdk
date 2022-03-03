@@ -1,5 +1,6 @@
 {
   "name": "svelte-demo-app",
+  "private": true,
   "version": "4.1.2",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
@@ -27,5 +28,6 @@
     "webpack": "^5.16.0",
     "webpack-cli": "^4.4.0",
     "webpack-dev-server": "^3.11.2"
-  }
+  },
+  "gitHead": "a9caf34cca0c9ade0398b4f96ae1677c9327c1e2"
 }

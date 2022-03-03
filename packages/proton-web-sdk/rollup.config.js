@@ -83,7 +83,9 @@ export default [
             exports: 'named',
         },
         plugins: [
-            nodePolyfills(),
+            nodePolyfills({
+                sourceMap: false
+            }),
             replaceVersion,
             resolve({browser: true}),
             commonjs(),
