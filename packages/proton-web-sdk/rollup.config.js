@@ -83,7 +83,6 @@ export default [
             exports: 'named',
         },
         plugins: [
-            nodePolyfills(),
             replaceVersion,
             resolve({browser: true}),
             commonjs(),
@@ -110,6 +109,7 @@ export default [
                     max_line_len: 500,
                 },
             }),
+            nodePolyfills(),
         ],
         external: Object.keys({...pkg.peerDependencies}),
         onwarn,
