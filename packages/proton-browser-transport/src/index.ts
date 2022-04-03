@@ -3,6 +3,7 @@ import {
     Base64u,
     Bytes,
     isInstanceOf,
+    LinkChannelSession,
     LinkSession,
     LinkStorage,
     LinkTransport,
@@ -78,12 +79,14 @@ const defaultSupportedChains = {
 
 interface DialogArgs {
     title: string | HTMLElement
+    manual?: HTMLElement
     subtitle?: string | HTMLElement
     type?: string
     content?: HTMLElement
     action?: {text: string; callback: () => void}
     footnote?: string | HTMLElement,
-    hideLogo?: boolean
+    hideLogo?: boolean,
+    hideBackButton?: boolean
 }
 
 class Storage implements LinkStorage {
@@ -120,6 +123,7 @@ export default class BrowserTransport implements LinkTransport {
         this.fuelReferrer = options.fuelReferrer || 'teamgreymass'
         this.storage = new Storage(options.storagePrefix || 'proton-link')
         this.supportedChains = options.supportedChains || defaultSupportedChains
+        this.showingManual = false
     }
 
     private classPrefix: string
@@ -141,6 +145,7 @@ export default class BrowserTransport implements LinkTransport {
     private countdownTimer?: NodeJS.Timeout
     private closeTimer?: NodeJS.Timeout
     private prepareStatusEl?: HTMLElement
+    private showingManual: boolean
 
     private closeModal() {
         this.hide()
@@ -152,6 +157,7 @@ export default class BrowserTransport implements LinkTransport {
     }
 
     private setupElements() {
+        this.showingManual = false
         if (this.injectStyles && !this.styleEl) {
             this.font = document.createElement('link')
             this.font.href = 'https://fonts.cdnfonts.com/css/circular-std-book'
@@ -256,7 +262,10 @@ export default class BrowserTransport implements LinkTransport {
     }
 
     private showDialog(args: DialogArgs) {
+        this.backButton = !args.hideBackButton
+
         this.setupElements()
+        emptyElement(this.requestEl)
 
         if (args.title) {
             let element = document.getElementsByClassName(`${this.classPrefix}-header`)[0]
@@ -267,36 +276,28 @@ export default class BrowserTransport implements LinkTransport {
             }
         }
 
-        emptyElement(this.requestEl)
-
-        // if (!args.hideLogo) {
-        //     const logoEl = this.createEl({class: 'logo'})
-        //     if (args.type) {
-        //         logoEl.classList.add(args.type)
-        //     }
-        //     this.requestEl.appendChild(logoEl)
-        // }
-
-        if (args.content) {
-            this.requestEl.appendChild(args.content)
+        // Add content
+        const content = args.content || this.createEl({class: 'info'})
+        if (args.subtitle) {
+            const infoSubtitle = this.createEl({
+                class: 'subtitle',
+                tag: 'span',
+                content: args.subtitle,
+            })
+            content.appendChild(infoSubtitle)
         }
+        this.requestEl.appendChild(content)
+
         if (args.action) {
+            const buttonHr = this.createEl({tag: 'hr', class: 'button-hr'})            
             const buttonEl = this.createEl({tag: 'a', class: 'button', text: args.action.text})
             buttonEl.addEventListener('click', (event) => {
                 event.preventDefault()
                 args.action!.callback()
             })
-            this.requestEl.appendChild(buttonEl)
-        }
 
-        if (args.subtitle) {
-            let subtitleEl
-            if (typeof args.subtitle === 'string') {
-                subtitleEl = this.createEl({class: 'subtitle', tag: 'span', text: args.subtitle})
-            } else {
-                subtitleEl = args.subtitle
-            }
-            this.requestEl.appendChild(subtitleEl)
+            this.requestEl.appendChild(buttonHr)
+            this.requestEl.appendChild(buttonEl)
         }
 
         if (args.footnote) {
@@ -306,10 +307,13 @@ export default class BrowserTransport implements LinkTransport {
         this.show()
     }
 
-    private async displayRequest(request: SigningRequest) {
-        const returnUrl = generateReturnUrl()
-
+    private async displayRequest(
+        request: SigningRequest,
+        title: string,
+        subtitle: string
+    ) {
         const sameDeviceRequest = request.clone()
+        const returnUrl = generateReturnUrl()
         sameDeviceRequest.setInfoKey('same_device', true)
         sameDeviceRequest.setInfoKey('return_path', returnUrl)
 
@@ -394,8 +398,9 @@ export default class BrowserTransport implements LinkTransport {
         }
 
         this.showDialog({
-            title: 'Scan the QR-Code',
+            title,
             footnote,
+            subtitle,
             content: actionEl,
         })
     }
@@ -416,7 +421,11 @@ export default class BrowserTransport implements LinkTransport {
         this.clearTimers()
         this.activeRequest = request
         this.activeCancel = cancel
-        this.displayRequest(request).catch(cancel)
+        this.displayRequest(
+            request,
+            'Scan the QR-Code',
+            '',
+        ).catch(cancel)
     }
 
     public onSessionRequest(
@@ -460,25 +469,28 @@ export default class BrowserTransport implements LinkTransport {
         updateCountdown()
         content.appendChild(countdown)
 
-        // Content title
-        const infoEl = this.createEl({class: 'info'})
-        const infoTitle = this.createEl({class: 'title', tag: 'span', text: 'Confirm request'})
-        infoEl.appendChild(infoTitle)
-        content.appendChild(infoEl)
-
         // Content subtitle
         let subtitle: string
         if (deviceName && deviceName.length > 0) {
-            subtitle = `Please open on "${deviceName}" to review and sign the transaction.`
+            subtitle = `Please open ${deviceName} to review the transaction`
         } else {
             subtitle = 'Please review and sign the transaction in the linked wallet.'
         }
 
         this.showDialog({
-            title: 'Pending...',
+            title: 'Signing Request',
             subtitle,
             content,
             hideLogo: true,
+            hideBackButton: true,
+            action: {
+                text: 'Optional: Sign manually using QR code',
+                callback: () => {
+                    const error = new SessionError('Manual', 'E_TIMEOUT', session)
+                    error[SkipToManual] = true
+                    cancel(error)
+                },
+            },
         })
 
         if (session.metadata.sameDevice) {
@@ -609,6 +621,22 @@ export default class BrowserTransport implements LinkTransport {
         })
     }
 
+    private showRecovery(request: SigningRequest, session: LinkSession) {
+        request.data.info = request.data.info.filter((pair) => pair.key !== 'return_path')
+        if (session.type === 'channel') {
+            const channelSession = session as Partial<LinkChannelSession>
+            if (channelSession.addLinkInfo) {
+                channelSession.addLinkInfo(request)
+            }
+        }
+        this.displayRequest(
+            request,
+            'Sign manually',
+            ''
+        )
+        this.showingManual = true
+    }
+
     public async prepare(request: SigningRequest, session?: LinkSession) {
         this.showLoading()
         if (!this.fuelEnabled || !session || request.isIdentity() || this.walletType === 'proton') {
@@ -658,6 +686,46 @@ export default class BrowserTransport implements LinkTransport {
             }
         }
         return request
+    }
+
+    public recoverError(error: Error, request: SigningRequest) {
+        if (
+            request === this.activeRequest &&
+            (error['code'] === 'E_DELIVERY' || error['code'] === 'E_TIMEOUT') &&
+            error['session']
+        ) {
+            // recover from session errors by displaying a manual sign dialog
+            if (this.showingManual) {
+                // already showing recovery sign
+                return true
+            }
+            const session: LinkSession = error['session']
+            if (error[SkipToManual]) {
+                this.showRecovery(request, session)
+                return true
+            }
+            const deviceName = session.metadata.name
+            let subtitle: string
+            if (deviceName && deviceName.length > 0) {
+                subtitle = `Unable to deliver the request to ${deviceName}.`
+            } else {
+                subtitle = 'Unable to deliver the request to the linked wallet.'
+            }
+            subtitle += ` ${error.message}.`
+            this.showDialog({
+                title: 'Unable to reach device',
+                subtitle,
+                type: 'warning',
+                action: {
+                    text: 'Optional: Sign manually using QR code',
+                    callback: () => {
+                        this.showRecovery(request, session)
+                    },
+                },
+            })
+            return true
+        }
+        return false
     }
 
     public onSuccess(request: SigningRequest) {

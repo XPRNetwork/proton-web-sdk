@@ -158,7 +158,7 @@ const styleSelector = (walletType: string) => {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 60px auto 35px;
+    margin: 40px auto 35px;
     border-radius: 100%;
     background-color: white;
     color: ${styles[walletType].backgroundColor};
@@ -184,7 +184,20 @@ const styleSelector = (walletType: string) => {
     text-align: center;
 }
 
+.%prefix%-button {
+    color: white;
+    cursor: pointer;
+    text-align: center;
+}
+
+.%prefix%-button-hr {
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
 .%prefix%-request {
+    display: flex;
+    flex-direction: column;
     padding: 20px 55px 40px 55px;
     border-radius: 20px;
     border-top-left-radius: 0;

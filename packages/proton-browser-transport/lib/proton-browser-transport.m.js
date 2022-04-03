@@ -33,7 +33,7 @@
  * YOU ACKNOWLEDGE THAT THIS SOFTWARE IS NOT DESIGNED, LICENSED OR INTENDED FOR USE
  * IN THE DESIGN, CONSTRUCTION, OPERATION OR MAINTENANCE OF ANY MILITARY FACILITY.
  */
-import { Signature, SigningRequest, PlaceholderName, Base64u, isInstanceOf, APIError } from '@proton/link';
+import { Signature, SigningRequest, PlaceholderName, SessionError, Base64u, isInstanceOf, APIError } from '@proton/link';
 import { createQrCode } from '@bloks/qrcode';
 
 async function apiCall(url, body) {
@@ -274,7 +274,7 @@ const styleSelector = (walletType) => {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 60px auto 35px;
+    margin: 40px auto 35px;
     border-radius: 100%;
     background-color: white;
     color: ${styles[walletType].backgroundColor};
@@ -300,7 +300,20 @@ const styleSelector = (walletType) => {
     text-align: center;
 }
 
+.%prefix%-button {
+    color: white;
+    cursor: pointer;
+    text-align: center;
+}
+
+.%prefix%-button-hr {
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
 .%prefix%-request {
+    display: flex;
+    flex-direction: column;
     padding: 20px 55px 40px 55px;
     border-radius: 20px;
     border-top-left-radius: 0;
@@ -404,6 +417,7 @@ const styleSelector = (walletType) => {
 
 const AbortPrepare = Symbol();
 const SkipFee = Symbol();
+const SkipToManual = Symbol();
 const footnoteLinks = {
     proton: 'https://protonchain.com/wallet',
     anchor: 'https://greymass.com/en/anchor/',
@@ -446,6 +460,7 @@ class BrowserTransport {
         this.fuelReferrer = options.fuelReferrer || 'teamgreymass';
         this.storage = new Storage(options.storagePrefix || 'proton-link');
         this.supportedChains = options.supportedChains || defaultSupportedChains;
+        this.showingManual = false;
     }
     closeModal() {
         this.hide();
@@ -456,6 +471,7 @@ class BrowserTransport {
         }
     }
     setupElements() {
+        this.showingManual = false;
         if (this.injectStyles && !this.styleEl) {
             this.font = document.createElement('link');
             this.font.href = 'https://fonts.cdnfonts.com/css/circular-std-book';
@@ -557,7 +573,9 @@ class BrowserTransport {
         }
     }
     showDialog(args) {
+        this.backButton = !args.hideBackButton;
         this.setupElements();
+        emptyElement(this.requestEl);
         if (args.title) {
             let element = document.getElementsByClassName(`${this.classPrefix}-header`)[0];
             if (typeof args.title === 'string') {
@@ -567,34 +585,26 @@ class BrowserTransport {
                 element = args.title;
             }
         }
-        emptyElement(this.requestEl);
-        // if (!args.hideLogo) {
-        //     const logoEl = this.createEl({class: 'logo'})
-        //     if (args.type) {
-        //         logoEl.classList.add(args.type)
-        //     }
-        //     this.requestEl.appendChild(logoEl)
-        // }
-        if (args.content) {
-            this.requestEl.appendChild(args.content);
+        // Add content
+        const content = args.content || this.createEl({ class: 'info' });
+        if (args.subtitle) {
+            const infoSubtitle = this.createEl({
+                class: 'subtitle',
+                tag: 'span',
+                content: args.subtitle,
+            });
+            content.appendChild(infoSubtitle);
         }
+        this.requestEl.appendChild(content);
         if (args.action) {
+            const buttonHr = this.createEl({ tag: 'hr', class: 'button-hr' });
             const buttonEl = this.createEl({ tag: 'a', class: 'button', text: args.action.text });
             buttonEl.addEventListener('click', (event) => {
                 event.preventDefault();
                 args.action.callback();
             });
+            this.requestEl.appendChild(buttonHr);
             this.requestEl.appendChild(buttonEl);
-        }
-        if (args.subtitle) {
-            let subtitleEl;
-            if (typeof args.subtitle === 'string') {
-                subtitleEl = this.createEl({ class: 'subtitle', tag: 'span', text: args.subtitle });
-            }
-            else {
-                subtitleEl = args.subtitle;
-            }
-            this.requestEl.appendChild(subtitleEl);
         }
         if (args.footnote) {
             const footnoteEl = this.createEl({ class: 'footnote', content: args.footnote });
@@ -602,9 +612,9 @@ class BrowserTransport {
         }
         this.show();
     }
-    async displayRequest(request) {
-        const returnUrl = generateReturnUrl();
+    async displayRequest(request, title, subtitle) {
         const sameDeviceRequest = request.clone();
+        const returnUrl = generateReturnUrl();
         sameDeviceRequest.setInfoKey('same_device', true);
         sameDeviceRequest.setInfoKey('return_path', returnUrl);
         if (this.requestAccount.length > 0) {
@@ -678,8 +688,9 @@ class BrowserTransport {
             footnote.appendChild(footnoteLink);
         }
         this.showDialog({
-            title: 'Scan the QR-Code',
+            title,
             footnote,
+            subtitle,
             content: actionEl,
         });
     }
@@ -698,7 +709,7 @@ class BrowserTransport {
         this.clearTimers();
         this.activeRequest = request;
         this.activeCancel = cancel;
-        this.displayRequest(request).catch(cancel);
+        this.displayRequest(request, 'Scan the QR-Code', '').catch(cancel);
     }
     onSessionRequest(session, request, cancel) {
         if (session.metadata.sameDevice) {
@@ -730,24 +741,28 @@ class BrowserTransport {
         this.countdownTimer = setInterval(updateCountdown, 500);
         updateCountdown();
         content.appendChild(countdown);
-        // Content title
-        const infoEl = this.createEl({ class: 'info' });
-        const infoTitle = this.createEl({ class: 'title', tag: 'span', text: 'Confirm request' });
-        infoEl.appendChild(infoTitle);
-        content.appendChild(infoEl);
         // Content subtitle
         let subtitle;
         if (deviceName && deviceName.length > 0) {
-            subtitle = `Please open on "${deviceName}" to review and sign the transaction.`;
+            subtitle = `Please open ${deviceName} to review the transaction`;
         }
         else {
             subtitle = 'Please review and sign the transaction in the linked wallet.';
         }
         this.showDialog({
-            title: 'Pending...',
+            title: 'Signing Request',
             subtitle,
             content,
             hideLogo: true,
+            hideBackButton: true,
+            action: {
+                text: 'Optional: Sign manually using QR code',
+                callback: () => {
+                    const error = new SessionError('Manual', 'E_TIMEOUT', session);
+                    error[SkipToManual] = true;
+                    cancel(error);
+                },
+            },
         });
         if (session.metadata.sameDevice) {
             // if (session.metadata.launchUrl) {
@@ -863,6 +878,17 @@ class BrowserTransport {
             clearInterval(expireTimer);
         });
     }
+    showRecovery(request, session) {
+        request.data.info = request.data.info.filter((pair) => pair.key !== 'return_path');
+        if (session.type === 'channel') {
+            const channelSession = session;
+            if (channelSession.addLinkInfo) {
+                channelSession.addLinkInfo(request);
+            }
+        }
+        this.displayRequest(request, 'Sign manually', '');
+        this.showingManual = true;
+    }
     async prepare(request, session) {
         this.showLoading();
         if (!this.fuelEnabled || !session || request.isIdentity() || this.walletType === 'proton') {
@@ -906,6 +932,44 @@ class BrowserTransport {
             }
         }
         return request;
+    }
+    recoverError(error, request) {
+        if (request === this.activeRequest &&
+            (error['code'] === 'E_DELIVERY' || error['code'] === 'E_TIMEOUT') &&
+            error['session']) {
+            // recover from session errors by displaying a manual sign dialog
+            if (this.showingManual) {
+                // already showing recovery sign
+                return true;
+            }
+            const session = error['session'];
+            if (error[SkipToManual]) {
+                this.showRecovery(request, session);
+                return true;
+            }
+            const deviceName = session.metadata.name;
+            let subtitle;
+            if (deviceName && deviceName.length > 0) {
+                subtitle = `Unable to deliver the request to ${deviceName}.`;
+            }
+            else {
+                subtitle = 'Unable to deliver the request to the linked wallet.';
+            }
+            subtitle += ` ${error.message}.`;
+            this.showDialog({
+                title: 'Unable to reach device',
+                subtitle,
+                type: 'warning',
+                action: {
+                    text: 'Optional: Sign manually using QR code',
+                    callback: () => {
+                        this.showRecovery(request, session);
+                    },
+                },
+            });
+            return true;
+        }
+        return false;
     }
     onSuccess(request) {
         if (request === this.activeRequest) {
