@@ -96,6 +96,7 @@ declare class BrowserTransport implements LinkTransport {
     private countdownTimer?;
     private closeTimer?;
     private prepareStatusEl?;
+    private showingManual;
     private closeModal;
     private setupElements;
     private createEl;
@@ -109,7 +110,9 @@ declare class BrowserTransport implements LinkTransport {
     sendSessionPayload(payload: Bytes, session: LinkSession): boolean;
     private clearTimers;
     private showFee;
+    private showRecovery;
     prepare(request: SigningRequest, session?: LinkSession): Promise<SigningRequest>;
+    recoverError(error: Error, request: SigningRequest): boolean;
     onSuccess(request: SigningRequest): void;
     onFailure(request: SigningRequest, error: Error): void;
     userAgent(): string;
