@@ -9,7 +9,7 @@
   "unpkg": "dist/bundle.js",
   "types": "dist/index.d.ts",
   "source": "src/index.ts",
-  "version": "4.1.6",
+  "version": "4.1.7",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -31,9 +31,9 @@
   },
   "dependencies": {
     "@greymass/eosio": "^0.4.7",
-    "@proton/browser-transport": "^4.1.6",
+    "@proton/browser-transport": "^4.1.7",
     "@proton/js": "^25.0.76",
-    "@proton/link": "^4.1.6",
+    "@proton/link": "^4.1.7",
     "core-js": "^3.21.0",
     "tslib": "^2.3.1"
   },

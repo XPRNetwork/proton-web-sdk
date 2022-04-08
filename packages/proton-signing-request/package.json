@@ -1,6 +1,6 @@
 {
     "name": "@proton/signing-request",
-    "version": "4.1.0",
+    "version": "4.1.7",
     "description": "Proton Signing Request (ESR / EEP-7) encoder and decoder",
     "homepage": "https://github.com/ProtonProtocol/proton-signing-request",
     "license": "MIT",
