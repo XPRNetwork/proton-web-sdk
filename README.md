@@ -113,24 +113,17 @@ const transfer = async ({ to, amount }) => {
 // Restore on refresh
 login(true)
 ```
-​
 ### Deep Dive
 ​
-Here is the detailed look at the SDK work process.
+Here is a detailed look at the SDK options process.
 ​
-Class ```ProtonWebSDK``` has three independent blocks which are:  
+Class ```ProtonWebSDK``` takes three option objects:  
  - ```linkOptions```
  - ```transportOptions```  
  - ```selectorOptions```
 ​
-All  of  them  have ```type  Object``` property.
-​
-#### Link Options
-As far as the Proton SDK communicates with a special chain, it is necessary to link it with an SDK instance. This object (linkOptions) is mandatory, and it includes all options for communication process customization.
-​
-
-##### **linkOptions**:
-​
+#### Link Options (linkOptions)
+A required object which includes all options for communication customization.
  - **endpoints** – type array – required – an array of endpoints that an SDK will address to.
 ​
 > Only one endpoint is required but if more of them exist, they will be addressed in descending order if previous one is unavailable
@@ -148,22 +141,17 @@ As far as the Proton SDK communicates with a special chain, it is necessary to l
 ##### Example
 If you add [https://api-dev.protonchain.com/v1/chain/info](https://api-dev.protonchain.com/v1/chain/info) as an endpoint, SDK will switch the scheme variable to the test mode, and all requests will be handled via Testnet.
 ​
-#### Transport Options
-transportOptions – is an object which contains all needed data for the client communication. If not specified an empty object will be provided for the SDK.
-​
-##### **TransportOptions**:
-​
+#### Transport Options (transportOptions)
+An object which contains all needed data for the client communication. If not specified an empty object will be provided for the SDK.
+
  - **requestAccount** – type string – optional – this field is used for identifying which account is requesting the client transaction. If no value provided, it will be replaced with the “Unknown Requestor” in the transaction request.
 ​
- > Most likely, it will be the same as an appName (see below)
+    > Most likely, it will be the same as an appName (see below)
 ​
  - **backButton** – type Boolean – optional – this field specifies the need of displaying the “back” button in the wallet type selection screen of the modal window. By default - set to ```true```, if set to ```false``` no “back” button will be displayed.
 ​
-#### Selector Options
-selectorOptions – is an object which includes style options for the wallet selection. If not specified the basic styling for the modal window will be provided.
-​
-##### selectorOptions:
-​
+#### Selector Options (selectorOptions)
+An object which includes style options for the wallet selection. If not specified the basic styling for the modal window will be provided.
  - **appName** – type string – optional – text which is displayed in the modal window and the name of the app displayed in transaction
 ​
  - **appLogo** – type string – optional – image is displayed in the modal window.
