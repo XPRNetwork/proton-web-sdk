@@ -130,7 +130,8 @@ A required object which includes all options for communication customization.
 ​
     > Only one endpoint is required. If more are provided, the SDK will use them as failover targets.
 
-    ​> The SDK is able to automatically differentiate Mainnet and Testnet from the url
+    > The SDK is able to automatically differentiate Mainnet and Testnet from the url
+
 
  - **chainId** – type string – optional – an Id or a PSR chain name to which the SDK being connected to. If not specified – it is automatically fetched by the JsonRpc from the endpoint provided.
 ​
