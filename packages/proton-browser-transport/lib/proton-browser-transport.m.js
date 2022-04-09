@@ -34,7 +34,7 @@
  * IN THE DESIGN, CONSTRUCTION, OPERATION OR MAINTENANCE OF ANY MILITARY FACILITY.
  */
 import { Signature, SigningRequest, PlaceholderName, SessionError, Base64u, isInstanceOf, APIError } from '@proton/link';
-import { createQrCode } from '@bloks/qrcode';
+import QRCode from 'qrcode';
 
 async function apiCall(url, body) {
     return (await fetch(url, {
@@ -627,7 +627,7 @@ class BrowserTransport {
         const qrEl = this.createEl({
             tag: 'img',
             class: 'qr',
-            src: await createQrCode(crossDeviceUri),
+            src: await QRCode.toDataURL(crossDeviceUri),
         });
         const svg = qrEl.querySelector('svg');
         if (svg) {

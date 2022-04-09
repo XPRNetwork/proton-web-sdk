@@ -11,7 +11,7 @@ import {
     SigningRequest,
 } from '@proton/link'
 
-import { createQrCode } from '@bloks/qrcode'
+import QRCode from 'qrcode'
 
 import {fuel, compareVersion as fuelVersion} from './fuel'
 import styleSelector from './styles'
@@ -329,7 +329,7 @@ export default class BrowserTransport implements LinkTransport {
         const qrEl = this.createEl({
             tag: 'img',
             class: 'qr',
-            src: await createQrCode(crossDeviceUri),
+            src: await QRCode.toDataURL(crossDeviceUri),
         })
 
         const svg = qrEl.querySelector('svg')
