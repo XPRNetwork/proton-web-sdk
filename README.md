@@ -128,8 +128,9 @@ A required object which includes all options for communication customization.
 **linkOptions:**
  - **endpoints** – type array – required – an array of endpoints that an SDK will address to.
 ​
-> Only one endpoint is required but if more of them exist, they will be addressed in descending order if previous one is unavailable
-​
+    > Only one endpoint is required. If more are provided, the SDK will use them as failover targets.
+    ​> The SDK is able to automatically differentiate Mainnet and Testnet from the url
+
  - **chainId** – type string – optional – an Id or a PSR chain name to which the SDK being connected to. If not specified – it is automatically fetched by the JsonRpc from the endpoint provided.
 ​
  - **Storage** – type LinkStorage – optional – if not specified, the new Storage is automatically created. In order to customize Storage, you should provide a custom LinkStorage interface with type specifications inside.
@@ -137,8 +138,6 @@ A required object which includes all options for communication customization.
  - **storagePrefix** – type string – optional – a custom SDK storage prefix which is prepended to the name of localStorage keys. If not specified, automatically prepends ‘proton-storage’ string.
 ​
  - **restoreSession** – type Boolean – optional – if contains ```true``` value, prevents modal from popping up and makes SDK look for saved session value in the Storage. If not specified, automatically contains ```false``` value.
-​
-> Our SDK is able to identify whether the developer uses Mainnet or Testnet. You can simply use the endpoint you need and SDK will handle all options for you automatically.
 ​
 ##### Example
 If you add [https://api-dev.protonchain.com/v1/chain/info](https://api-dev.protonchain.com/v1/chain/info) as an endpoint, SDK will switch the scheme variable to the test mode, and all requests will be handled via Testnet.
@@ -149,7 +148,7 @@ An object which contains all needed data for the client communication. If not sp
 **transportOptions:**
  - **requestAccount** – type string – optional – this field is used for identifying which account is requesting the client transaction. If no value provided, it will be replaced with the “Unknown Requestor” in the transaction request.
 ​
-    > Most likely, it will be the same as an appName (see below)
+    > Typically same as appName (see below)
 ​
  - **backButton** – type Boolean – optional – this field specifies the need of displaying the “back” button in the wallet type selection screen of the modal window. By default - set to ```true```, if set to ```false``` no “back” button will be displayed.
 ​
@@ -162,7 +161,6 @@ An object which includes style options for the wallet selection. If not specifie
 ​
  - **customStyleOptions** – type Object – optional – object which can include all styles needed for the wallet selection modal window.  
 The ```CustomStyleOptions``` interface located in the ```proton-web-sdk``` directory should be changed in order to customize it.  
-(The definition of basic styling is listed below)
 ​
 #### Styling Options Definition of basic styling
 ​
