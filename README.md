@@ -1,5 +1,4 @@
 # Proton installation guide
-​
 ## Overview
 **Proton** is a cryptocurrency public blockchain designed for consumer applications and seamless P2P payments which aims at maximizing payment acceptance speed by using identity verification mechanism.  
   
@@ -17,50 +16,27 @@ npm i @proton/web-sdk
 ```
 yarn add @proton/web-sdk
 ``` 
-​​
 ## Usage
-​
-In order to use **Proton Web SDK,** you should import it into your project by using following command:
-```
+### Import:
+
+ES6
+
+```js
 import ProtonWebSDK from '@proton/web-sdk'
 ```  
-​
-A basic SDK initialization looks like:
-​
+
+CommonJS
+
+```js
+const ProtonWebSDK = require('@proton/web-sdk')
+```
+
+### Initialization:
+
 ```js 
 import ProtonWebSDK from '@proton/web-sdk';
-​
-const getAvatarImage = () => {
-    const avatar = accountData && accountData.avatar
-​
-    if (avatar) {
-      if (avatar.indexOf('/9j/') !== -1) {
-        return `data:image/jpeg;base64,${avatar}`
-      } else if (avatar.indexOf('iVBORw0KGgo') !== -1) {
-        return `data:image/png;base64,${avatar}`
-      }
-    }
-​
-    return 'https://bloks.io/img/proton_avatar.png'
-}
-​
-  const updateStatus = () => {
-    avatarImage.src = getAvatarImage()
-​
-    if (session && session.auth) {
-      avatarName.textContent = session.auth.actor.toString()
-      fromInput.value = session.auth.actor.toString()
-      loginButton.style.display = "none"
-      avatar.style.display = "block"
-    } else {
-      avatarName.textContent = ""
-      fromInput.value = ""
-      loginButton.style.display = "block"
-      avatar.style.display = "none"
-    }
-  }
-​
-  const login = async (restoreSession) => {
+
+const login = async (restoreSession) => {
     const { link: localLink, session: localSession } = await ProtonWebSDK({
       linkOptions: {
         endpoints,
@@ -88,21 +64,17 @@ const getAvatarImage = () => {
 ​
     link = localLink
     session = localSession
+}
 ​
-    updateStatus()
-  }
-​
-  const logout = async () => {
+const logout = async () => {
     if (link && session) {
       await link.removeSession(appIdentifier, session.auth, chainId);
     }
     session = undefined;
     link = undefined;
+}
 ​
-    updateStatus()
-  }
-​
-  const transfer = async ({ to, amount }) => {
+const transfer = async ({ to, amount }) => {
     if (!session) {
       throw new Error('No Session');
     }
@@ -138,18 +110,10 @@ const getAvatarImage = () => {
     }, {
       broadcast: true
     })
-  }
+}
 ​
-  // Add button listeners
-  logoutIcon.addEventListener("click", logout)
-  loginButton.addEventListener("click", () => login(false))
-  transferButton.addEventListener("click", () => transfer({
-    to: toInput.value,
-    amount: amountInput.value,
-  }))
-​
-  // Restore on refresh
-  login(true)
+// Restore on refresh
+login(true)
 ```
 ​
 ### Deep Dive
@@ -180,7 +144,7 @@ linkOptions includes:
 ​
  - restoreSession – type Boolean – not required – if contains ```true``` value, prevents modal from popping up and makes SDK look for saved session value in the Storage. If not specified, automatically contains ```false``` value.
 ​
-> Our SDK is capable to identify whether the developer uses TestNet or MainNet. You can simply use the endpoint you need and SDK will handle all options for you automatically.
+> Our SDK is capable to identify whether the developer uses Mainnet or Testnet. You can simply use the endpoint you need and SDK will handle all options for you automatically.
 ​
 ##### Example
 If you add [https://api-dev.protonchain.com/v1/chain/info](https://api-dev.protonchain.com/v1/chain/info) as an endpoint, SDK will switch the scheme variable to the test mode, and all requests will be handled via TestNet.
