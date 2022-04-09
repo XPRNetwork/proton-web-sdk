@@ -113,16 +113,14 @@ const transfer = async ({ to, amount }) => {
 // Restore on refresh
 login(true)
 ```
-### Deep Dive
+## Options
 ​
-Here is a detailed look at the SDK options process.
-​
-Class ```ProtonWebSDK``` takes three option objects:  
+The ```ProtonWebSDK``` Class takes three main types of option objects:
  - ```linkOptions```
  - ```transportOptions```  
  - ```selectorOptions```
 ​
-#### Link Options
+### Link Options
 A required object which includes all options for communication customization.
 
 **linkOptions:**
@@ -135,7 +133,7 @@ A required object which includes all options for communication customization.
 
  - **chainId** – type string – optional – an Id or a PSR chain name to which the SDK being connected to. If not specified – it is automatically fetched by the JsonRpc from the endpoint provided.
 ​
- - **Storage** – type LinkStorage – optional – if not specified, the new Storage is automatically created. In order to customize Storage, you should provide a custom LinkStorage interface with type specifications inside.
+ - **storage** – type LinkStorage – optional – if not specified, the new Storage is automatically created. In order to customize Storage, you should provide a custom LinkStorage interface with type specifications inside.
 ​
  - **storagePrefix** – type string – optional – a custom SDK storage prefix which is prepended to the name of localStorage keys. If not specified, automatically prepends ‘proton-storage’ string.
 ​
@@ -144,17 +142,18 @@ A required object which includes all options for communication customization.
 ##### Example
 If you add [https://api-dev.protonchain.com/v1/chain/info](https://api-dev.protonchain.com/v1/chain/info) as an endpoint, SDK will switch the scheme variable to the test mode, and all requests will be handled via Testnet.
 ​
-#### Transport Options
+### Transport Options
 An object which contains all needed data for the client communication. If not specified an empty object will be provided for the SDK.
 
 **transportOptions:**
  - **requestAccount** – type string – optional – this field is used for identifying which account is requesting the client transaction. If no value provided, it will be replaced with the “Unknown Requestor” in the transaction request.
 ​
-    > Typically same as appName (see below)
+
+    > Typically same as appName
 ​
  - **backButton** – type Boolean – optional – this field specifies the need of displaying the “back” button in the wallet type selection screen of the modal window. By default - set to ```true```, if set to ```false``` no “back” button will be displayed.
 ​
-#### Selector Options
+### Selector Options
 An object which includes style options for the wallet selection. If not specified the basic styling for the modal window will be provided.
 **selectorOptions:**
  - **appName** – type string – optional – text which is displayed in the modal window and the name of the app displayed in transaction
