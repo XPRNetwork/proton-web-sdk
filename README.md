@@ -129,6 +129,7 @@ A required object which includes all options for communication customization.
  - **endpoints** – type array – required – an array of endpoints that an SDK will address to.
 ​
     > Only one endpoint is required. If more are provided, the SDK will use them as failover targets.
+
     ​> The SDK is able to automatically differentiate Mainnet and Testnet from the url
 
  - **chainId** – type string – optional – an Id or a PSR chain name to which the SDK being connected to. If not specified – it is automatically fetched by the JsonRpc from the endpoint provided.
