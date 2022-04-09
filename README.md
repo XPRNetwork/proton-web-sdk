@@ -122,8 +122,10 @@ Class ```ProtonWebSDK``` takes three option objects:
  - ```transportOptions```  
  - ```selectorOptions```
 ​
-#### Link Options (linkOptions)
+#### Link Options
 A required object which includes all options for communication customization.
+
+**linkOptions:**
  - **endpoints** – type array – required – an array of endpoints that an SDK will address to.
 ​
 > Only one endpoint is required but if more of them exist, they will be addressed in descending order if previous one is unavailable
@@ -141,17 +143,19 @@ A required object which includes all options for communication customization.
 ##### Example
 If you add [https://api-dev.protonchain.com/v1/chain/info](https://api-dev.protonchain.com/v1/chain/info) as an endpoint, SDK will switch the scheme variable to the test mode, and all requests will be handled via Testnet.
 ​
-#### Transport Options (transportOptions)
+#### Transport Options
 An object which contains all needed data for the client communication. If not specified an empty object will be provided for the SDK.
 
+**transportOptions:**
  - **requestAccount** – type string – optional – this field is used for identifying which account is requesting the client transaction. If no value provided, it will be replaced with the “Unknown Requestor” in the transaction request.
 ​
     > Most likely, it will be the same as an appName (see below)
 ​
  - **backButton** – type Boolean – optional – this field specifies the need of displaying the “back” button in the wallet type selection screen of the modal window. By default - set to ```true```, if set to ```false``` no “back” button will be displayed.
 ​
-#### Selector Options (selectorOptions)
+#### Selector Options
 An object which includes style options for the wallet selection. If not specified the basic styling for the modal window will be provided.
+**selectorOptions:**
  - **appName** – type string – optional – text which is displayed in the modal window and the name of the app displayed in transaction
 ​
  - **appLogo** – type string – optional – image is displayed in the modal window.
