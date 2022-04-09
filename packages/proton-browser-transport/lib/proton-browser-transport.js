@@ -37,7 +37,11 @@
 
 var tslib = require('tslib');
 var link = require('@proton/link');
-var qrcode = require('@bloks/qrcode');
+var QRCode = require('qrcode');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+var QRCode__default = /*#__PURE__*/_interopDefaultLegacy(QRCode);
 
 function apiCall(url, body) {
     return tslib.__awaiter(this, void 0, void 0, function* () {
@@ -641,7 +645,7 @@ class BrowserTransport {
             const qrEl = this.createEl({
                 tag: 'img',
                 class: 'qr',
-                src: yield qrcode.createQrCode(crossDeviceUri),
+                src: yield QRCode__default["default"].toDataURL(crossDeviceUri),
             });
             const svg = qrEl.querySelector('svg');
             if (svg) {
