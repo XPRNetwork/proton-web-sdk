@@ -19,8 +19,10 @@ class Deferred {
   }
 }
 
+// Need to keep outside class since it messes with reactivity like Vuex
+let _childWindow: Window | null = null
+
 export class ProtonWebLink {
-  childWindow: Window | null = null
   deferredTransact: {
     deferral: Deferred
     transaction: any,
@@ -31,6 +33,14 @@ export class ProtonWebLink {
   scheme: string
   storage: LinkStorage | null | undefined
   testUrl: string | undefined
+
+  public get childWindow() {
+    return _childWindow;
+  }
+
+  public set childWindow(window: Window | null) {
+    _childWindow = window
+  }
 
   constructor (options: LinkOptions & { testUrl?: string }) {
     this.scheme = options.scheme
