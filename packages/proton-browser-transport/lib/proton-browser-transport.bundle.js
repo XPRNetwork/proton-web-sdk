@@ -1,5 +1,5 @@
 /**
- * Proton Browser Transport v4.1.10
+ * Proton Browser Transport v4.1.13
  * https://github.com/protonprotocol/proton-browser-transport
  *
  * @license
@@ -288,5 +288,5 @@ this.requestStatus?(r=t.isInstanceOf(n,t.APIError)?"eosio_assert_message_excepti
 var i=function n(o){t.removeEventListener(e,n),r(o)};t.addEventListener(e,i),n&&setTimeout((function(){t.removeEventListener(e,i),o(new Error("Timed out waiting for ".concat(e)))}),n)}))}function Bw(t){var e=t.getTime()-Date.now();return e>0?new Date(e).toISOString().substr(14,5):"00:00"}function Ow(){if(/CriOS/.test(navigator.userAgent))return"googlechrome://";if(/FxiOS/.test(navigator.userAgent))return"firefox:://";if(Lw()&&jw())return"brave://";if(Lw()){
 for(var t="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",e=window.location.href.split("#")[0]+"#",n=0;n<8;n++)e+=t.charAt(Math.floor(Math.random()*t.length));return e}
 return Nw()&&Mw()?"android-intent://org.mozilla.firefox":Nw()&&/Edg/.test(navigator.userAgent)?"android-intent://com.microsoft.emmx":Nw()&&(/OPR/.test(navigator.userAgent)||/Opera/.test(navigator.userAgent))?"android-intent://com.opera.browser":Nw()&&jw()?"android-intent://com.brave.browser":Nw()&&(/wv/.test(navigator.userAgent)||/Android.*AppleWebKit/.test(navigator.userAgent))?"android-intent://webview":Nw()&&/Chrome\/[.0-9]* Mobile/i.test(navigator.userAgent)?"android-intent://com.android.chrome":window.location.href
-}function Lw(){return/iP(ad|od|hone)/i.test(navigator.userAgent)}function Mw(){return/Firefox/i.test(navigator.userAgent)}function jw(){return navigator.brave&&"function"==typeof navigator.brave.isBrave}function Nw(){return/Android/.test(navigator.userAgent)}return u(Pw,"version","4.1.10"),Pw}(ProtonLink);
+}function Lw(){return/iP(ad|od|hone)/i.test(navigator.userAgent)}function Mw(){return/Firefox/i.test(navigator.userAgent)}function jw(){return navigator.brave&&"function"==typeof navigator.brave.isBrave}function Nw(){return/Android/.test(navigator.userAgent)}return u(Pw,"version","4.1.13"),Pw}(ProtonLink);
 //# sourceMappingURL=proton-browser-transport.bundle.js.map
