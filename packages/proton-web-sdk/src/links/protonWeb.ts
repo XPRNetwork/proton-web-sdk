@@ -102,7 +102,8 @@ export class ProtonWebLink {
         }
       },
       link: {
-        walletType: 'webauth'
+        walletType: 'webauth',
+        client: this.client
       }
     }
   }
