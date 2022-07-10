@@ -1,5 +1,7 @@
 node_modules/
+lib
 lib/
+lib/*
 docs/
 .nyc_output
 coverage
