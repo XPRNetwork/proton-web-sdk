@@ -1,4 +1,5 @@
 import { LinkOptions, LinkStorage, TransactArgs, TransactOptions } from "@proton/link"
+import { JsonRpc } from '@proton/js'
 
 const OPEN_SETTINGS = 'menubar=1,resizable=1,width=400,height=600'
 
@@ -32,6 +33,7 @@ export class ProtonWebLink {
   deferredLogin: Deferred | undefined
   scheme: string
   storage: LinkStorage | null | undefined
+  client: JsonRpc | undefined
   testUrl: string | undefined
 
   public get childWindow() {
@@ -44,6 +46,7 @@ export class ProtonWebLink {
 
   constructor (options: LinkOptions & { testUrl?: string }) {
     this.scheme = options.scheme
+    this.client = typeof options.client === 'string' ? new JsonRpc(options.client) : options.client
     this.storage = options.storage
     this.testUrl = options.testUrl
 
