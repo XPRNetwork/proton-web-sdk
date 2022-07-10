@@ -1,4 +1,9 @@
-# Proton Vue App
+# Proton Web SDK - Vue Example
+
+Small boilerplate to get started with Proton on Vue
+
+[CodeSandbox Playground](https://codesandbox.io/s/proton-vue-demo-3or6m)
+
 
 ## Project setup
 ```
