@@ -1,6 +1,8 @@
-# Angular
+# Proton Web SDK - Angular Example
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.1.2.
+Small boilerplate to get started with Proton on Angular
+
+[CodeSandbox Playground](https://codesandbox.io/s/proton-angular-demo-d5d9oy)
 
 ## Development server
 
