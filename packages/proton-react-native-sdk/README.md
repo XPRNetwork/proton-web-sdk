@@ -3,7 +3,7 @@
 ## Installation
 
 ```
-yarn add @proton/react-native-sdk react-native-get-random-values @react-native-community/async-storage
+yarn add @proton/react-native-sdk react-native-get-random-values @react-native-async-storage/async-storage
 
 cd ios
 pod install

@@ -1,8 +1,8 @@
-# Proton Test React
+# Proton Web SDK - React Example
 
 Small boilerplate to get started with Proton on React
 
-[CodeSandbox Playground](https://codesandbox.io/s/proton-test-app-react-39yw5)
+[CodeSandbox Playground](https://codesandbox.io/s/proton-react-demo-jpg5l)
 
 ## Available Scripts
 
