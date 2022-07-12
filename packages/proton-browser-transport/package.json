@@ -1,54 +1,61 @@
 {
-  "name": "@proton/browser-transport",
-  "version": "4.1.14",
-  "description": "Vanilla JS browser transport for Proton Link",
-  "homepage": "https://github.com/protonprotocol/proton-browser-transport",
-  "license": "BSD-3-Clause",
-  "main": "lib/proton-browser-transport.js",
-  "module": "lib/proton-browser-transport.m.js",
-  "unpkg": "lib/proton-browser-transport.bundle.js",
-  "types": "lib/proton-browser-transport.d.ts",
-  "scripts": {
-    "watch": "rollup -c -w",
-    "prepare": "make"
-  },
-  "files": [
-    "lib/*",
-    "src/*"
-  ],
-  "dependencies": {
-    "qrcode": "^1.5.0",
-    "tslib": "^2.0.3"
-  },
-  "peerDependencies": {
-    "@proton/link": "^4.0.0"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.12.9",
-    "@babel/plugin-proposal-class-properties": "^7.12.1",
-    "@babel/preset-env": "^7.12.7",
-    "@babel/preset-typescript": "^7.12.7",
-    "@rollup/plugin-babel": "^5.2.2",
-    "@rollup/plugin-commonjs": "^19.0.0",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^13.0.0",
-    "@rollup/plugin-replace": "^3.0.0",
-    "@rollup/plugin-typescript": "^8.0.0",
-    "@types/node": "^16.4.0",
-    "@types/ws": "^7.2.2",
-    "@typescript-eslint/eslint-plugin": "^4.9.1",
-    "@typescript-eslint/parser": "^4.9.1",
-    "core-js": "^3.8.0",
-    "eslint": "^7.15.0",
-    "eslint-config-prettier": "^8.1.0",
-    "eslint-plugin-prettier": "^3.2.0",
-    "prettier": "^2.2.1",
-    "rollup": "^2.34.1",
-    "rollup-plugin-dts": "^3.0.1",
-    "rollup-plugin-polyfill-node": "^0.8.0",
-    "rollup-plugin-terser": "^7.0.2",
-    "ts-node": "^10.0.0",
-    "typescript": "^4.1.2"
-  },
-  "gitHead": "d81cd76c8aacc2538243e24d0801b3eae4b8dba2"
+    "name": "@proton/browser-transport",
+    "version": "4.1.14",
+    "description": "Vanilla JS browser transport for Proton Link",
+    "homepage": "https://github.com/protonprotocol/proton-browser-transport",
+    "license": "BSD-3-Clause",
+    "main": "lib/proton-browser-transport.js",
+    "module": "lib/proton-browser-transport.m.js",
+    "unpkg": "lib/proton-browser-transport.bundle.js",
+    "types": "lib/proton-browser-transport.d.ts",
+    "scripts": {
+        "watch": "rollup -c -w",
+        "prepare": "make"
+    },
+    "files": [
+        "lib/*",
+        "src/*"
+    ],
+    "dependencies": {
+        "qrcode": "^1.5.0"
+    },
+    "peerDependencies": {
+        "@proton/link": "^4.0.0"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.12.9",
+        "@babel/plugin-proposal-class-properties": "^7.12.1",
+        "@babel/preset-env": "^7.12.7",
+        "@babel/preset-typescript": "^7.12.7",
+        "@rollup/plugin-babel": "^5.2.2",
+        "@rollup/plugin-commonjs": "^22.0.1",
+        "@rollup/plugin-json": "^4.1.0",
+        "@rollup/plugin-node-resolve": "^13.3.0",
+        "@rollup/plugin-replace": "^4.0.0",
+        "@rollup/plugin-typescript": "^8.3.3",
+        "@tsconfig/svelte": "^3.0.0",
+        "@types/node": "^16.4.0",
+        "@types/qrcode": "^1.4.2",
+        "@types/ws": "^7.2.2",
+        "@typescript-eslint/eslint-plugin": "^4.9.1",
+        "@typescript-eslint/parser": "^4.9.1",
+        "core-js": "^3.8.0",
+        "eslint": "^7.15.0",
+        "eslint-config-prettier": "^8.1.0",
+        "eslint-plugin-prettier": "^3.2.0",
+        "prettier": "^2.2.1",
+        "rollup": "^2.75.7",
+        "rollup-plugin-dts": "^4.2.2",
+        "rollup-plugin-polyfill-node": "^0.10.1",
+        "rollup-plugin-svelte": "^7.1.0",
+        "rollup-plugin-terser": "^7.0.2",
+        "sass": "^1.53.0",
+        "svelte": "^3.48.0",
+        "svelte-check": "^2.8.0",
+        "svelte-preprocess": "^4.10.7",
+        "ts-node": "^10.0.0",
+        "tslib": "^2.4.0",
+        "typescript": "^4.7.4"
+    },
+    "gitHead": "d81cd76c8aacc2538243e24d0801b3eae4b8dba2"
 }

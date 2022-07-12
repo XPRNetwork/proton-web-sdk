@@ -1,20 +1,18 @@
 import {
     APIError,
     Base64u,
-    Bytes,
     isInstanceOf,
-    LinkChannelSession,
-    LinkSession,
-    LinkStorage,
-    LinkTransport,
     SessionError,
     SigningRequest,
 } from '@proton/link'
 
+import type { LinkTransport, LinkStorage, LinkChannelSession, LinkSession, Bytes } from '@proton/link'
+
 import QRCode from 'qrcode'
 
-import {fuel, compareVersion as fuelVersion} from './fuel'
-import styleSelector from './styles'
+import { fuel, compareVersion as fuelVersion } from './fuel'
+import DialogWidget from './views/Dialog.svelte'
+import { isFirefox, isBrave, isMobile, isChromeiOS, isFirefoxiOS, isAppleHandheld, isAndroid, isEdge, isOpera, isAndroidWebView, isChromeMobile } from './utils'
 
 const AbortPrepare = Symbol()
 const SkipFee = Symbol()
@@ -23,8 +21,6 @@ const SkipToManual = Symbol()
 export interface BrowserTransportOptions {
     /** CSS class prefix, defaults to `proton-link` */
     classPrefix?: string
-    /** Whether to inject CSS styles in the page header, defaults to true. */
-    injectStyles?: boolean
     /** Whether to display request success and error messages, defaults to true */
     requestStatus?: boolean
     /** Requesting account of the dapp (optional) */
@@ -51,10 +47,6 @@ export interface BrowserTransportOptions {
      * Override of the supported resource provider chains.
      */
     supportedChains?: Record<string, string>
-    /**
-     * Set to false to not use !important styles, defaults to true.
-     */
-    importantStyles?: boolean
 }
 
 interface footNoteDownloadLinks {
@@ -82,15 +74,15 @@ interface DialogArgs {
     manual?: HTMLElement
     subtitle?: string | HTMLElement
     type?: string
-    content?: HTMLElement
-    action?: {text: string; callback: () => void}
+    content?: Record<string, any>
+    action?: { text: string; callback: () => void }
     footnote?: string | HTMLElement,
     hideLogo?: boolean,
     hideBackButton?: boolean
 }
 
 class Storage implements LinkStorage {
-    constructor(readonly keyPrefix: string) {}
+    constructor(readonly keyPrefix: string) { }
     async write(key: string, data: string): Promise<void> {
         localStorage.setItem(this.storageKey(key), data)
     }
@@ -113,8 +105,6 @@ export default class BrowserTransport implements LinkTransport {
 
     constructor(public readonly options: BrowserTransportOptions = {}) {
         this.classPrefix = options.classPrefix || 'proton-link'
-        this.injectStyles = !(options.injectStyles === false)
-        this.importantStyles = !(options.importantStyles === false)
         this.requestStatus = !(options.requestStatus === false)
         this.requestAccount = options.requestAccount || ''
         this.walletType = options.walletType || 'proton'
@@ -127,8 +117,6 @@ export default class BrowserTransport implements LinkTransport {
     }
 
     private classPrefix: string
-    private injectStyles: boolean
-    private importantStyles: boolean
     private requestStatus: boolean
     private requestAccount: string
     private walletType: string
@@ -138,14 +126,14 @@ export default class BrowserTransport implements LinkTransport {
     private supportedChains: Record<string, string>
     private activeRequest?: SigningRequest
     private activeCancel?: (reason: string | Error) => void
-    private containerEl!: HTMLElement
-    private requestEl!: HTMLElement
-    private styleEl?: HTMLStyleElement
-    private font?: HTMLLinkElement
     private countdownTimer?: NodeJS.Timeout
     private closeTimer?: NodeJS.Timeout
     private prepareStatusEl?: HTMLElement
     private showingManual: boolean
+
+    private Widget?: DialogWidget
+
+    private fontAdded: boolean = false;
 
     private closeModal() {
         this.hide()
@@ -156,68 +144,35 @@ export default class BrowserTransport implements LinkTransport {
         }
     }
 
-    private setupElements() {
+    private setupWidget() {
         this.showingManual = false
-        if (this.injectStyles && !this.styleEl) {
-            this.font = document.createElement('link')
-            this.font.href = 'https://fonts.cdnfonts.com/css/circular-std-book'
-            this.font.rel = 'stylesheet'
-            this.styleEl = document.createElement('style')
-            this.styleEl.type = 'text/css'
-            const css = styleSelector(this.walletType).replace(/%prefix%/g, this.classPrefix)
-            this.styleEl.appendChild(document.createTextNode(css))
-            this.styleEl.appendChild(this.font)
-            document.head.appendChild(this.styleEl)
-        }
-        if (!this.containerEl) {
-            // Clear duplicate container
-            const elements = document.getElementsByClassName(this.classPrefix)
-            while (elements.length > 0) {
-                elements[0].remove()
-            }
 
-            this.containerEl = this.createEl()
-            this.containerEl.className = this.classPrefix
-            this.containerEl.onclick = (event) => {
-                if (event.target === this.containerEl) {
-                    event.stopPropagation()
-                    this.closeModal()
-                }
-            }
-            document.body.appendChild(this.containerEl)
+        if (!this.fontAdded) {
+            const font = document.createElement('link')
+            font.href = 'https://fonts.cdnfonts.com/css/circular-std-book'
+            font.rel = 'stylesheet'
+            document.head.appendChild(font);
+            this.fontAdded = true;
         }
-        if (!this.requestEl) {
-            const wrapper = this.createEl({class: 'inner'})
-            const nav = this.createEl({class: 'nav'})
-            const navHeader = this.createEl({
-                class: 'header',
-                tag: 'span',
-                text: '',
+
+        if (!this.Widget) {
+            const widgetHolder = document.createElement('div')
+            document.body.appendChild(widgetHolder);
+            this.Widget = new DialogWidget({
+                target: widgetHolder
             })
-            if (this.backButton) {
-                const backButton = this.createEl({class: 'back'})
-                backButton.onclick = (event) => {
-                    event.stopPropagation()
-                    this.closeModal()
-                    document.dispatchEvent(new CustomEvent('backToSelector'))
-                }
-                nav.appendChild(backButton)
-            }
-            const closeButton = this.createEl({class: 'close'})
-            closeButton.onclick = (event) => {
-                event.stopPropagation()
+
+            this.Widget.$on('back', () => {
+                document.dispatchEvent(new CustomEvent('backToSelector'))
+            })
+
+            this.Widget.$on('close', () => {
                 this.closeModal()
-            }
-            this.requestEl = this.createEl({class: 'request'})
-            nav.appendChild(navHeader)
-            nav.appendChild(closeButton)
-            wrapper.appendChild(nav)
-            wrapper.appendChild(this.requestEl)
-            this.containerEl.appendChild(wrapper)
+            })
         }
     }
 
-    private createEl(attrs?: {[key: string]: any}): HTMLElement {
+    private createEl(attrs?: { [key: string]: any }): HTMLElement {
         if (!attrs) attrs = {}
         const el = document.createElement(attrs.tag || 'div')
         for (const attr of Object.keys(attrs)) {
@@ -249,61 +204,55 @@ export default class BrowserTransport implements LinkTransport {
     }
 
     private hide() {
-        if (this.containerEl) {
-            this.containerEl.classList.remove(`${this.classPrefix}-active`)
-        }
+        this.Widget?.$set({
+            show: false,
+            subtitle: null,
+            footnote: null,
+            expiresIn: null,
+            countDown: null,
+            qrData: null,
+            action: null,
+        })
         this.clearTimers()
     }
 
     private show() {
-        if (this.containerEl) {
-            this.containerEl.classList.add(`${this.classPrefix}-active`)
-        }
+        this.Widget?.$set({ show: true })
     }
 
     private showDialog(args: DialogArgs) {
-        this.backButton = !args.hideBackButton
+        this.setupWidget()
 
-        this.setupElements()
-        emptyElement(this.requestEl)
+        const props: Record<string, any> = {
+            showBackButton: !args.hideBackButton,
+            walletType: this.walletType
+        };
 
         if (args.title) {
-            let element = document.getElementsByClassName(`${this.classPrefix}-header`)[0]
-            if (typeof args.title === 'string') {
-                element.textContent = args.title
-            } else {
-                element = args.title
-            }
+            props['title'] = args.title
+        } else {
+            props['title'] = ''
         }
 
-        // Add content
-        const content = args.content || this.createEl({class: 'info'})
         if (args.subtitle) {
-            const infoSubtitle = this.createEl({
-                class: 'subtitle',
-                tag: 'span',
-                content: args.subtitle,
-            })
-            content.appendChild(infoSubtitle)
+            props['subtitle'] = args.subtitle
+        } else {
+            props['subtitle'] = ''
         }
-        this.requestEl.appendChild(content)
 
         if (args.action) {
-            const buttonHr = this.createEl({tag: 'hr', class: 'button-hr'})            
-            const buttonEl = this.createEl({tag: 'a', class: 'button', text: args.action.text})
-            buttonEl.addEventListener('click', (event) => {
-                event.preventDefault()
-                args.action!.callback()
-            })
-
-            this.requestEl.appendChild(buttonHr)
-            this.requestEl.appendChild(buttonEl)
+            props['action'] = args.action
+        } else {
+            props['action'] = null
         }
 
         if (args.footnote) {
-            const footnoteEl = this.createEl({class: 'footnote', content: args.footnote})
-            this.requestEl.appendChild(footnoteEl)
+            props['footnote'] = (args.footnote instanceof HTMLElement) ? args.footnote.outerHTML : args.footnote
+        } else {
+            props['footnote'] = null
         }
+
+        this.Widget?.$set({ ...props, ...(args.content || {}) })
         this.show()
     }
 
@@ -325,63 +274,14 @@ export default class BrowserTransport implements LinkTransport {
         const sameDeviceUri = sameDeviceRequest.encode(true, false)
         const crossDeviceUri = request.encode(true, false)
 
-        // Create QR
-        const qrEl = this.createEl({
-            tag: 'img',
-            class: 'qr',
-            src: await QRCode.toDataURL(crossDeviceUri),
-        })
+        const qrCode = await QRCode.toDataURL(crossDeviceUri)
 
-        const svg = qrEl.querySelector('svg')
-        if (svg) {
-            svg.addEventListener('click', (event) => {
-                event.preventDefault()
-                qrEl.classList.toggle('zoom')
-            })
+        const qrData = {
+            code: qrCode,
+            link: sameDeviceUri
         }
 
-        const linkEl = this.createEl({class: 'uri'})
-        const linkA = this.createEl({
-            tag: 'a',
-            class: 'button',
-            href: sameDeviceUri,
-            text: `Open Wallet`,
-        })
-        linkEl.appendChild(linkA)
-
-        if (isFirefox() || isBrave()) {
-            // this prevents firefox/brave from killing the websocket connection once the link is clicked
-            const iframe = this.createEl({
-                class: 'wskeepalive',
-                src: 'about:blank',
-                tag: 'iframe',
-            })
-            linkEl.appendChild(iframe)
-            linkA.addEventListener('click', (event) => {
-                event.preventDefault()
-                iframe.setAttribute('src', sameDeviceUri)
-            })
-        } else {
-            linkA.addEventListener('click', (event) => {
-                event.preventDefault()
-                window.location.href = sameDeviceUri
-            })
-        }
-
-        const divider = this.createEl({class: 'separator', text: 'OR'})
-
-        const backgroundEl = this.createEl({class: 'background'})
-        backgroundEl.appendChild(qrEl)
-
-        const actionEl = this.createEl({class: 'actions'})
-        actionEl.appendChild(backgroundEl)
-
-        // if (isMobile() || this.walletType == 'anchor') {
-            actionEl.appendChild(divider)
-            actionEl.appendChild(linkEl)
-        // }
-
-        let footnote: HTMLElement = this.createEl({class: 'footnote'})
+        let footnote: HTMLElement = this.createEl({ class: 'footnote' })
         const isIdentity = request.isIdentity()
         if (isIdentity) {
             footnote = this.createEl({
@@ -399,20 +299,16 @@ export default class BrowserTransport implements LinkTransport {
 
         this.showDialog({
             title,
-            footnote,
+            footnote: footnote.innerHTML,
             subtitle,
-            content: actionEl,
+            content: { qrData },
         })
     }
 
     public async showLoading() {
-        this.prepareStatusEl = this.createEl({
-            tag: 'span',
-            text: 'Preparing request...',
-        })
         this.showDialog({
             title: 'Pending...',
-            subtitle: this.prepareStatusEl.textContent!,
+            subtitle: 'Preparing request...',
             type: 'loading',
         })
     }
@@ -453,21 +349,22 @@ export default class BrowserTransport implements LinkTransport {
         const timeout = session.metadata.timeout || 60 * 1000 * 2
         const deviceName = session.metadata.name
 
-        // Create content
-        const content = this.createEl({class: 'info'})
-
         // Content timer
         const start = Date.now()
-        const countdown = this.createEl({class: 'countdown', tag: 'span', text: ''})
-        const updateCountdown = () => {
-            const timeLeft = timeout + start - Date.now()
-            const timeFormatted =
-                timeLeft > 0 ? new Date(timeLeft).toISOString().substr(14, 5) : '00:00'
-            countdown.textContent = `${timeFormatted}`
+
+        const formatCountDown = (startTime: number) => {
+            const timeLeft = timeout + startTime - Date.now()
+            return timeLeft > 0 ? new Date(timeLeft).toISOString().substring(14, 5) : '00:00'
         }
-        this.countdownTimer = setInterval(updateCountdown, 500)
-        updateCountdown()
-        content.appendChild(countdown)
+
+        const updateCountdown = (startTime: number) => {
+            this.Widget?.$set({ countDown: formatCountDown(startTime) })
+        }
+
+        this.countdownTimer = setInterval(() => {
+            updateCountdown(start)
+        }, 500)
+        updateCountdown(start)
 
         // Content subtitle
         let subtitle: string
@@ -480,8 +377,9 @@ export default class BrowserTransport implements LinkTransport {
         this.showDialog({
             title: 'Signing Request',
             subtitle,
-            content,
-            hideLogo: true,
+            content: {
+                countDown: formatCountDown(start)
+            },
             hideBackButton: true,
             action: {
                 text: 'Optional: Sign manually using QR code',
@@ -494,9 +392,6 @@ export default class BrowserTransport implements LinkTransport {
         })
 
         if (session.metadata.sameDevice) {
-            // if (session.metadata.launchUrl) {
-            //     window.location.href = session.metadata.launchUrl
-            // } else
             if (isMobile()) {
                 const scheme = request.getScheme()
                 window.location.href = `${scheme}://link`
@@ -546,43 +441,25 @@ export default class BrowserTransport implements LinkTransport {
             }
         })
 
-        const content = this.createEl({class: 'info'})
-        const feePart1 = this.createEl({
-            tag: 'span',
-            text: 'You can try to ',
-        })
-        const feeBypass = this.createEl({
-            tag: 'a',
-            text: 'proceed without the fee',
-        })
-        const feePart2 = this.createEl({
-            tag: 'span',
-            text: ' or accept the fee shown below to pay for these costs.',
-        })
-
-        const feeDescription = this.createEl({
-            class: 'subtitle',
-            tag: 'span',
-        })
-        feeDescription.appendChild(feePart1)
-        feeDescription.appendChild(feeBypass)
-        feeDescription.appendChild(feePart2)
-        content.appendChild(feeDescription)
-
-        const expireEl = this.createEl({
-            tag: 'span',
-            class: 'subtitle',
-            text: 'Offer expires in --:--',
-        })
-        content.appendChild(expireEl)
-
         const expires = request.getRawTransaction().expiration.toDate()
         const expireTimer = setInterval(() => {
-            expireEl.textContent = `Offer expires in ${countdownFormat(expires)}`
+            this.Widget?.$set({ expiresIn: countdownFormat(expires) })
+
             if (expires.getTime() < Date.now()) {
                 this.activeCancel!('Offer expired')
             }
         }, 200)
+
+        const skipPromise = new Promise((resolve) => {
+            const off = this.Widget?.$on('no-fee', (event) => {
+                resolve(event)
+                off!();
+            })
+        }).then(() => {
+            const error = new Error('Skipped fee')
+            error[SkipFee] = true
+            throw error
+        })
 
         const footnote = this.createEl({
             tag: 'span',
@@ -596,23 +473,20 @@ export default class BrowserTransport implements LinkTransport {
         })
         footnote.appendChild(footnoteLink)
 
-        const skipPromise = waitForEvent(feeBypass, 'click').then(() => {
-            const error = new Error('Skipped fee')
-            error[SkipFee] = true
-            throw error
-        })
         const confirmPromise = new Promise<void>((resolve) => {
             this.showDialog({
                 title: 'Transaction Fee',
                 subtitle:
                     'Your account lacks the network resources for this transaction and it cannot be covered for free.',
                 type: 'fuel',
-                content,
+                content: {
+                    expiresIn: countdownFormat(expires)
+                },
                 action: {
                     text: `Accept Fee of ${fee}`,
                     callback: resolve,
                 },
-                footnote,
+                footnote: footnote.outerHTML,
             })
         })
 
@@ -780,38 +654,12 @@ export default class BrowserTransport implements LinkTransport {
     }
 }
 
-function waitForEvent<K extends keyof HTMLElementEventMap>(
-    element: HTMLElement,
-    eventName: K,
-    timeout?: number
-): Promise<HTMLElementEventMap[K]> {
-    return new Promise((resolve, reject) => {
-        const listener = (event: HTMLElementEventMap[K]) => {
-            element.removeEventListener(eventName, listener)
-            resolve(event)
-        }
-        element.addEventListener(eventName, listener)
-        if (timeout) {
-            setTimeout(() => {
-                element.removeEventListener(eventName, listener)
-                reject(new Error(`Timed out waiting for ${eventName}`))
-            }, timeout)
-        }
-    })
-}
-
 function countdownFormat(date: Date) {
     const timeLeft = date.getTime() - Date.now()
     if (timeLeft > 0) {
-        return new Date(timeLeft).toISOString().substr(14, 5)
+        return new Date(timeLeft).toISOString().substring(14, 5)
     }
     return '00:00'
-}
-
-function emptyElement(el: HTMLElement) {
-    while (el.firstChild) {
-        el.removeChild(el.firstChild)
-    }
 }
 
 /** Generate a return url that Proton will redirect back to w/o reload. */
@@ -865,48 +713,3 @@ function generateReturnUrl() {
     return window.location.href
 }
 
-function isAppleHandheld() {
-    return /iP(ad|od|hone)/i.test(navigator.userAgent)
-}
-
-function isChromeiOS() {
-    return /CriOS/.test(navigator.userAgent)
-}
-
-function isChromeMobile() {
-    return /Chrome\/[.0-9]* Mobile/i.test(navigator.userAgent)
-}
-
-function isFirefox() {
-    return /Firefox/i.test(navigator.userAgent)
-}
-
-function isFirefoxiOS() {
-    return /FxiOS/.test(navigator.userAgent)
-}
-
-function isOpera() {
-    return /OPR/.test(navigator.userAgent) || /Opera/.test(navigator.userAgent)
-}
-
-function isEdge() {
-    return /Edg/.test(navigator.userAgent)
-}
-
-function isBrave() {
-    return navigator['brave'] && typeof navigator['brave'].isBrave === 'function'
-}
-
-function isAndroid() {
-    return /Android/.test(navigator.userAgent)
-}
-
-function isAndroidWebView() {
-    return /wv/.test(navigator.userAgent) || /Android.*AppleWebKit/.test(navigator.userAgent);
-}
-
-function isMobile() {
-    return (
-        typeof window.orientation !== 'undefined' || navigator.userAgent.indexOf('IEMobile') !== -1
-    )
-}
