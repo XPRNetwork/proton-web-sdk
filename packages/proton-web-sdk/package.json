@@ -30,9 +30,9 @@
     "analyze": "size-limit --why"
   },
   "dependencies": {
-    "@greymass/eosio": "^0.4.7",
+    "@greymass/eosio": "^0.6.1",
     "@proton/browser-transport": "^4.1.14",
-    "@proton/js": "^25.0.76",
+    "@proton/js": "^26.1.36",
     "@proton/link": "^4.1.10",
     "core-js": "^3.21.0",
     "tslib": "^2.3.1"
