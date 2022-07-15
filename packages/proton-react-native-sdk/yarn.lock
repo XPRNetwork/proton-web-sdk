@@ -519,10 +519,10 @@
 "@bloks/constants@^22.0.58":
   "version" "22.0.88"
 
-"@bloks/constants@^25.0.76":
-  "integrity" "sha512-r4YrwduQP/5YXBS8KqjcpOiwmyWL0GbN7FbB4oLBMUiBO9Uaw/cweHYneU7RBnoImj5dAVmsUuoeBrqJnFr37A=="
-  "resolved" "https://registry.npmjs.org/@bloks/constants/-/constants-25.0.76.tgz"
-  "version" "25.0.76"
+"@bloks/constants@^26.1.36":
+  "integrity" "sha512-FS16OU3z5+feXtgxCq+k3SyQGU7Y15WmEWOlDfmgjhQWGmrJ4ql6KLE4JMlCqLNZARxKxzrAUb4K+1IZK6Mm4g=="
+  "resolved" "https://registry.npmjs.org/@bloks/constants/-/constants-26.1.36.tgz"
+  "version" "26.1.36"
 
 "@cnakazawa/watch@^1.0.3":
   "integrity" "sha512-v9kIhKwjeZThiWrLmj0y17CWoyddASLj9O2yvbZkbvw/N3rWOYy9zkV66ursAoVr0mV15bL8g0c4QZUE6cdDoQ=="
@@ -631,12 +631,13 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@proton/js@^25.0.76":
-  "integrity" "sha512-1fQyH3Mp41lL71sVFzQOLsNVMceAUlQofLDFsJRp/WzYyz0TSPynazi13aFN5AkDVFTecbTlq+9rG0OERMXppQ=="
-  "resolved" "https://registry.npmjs.org/@proton/js/-/js-25.0.76.tgz"
-  "version" "25.0.76"
+"@proton/js@^26.1.36":
+  "integrity" "sha512-qA6sfonJ/Mb7DrCyb2Wk9Kf5pzWYP8z8nKGGSwfiw9Xqd8koaaV3uzUEkr95UXXFtYVFP2pVa1NdJcZMliVitQ=="
+  "resolved" "https://registry.npmjs.org/@proton/js/-/js-26.1.36.tgz"
+  "version" "26.1.36"
   dependencies:
-    "@bloks/constants" "^25.0.76"
+    "@bloks/constants" "^26.1.36"
+    "abort-controller" "^3.0.0"
     "base64url" "^3.0.1"
     "cross-fetch" "^3.1.4"
     "elliptic" "^6.5.4"
