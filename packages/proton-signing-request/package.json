@@ -18,7 +18,7 @@
         "prepare": "make"
     },
     "dependencies": {
-        "@greymass/eosio": "^0.4.7",
+        "@greymass/eosio": "^0.6.1",
         "core-js": "^3.21.0",
         "tslib": "^2.0.3"
     },
