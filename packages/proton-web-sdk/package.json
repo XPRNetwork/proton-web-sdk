@@ -33,9 +33,7 @@
     "@greymass/eosio": "^0.4.7",
     "@proton/browser-transport": "^4.1.14",
     "@proton/js": "^25.0.76",
-    "@proton/link": "^4.1.10",
-    "core-js": "^3.21.0",
-    "tslib": "^2.3.1"
+    "@proton/link": "^4.1.10"
   },
   "husky": {
     "hooks": {
@@ -50,22 +48,28 @@
   },
   "gitHead": "d81cd76c8aacc2538243e24d0801b3eae4b8dba2",
   "devDependencies": {
-    "@babel/core": "^7.12.9",
-    "@babel/preset-env": "^7.16.5",
-    "@rollup/plugin-babel": "^5.2.3",
-    "@rollup/plugin-commonjs": "^19.0.0",
+    "@rollup/plugin-commonjs": "^22.0.1",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.0.0",
-    "@rollup/plugin-replace": "^2.3.4",
-    "@rollup/plugin-typescript": "^8.1.1",
-    "@typescript-eslint/eslint-plugin": "^4.28.4",
-    "@typescript-eslint/parser": "^5.11.0",
+    "@rollup/plugin-replace": "^4.0.0",
+    "@rollup/plugin-typescript": "^8.3.3",
+    "@tsconfig/svelte": "^3.0.0",
+    "@types/node": "^16.4.0",
+    "@typescript-eslint/eslint-plugin": "^5.30.0",
+    "@typescript-eslint/parser": "^5.30.0",
+    "core-js": "^3.21.0",
     "eslint": "^7.31.0",
-    "rollup": "^2.38.5",
-    "rollup-plugin-dts": "^3.0.1",
-    "rollup-plugin-node-globals": "^1.4.0",
-    "rollup-plugin-polyfill-node": "^0.8.0",
+    "postcss": "^8.4.14",
+    "rollup": "^2.75.7",
+    "rollup-plugin-dts": "^4.2.2",
+    "rollup-plugin-svelte": "^7.1.0",
     "rollup-plugin-terser": "^7.0.2",
-    "typescript": "^4.3.5"
+    "sass": "^1.53.0",
+    "svelte": "^3.48.0",
+    "svelte-check": "^2.8.0",
+    "svelte-preprocess": "^4.10.7",
+    "ts-node": "^10.0.0",
+    "tslib": "^2.4.0",
+    "typescript": "^4.7.4"
   }
 }

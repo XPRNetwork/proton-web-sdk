@@ -1,4 +1,4 @@
-import { LinkOptions, LinkStorage, TransactArgs, TransactOptions } from "@proton/link"
+import type { LinkOptions, LinkStorage, TransactArgs, TransactOptions } from "@proton/link"
 import { JsonRpc } from '@proton/js'
 
 const OPEN_SETTINGS = 'menubar=1,resizable=1,width=400,height=600'
@@ -12,7 +12,7 @@ class Deferred {
   reject: any
   resolve: any
 
-  constructor () {
+  constructor() {
     this.promise = new Promise((resolve, reject) => {
       this.reject = reject
       this.resolve = resolve
@@ -44,7 +44,7 @@ export class ProtonWebLink {
     _childWindow = window
   }
 
-  constructor (options: LinkOptions & { testUrl?: string }) {
+  constructor(options: LinkOptions & { testUrl?: string }) {
     this.scheme = options.scheme
     this.client = typeof options.client === 'string' ? new JsonRpc(options.client) : options.client
     this.storage = options.storage
@@ -54,7 +54,7 @@ export class ProtonWebLink {
     window.addEventListener('message', (event) => this.onEvent(event), false)
   }
 
-  childUrl (path: string) {
+  childUrl(path: string) {
     const base = this.testUrl
       ? this.testUrl
       : this.scheme === 'proton'
@@ -63,7 +63,7 @@ export class ProtonWebLink {
     return `${base}${path}`
   }
 
-  closeChild (force = false) {
+  closeChild(force = false) {
     if (this.childWindow) {
       if (force) {
         this.childWindow.close()
@@ -75,7 +75,7 @@ export class ProtonWebLink {
     }
   }
 
-  createSession (auth: Authorization) {
+  createSession(auth: Authorization) {
     return {
       auth,
       transact: (args: TransactArgs, options?: TransactOptions): Promise<any> => {
@@ -84,16 +84,16 @@ export class ProtonWebLink {
           this.deferredLogin.reject('Trying to login')
           this.deferredLogin = undefined
         }
-    
+
         this.deferredTransact = {
           deferral: new Deferred(),
           transaction: args.transaction || { actions: args.actions },
           params: options,
           waitingForOpen: true
         }
-    
+
         this.childWindow = window.open(this.childUrl('/auth'), '_blank', OPEN_SETTINGS)
-    
+
         try {
           return this.deferredTransact.deferral.promise
         } catch (e) {
@@ -108,13 +108,13 @@ export class ProtonWebLink {
     }
   }
 
-  async login () {
+  async login() {
     if (this.deferredTransact) {
       this.closeChild(true)
       this.deferredTransact.deferral.reject('Trying to login')
       this.deferredTransact = undefined
     }
-    
+
     this.childWindow = window.open(this.childUrl('/login'), '_blank', OPEN_SETTINGS)
     this.deferredLogin = new Deferred()
 
@@ -134,23 +134,23 @@ export class ProtonWebLink {
     }
   }
 
-  async restoreSession (/* requestAccount */ _: string, auth: any) {
+  async restoreSession(/* requestAccount */ _: string, auth: any) {
     return this.createSession(auth)
   }
 
-  async removeSession (appIdentifier: string, auth: any, chainId: any) {
+  async removeSession(appIdentifier: string, auth: any, chainId: any) {
     if (!this.storage) {
       throw new Error('Unable to remove session: No storage adapter configured')
     }
 
     if (await this.storage.read('wallet-type')) {
-        this.storage.remove('wallet-type')
+      this.storage.remove('wallet-type')
     }
 
     if (await this.storage.read('user-auth')) {
-        this.storage.remove('user-auth')
+      this.storage.remove('user-auth')
     }
-    
+
     return {
       appIdentifier,
       auth,
@@ -158,7 +158,7 @@ export class ProtonWebLink {
     }
   }
 
-  async onEvent (e: MessageEvent) {
+  async onEvent(e: MessageEvent) {
     if (
       e.origin.indexOf('https://webauth.com') !== -1 &&
       e.origin.indexOf('https://testnet.webauth.com') !== -1
@@ -180,11 +180,10 @@ export class ProtonWebLink {
       }
 
       // Ready to receive transaction
-      if (type === 'isReady')
-      {
+      if (type === 'isReady') {
         if (this.deferredTransact && this.deferredTransact.waitingForOpen) {
           this.deferredTransact.waitingForOpen = false
-          
+
           this.childWindow!.postMessage(JSON.stringify({
             type: 'transaction',
             data: {
@@ -195,8 +194,7 @@ export class ProtonWebLink {
         }
       }
       // Close child
-      else if (type === 'close')
-      {
+      else if (type === 'close') {
         this.closeChild(true)
 
         if (this.deferredTransact) {
@@ -206,8 +204,7 @@ export class ProtonWebLink {
         }
       }
       // TX Success
-      else if (type === 'transactionSuccess') 
-      {
+      else if (type === 'transactionSuccess') {
         this.closeChild(true)
 
         if (this.deferredTransact) {
@@ -221,8 +218,7 @@ export class ProtonWebLink {
         }
       }
       // Login success
-      else if (type === 'loginSuccess')
-      {
+      else if (type === 'loginSuccess') {
         this.closeChild(true)
 
         if (this.deferredLogin) {
