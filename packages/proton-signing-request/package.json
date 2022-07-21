@@ -1,6 +1,6 @@
 {
     "name": "@proton/signing-request",
-    "version": "4.1.10",
+    "version": "4.1.17",
     "description": "Proton Signing Request (ESR / EEP-7) encoder and decoder",
     "homepage": "https://github.com/ProtonProtocol/proton-signing-request",
     "license": "MIT",
@@ -18,7 +18,7 @@
         "prepare": "make"
     },
     "dependencies": {
-        "@greymass/eosio": "^0.4.7",
+        "@greymass/eosio": "^0.6.1",
         "core-js": "^3.21.0",
         "tslib": "^2.0.3"
     },
