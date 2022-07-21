@@ -4,7 +4,7 @@
 
 <div class="proton-link-countdown">{countDown}</div>
 
-<style lang="scss">
+<style lang="scss" global>
     .proton-link-countdown {
         width: 104px;
         height: 104px;

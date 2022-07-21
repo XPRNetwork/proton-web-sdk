@@ -30,7 +30,7 @@
     <iframe class="proton-link-wskeepalive" src={iframeUrl} title="keepalive" />
 </div>
 
-<style lang="scss">
+<style lang="scss" global>
     .proton-link {
         &-actions {
             display: flex;

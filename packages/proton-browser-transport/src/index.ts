@@ -206,6 +206,7 @@ export default class BrowserTransport implements LinkTransport {
     private hide() {
         this.Widget?.$set({
             show: false,
+            title: '',
             subtitle: null,
             footnote: null,
             expiresIn: null,
