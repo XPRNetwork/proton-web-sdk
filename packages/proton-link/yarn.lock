@@ -1007,10 +1007,10 @@
     "minimatch" "^3.0.4"
     "strip-json-comments" "^3.1.1"
 
-"@greymass/eosio@^0.4.7":
-  "integrity" "sha512-gzSqkJETH3jVPGhgeMI4u6ZFPxnc9GzDTJyvjM59YzrIn/FdqGtB2CKNWJoUdHR8aek85ZkTPx1hhl9rCVWh1A=="
-  "resolved" "https://registry.npmjs.org/@greymass/eosio/-/eosio-0.4.9.tgz"
-  "version" "0.4.9"
+"@greymass/eosio@^0.6.1":
+  "integrity" "sha512-K9VmejZmXHczuLBdQzEQayzISEG/s1PQ9awNf3nMeiVOnmjC5jnw/qNatY1PDpVhXsu+FcW59EAoCEWpuKnrfA=="
+  "resolved" "https://registry.npmjs.org/@greymass/eosio/-/eosio-0.6.1.tgz"
+  "version" "0.6.1"
   dependencies:
     "bn.js" "^4.11.9"
     "brorand" "^1.1.0"
