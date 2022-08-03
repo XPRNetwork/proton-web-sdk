@@ -1,6 +1,6 @@
 {
   "name": "angular",
-  "version": "4.1.17",
+  "version": "4.1.18",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -18,7 +18,7 @@
     "@angular/platform-browser-dynamic": "~13.1.0",
     "@angular/router": "~13.1.0",
     "@proton/js": "^26.1.36",
-    "@proton/web-sdk": "^4.1.17",
+    "@proton/web-sdk": "^4.1.18",
     "@tailwindcss/forms": "^0.4.0",
     "rxjs": "~7.4.0",
     "tslib": "^2.3.0",
