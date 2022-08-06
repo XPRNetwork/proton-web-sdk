@@ -9,7 +9,7 @@
   "unpkg": "dist/bundle.js",
   "types": "dist/index.d.ts",
   "source": "src/index.ts",
-  "version": "4.1.18",
+  "version": "4.2.0",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -31,9 +31,9 @@
   },
   "dependencies": {
     "@greymass/eosio": "^0.6.1",
-    "@proton/browser-transport": "^4.1.15",
+    "@proton/browser-transport": "^4.2.0",
     "@proton/js": "^26.1.54",
-    "@proton/link": "^4.1.18"
+    "@proton/link": "^4.2.0"
   },
   "husky": {
     "hooks": {
