@@ -1,15 +1,16 @@
 import fs from 'fs'
 import dts from 'rollup-plugin-dts'
-import babel from '@rollup/plugin-babel'
+import svelte from 'rollup-plugin-svelte'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import typescript from '@rollup/plugin-typescript'
 import replace from '@rollup/plugin-replace'
-import {terser} from 'rollup-plugin-terser'
-import json from '@rollup/plugin-json'
-import nodePolyfills from 'rollup-plugin-polyfill-node';
+import { terser } from 'rollup-plugin-terser'
+import sveltePreprocess from 'svelte-preprocess';
 
 import pkg from './package.json'
+
+const production = false;
 
 const license = fs.readFileSync('LICENSE').toString('utf-8').trim()
 const banner = `
@@ -21,8 +22,6 @@ const banner = `
  * ${license.replace(/\n/g, '\n * ')}
  */
 `.trim()
-
-const extensions = ['.js', '.mjs', '.ts']
 
 const replaceVersion = replace({
     preventAssignment: true,
@@ -36,11 +35,35 @@ export default [
             banner,
             file: pkg.main,
             format: 'cjs',
-            sourcemap: true,
+            sourcemap: !production,
             exports: 'default',
         },
-        plugins: [replaceVersion, typescript({target: 'es6'})],
-        external: Object.keys({...pkg.dependencies, ...pkg.peerDependencies}),
+        plugins: [
+            svelte({
+                preprocess: sveltePreprocess({ sourceMap: !production }),
+                compilerOptions: {
+                    // enable run-time checks when not in production
+                    dev: !production
+                },
+                emitCss: false,
+            }),
+            replaceVersion,
+            // If you have external dependencies installed from
+            // npm, you'll most likely need these plugins. In
+            // some cases you'll need additional configuration -
+            // consult the documentation for details:
+            // https://github.com/rollup/plugins/tree/master/packages/commonjs
+            resolve({
+                browser: true,
+                dedupe: ['svelte']
+            }),
+            typescript({
+                sourceMap: !production,
+                inlineSources: !production,
+                target: 'es6'
+            })
+        ],
+        external: Object.keys({ ...pkg.dependencies, ...pkg.peerDependencies }),
         onwarn,
     },
     {
@@ -49,50 +72,80 @@ export default [
             banner,
             file: pkg.module,
             format: 'esm',
-            sourcemap: true,
+            sourcemap: !production,
         },
-        plugins: [replaceVersion, typescript({target: 'es2020'})],
-        external: Object.keys({...pkg.dependencies, ...pkg.peerDependencies}),
+        plugins: [
+            svelte({
+                preprocess: sveltePreprocess({ sourceMap: !production }),
+                compilerOptions: {
+                    // enable run-time checks when not in production
+                    dev: !production
+                },
+                emitCss: false,
+            }),
+            replaceVersion,
+            // If you have external dependencies installed from
+            // npm, you'll most likely need these plugins. In
+            // some cases you'll need additional configuration -
+            // consult the documentation for details:
+            // https://github.com/rollup/plugins/tree/master/packages/commonjs
+            resolve({
+                browser: true,
+                dedupe: ['svelte']
+            }),
+            typescript({
+                target: 'es2020',
+                sourceMap: !production,
+                inlineSources: !production,
+            })
+        ],
+        external: Object.keys({ ...pkg.dependencies, ...pkg.peerDependencies }),
         onwarn,
     },
     {
         input: 'src/index.ts',
-        output: {banner, file: pkg.types, format: 'esm'},
+        output: {
+            banner,
+            file: pkg.types,
+            format: 'esm'
+        },
         onwarn,
         plugins: [dts()],
     },
     {
         input: 'src/index.ts',
         output: {
-            globals: {'@proton/link': 'ProtonLink'},
+            globals: { '@proton/link': 'ProtonLink' },
             banner,
             name: 'ProtonBrowserTransport',
             file: pkg.unpkg,
             format: 'iife',
-            sourcemap: true,
+            sourcemap: !production,
         },
         plugins: [
-            nodePolyfills(),
+            svelte({
+                preprocess: sveltePreprocess({ sourceMap: !production }),
+                compilerOptions: {
+                    // enable run-time checks when not in production
+                    dev: !production
+                },
+                emitCss: false,
+            }),
             replaceVersion,
-            resolve({extensions}),
+            // If you have external dependencies installed from
+            // npm, you'll most likely need these plugins. In
+            // some cases you'll need additional configuration -
+            // consult the documentation for details:
+            // https://github.com/rollup/plugins/tree/master/packages/commonjs
+            resolve({
+                browser: true,
+                dedupe: ['svelte']
+            }),
             commonjs(),
-            json(),
-            babel({
-                extensions,
-                babelHelpers: 'bundled',
-                include: ['src/**/*'],
-                presets: [
-                    '@babel/preset-typescript',
-                    [
-                        '@babel/preset-env',
-                        {
-                            targets: '>0.25%, not dead',
-                            useBuiltIns: 'usage',
-                            corejs: '3',
-                        },
-                    ],
-                ],
-                plugins: ['@babel/plugin-proposal-class-properties'],
+            typescript({
+                target: 'es2020',
+                sourceMap: !production,
+                inlineSources: !production,
             }),
             terser({
                 format: {
@@ -103,7 +156,7 @@ export default [
                 },
             }),
         ],
-        external: Object.keys({...pkg.peerDependencies}),
+        external: Object.keys({ ...pkg.peerDependencies }),
         onwarn,
     },
 ]

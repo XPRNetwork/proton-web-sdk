@@ -1,4 +1,4 @@
-SRC_FILES := $(shell find src -name '*.ts')
+SRC_FILES := $(shell find src -name '*.ts' -or -name '*.svelte')
 
 all: lib
 
