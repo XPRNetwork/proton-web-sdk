@@ -23,7 +23,7 @@ export const createLink = async ({
     },
     transportOptions: {
       requestAccount: REQUEST_ACCOUNT,
-      requestStatus: false,
+      requestStatus: true,
     },
     selectorOptions: {
       appName: 'Proton Swap',

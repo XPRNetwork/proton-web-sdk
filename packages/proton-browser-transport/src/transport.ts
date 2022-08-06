@@ -1,9 +1,9 @@
-import { APIError, Base64u, isInstanceOf, SessionError, SigningRequest } from '@proton/link'
+import { Base64u, SessionError, SigningRequest } from '@proton/link'
 import type { LinkTransport, LinkStorage, LinkChannelSession, LinkSession, Bytes } from '@proton/link'
 import QRCode from 'qrcode'
 import DialogWidget from './views/Dialog.svelte'
 import { Storage } from './storage'
-import { isMobile, generateReturnUrl } from './utils'
+import { isMobile, generateReturnUrl, parseErrorMessage } from './utils'
 import { type footNoteDownloadLinks, type BrowserTransportOptions, type DialogArgs, SkipToManual } from './types'
 
 const footnoteLinks: footNoteDownloadLinks = {
@@ -26,7 +26,6 @@ export class BrowserTransport implements LinkTransport {
     private closeTimer?: NodeJS.Timeout
     private showingManual: boolean
     private Widget?: DialogWidget
-    private fontAdded: boolean = false;
 
     constructor(public readonly options: BrowserTransportOptions = {}) {
         this.classPrefix = options.classPrefix || 'proton-link'
@@ -48,15 +47,6 @@ export class BrowserTransport implements LinkTransport {
 
     private setupWidget() {
         this.showingManual = false
-
-        if (!this.fontAdded) {
-            const font = document.createElement('link')
-            font.href = 'https://fonts.cdnfonts.com/css/circular-std-book'
-            font.rel = 'stylesheet'
-            document.head.appendChild(font);
-            this.fontAdded = true;
-        }
-
         if (!this.Widget) {
             const widgetHolder = document.createElement('div')
             document.body.appendChild(widgetHolder);
@@ -220,43 +210,29 @@ export class BrowserTransport implements LinkTransport {
             return
         }
 
-        this.clearTimers()
         this.activeRequest = request
         this.activeCancel = cancel
 
-        const timeout = session.metadata.timeout || 60 * 1000 * 2
         const deviceName = session.metadata.name
 
-        // Content timer
+        // Countdown timer
+        this.clearTimers()
+        const timeout = session.metadata.timeout || 60 * 1000 * 2
         const start = Date.now()
-
         const formatCountDown = (startTime: number) => {
             const secondsLeft = Math.floor((timeout + startTime - Date.now()) / 1000)
             const seconds = String(secondsLeft % 60).padStart(2, '0')
             const minutes = String(Math.floor(secondsLeft / 60)).padStart(2, '0')
             return secondsLeft > 0 ? `${minutes}:${seconds}` : '00:00'
         }
-
-        const updateCountdown = (startTime: number) => {
-            this.Widget?.$set({ countDown: formatCountDown(startTime) })
-        }
-
-        this.countdownTimer = setInterval(() => {
-            updateCountdown(start)
-        }, 500)
+        const updateCountdown = (startTime: number) => this.Widget?.$set({ countDown: formatCountDown(startTime) })
+        this.countdownTimer = setInterval(() => updateCountdown(start), 500)
         updateCountdown(start)
 
         // Content subtitle
-        let subtitle: string
-        if (deviceName && deviceName.length > 0) {
-            subtitle = `Please open ${deviceName} to review the transaction`
-        } else {
-            subtitle = 'Please review and sign the transaction in the linked wallet.'
-        }
-
         this.showDialog({
             title: 'Signing Request',
-            subtitle,
+            subtitle: `Please open ${deviceName || 'linked wallet'} to review the transaction`,
             content: {
                 countDown: formatCountDown(start)
             },
@@ -272,11 +248,8 @@ export class BrowserTransport implements LinkTransport {
             },
         })
 
-        if (session.metadata.sameDevice) {
-            if (isMobile()) {
-                const scheme = request.getScheme()
-                window.location.href = `${scheme}://link`
-            }
+        if (session.metadata.sameDevice && isMobile()) {
+            window.location.href = `${request.getScheme()}://link`
         }
     }
 
@@ -309,7 +282,7 @@ export class BrowserTransport implements LinkTransport {
     }
 
     private showRecovery(request: SigningRequest, session: LinkSession) {
-        request.data.info = request.data.info.filter((pair) => pair.key !== 'return_path')
+        request.data.info = request.data.info.filter(pair => pair.key !== 'return_path')
         if (session.type === 'channel') {
             const channelSession = session as Partial<LinkChannelSession>
             if (channelSession.addLinkInfo) {
@@ -325,43 +298,36 @@ export class BrowserTransport implements LinkTransport {
     }
 
     public recoverError(error: Error, request: SigningRequest) {
-        if (
+        if (!(
             request === this.activeRequest &&
             (error['code'] === 'E_DELIVERY' || error['code'] === 'E_TIMEOUT') &&
             error['session']
-        ) {
-            // recover from session errors by displaying a manual sign dialog
-            if (this.showingManual) {
-                // already showing recovery sign
-                return true
-            }
-            const session: LinkSession = error['session']
-            if (error[SkipToManual]) {
-                this.showRecovery(request, session)
-                return true
-            }
-            const deviceName = session.metadata.name
-            let subtitle: string
-            if (deviceName && deviceName.length > 0) {
-                subtitle = `Unable to deliver the request to ${deviceName}.`
-            } else {
-                subtitle = 'Unable to deliver the request to the linked wallet.'
-            }
-            subtitle += ` ${error.message}.`
-            this.showDialog({
-                title: 'Unable to reach device',
-                subtitle,
-                type: 'warning',
-                action: {
-                    text: 'Optional: Sign manually using QR code',
-                    callback: () => {
-                        this.showRecovery(request, session)
-                    },
-                },
-            })
+        )) {
+            return false
+        }
+
+        // recover from session errors by displaying a manual sign dialog
+        if (this.showingManual) {
+            // already showing recovery sign
             return true
         }
-        return false
+
+        const session: LinkSession = error['session']
+        if (error[SkipToManual]) {
+            this.showRecovery(request, session)
+            return true
+        }
+        
+        this.showDialog({
+            title: 'Unable to reach device',
+            subtitle: `Unable to deliver the request to ${session.metadata.name || 'the linked wallet'}. ${error.message}.`,
+            type: 'warning',
+            action: {
+                text: 'Optional: Sign manually using QR code',
+                callback: () => this.showRecovery(request, session)
+            },
+        })
+        return true
     }
 
     public onSuccess(request: SigningRequest) {
@@ -373,9 +339,7 @@ export class BrowserTransport implements LinkTransport {
                     subtitle: request.isIdentity() ? 'Login completed.' : 'Transaction signed.',
                     type: 'success',
                 })
-                this.closeTimer = setTimeout(() => {
-                    this.hide()
-                }, 1.5 * 1000)
+                this.closeTimer = setTimeout(() => this.hide(), 1.5 * 1000)
             } else {
                 this.hide()
             }
@@ -383,31 +347,18 @@ export class BrowserTransport implements LinkTransport {
     }
 
     public onFailure(request: SigningRequest, error: Error) {
-        if (request === this.activeRequest && (error as any)['code'] !== 'E_CANCEL') {
-            this.clearTimers()
-            if (this.requestStatus) {
-                let errorMessage: string
-                if (isInstanceOf(error, APIError)) {
-                    if (error.name === 'eosio_assert_message_exception') {
-                        errorMessage = error.details[0].message
-                    } else if (error.details.length > 0) {
-                        errorMessage = error.details.map((d) => d.message).join('\n')
-                    } else {
-                        errorMessage = error.message
-                    }
-                } else {
-                    errorMessage = (error as any).message || String(error)
-                }
-                this.showDialog({
-                    title: 'Transaction Error',
-                    subtitle: errorMessage,
-                    type: 'error',
-                })
-            } else {
-                this.hide()
-            }
-        } else {
+        if (request !== this.activeRequest || (error as any)['code'] === 'E_CANCEL' || !this.requestStatus) {
             this.hide()
+        }
+
+        if (this.requestStatus) {
+            this.clearTimers()
+            this.showDialog({
+                title: 'Transaction Error',
+                subtitle: parseErrorMessage(error),
+                hideBackButton: true,
+                type: 'error',
+            })
         }
     }
 

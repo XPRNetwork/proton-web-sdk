@@ -1,3 +1,5 @@
+import { isInstanceOf, APIError } from "@proton/link"
+
 export function isAppleHandheld() {
     return /iP(ad|od|hone)/i.test(navigator.userAgent)
 }
@@ -43,7 +45,6 @@ export function isMobile() {
         typeof window.orientation !== 'undefined' || navigator.userAgent.indexOf('IEMobile') !== -1
     )
 }
-
 
 /** Generate a return url that Proton will redirect back to w/o reload. */
 export function generateReturnUrl() {
@@ -96,3 +97,18 @@ export function generateReturnUrl() {
     return window.location.href
 }
 
+export function parseErrorMessage (error: Error) {
+    let errorMessage: string
+    if (isInstanceOf(error, APIError)) {
+        if (error.name === 'eosio_assert_message_exception') {
+            errorMessage = error.details[0].message
+        } else if (error.details.length > 0) {
+            errorMessage = error.details.map((d) => d.message).join('\n')
+        } else {
+            errorMessage = error.message
+        }
+    } else {
+        errorMessage = (error as any).message || String(error)
+    }
+    return errorMessage
+}
