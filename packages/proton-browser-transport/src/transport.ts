@@ -15,17 +15,7 @@ export class BrowserTransport implements LinkTransport {
     /** Package version. */
     static version = '__ver' // replaced by build script
 
-    storage: LinkStorage
-
-    constructor(public readonly options: BrowserTransportOptions = {}) {
-        this.classPrefix = options.classPrefix || 'proton-link'
-        this.requestStatus = !(options.requestStatus === false)
-        this.requestAccount = options.requestAccount || ''
-        this.walletType = options.walletType || 'proton'
-        this.storage = new Storage(options.storagePrefix || 'proton-link')
-        this.showingManual = false
-    }
-
+    public storage: LinkStorage
     private classPrefix: string
     private requestStatus: boolean
     private requestAccount: string
@@ -35,10 +25,17 @@ export class BrowserTransport implements LinkTransport {
     private countdownTimer?: NodeJS.Timeout
     private closeTimer?: NodeJS.Timeout
     private showingManual: boolean
-
     private Widget?: DialogWidget
-
     private fontAdded: boolean = false;
+
+    constructor(public readonly options: BrowserTransportOptions = {}) {
+        this.classPrefix = options.classPrefix || 'proton-link'
+        this.requestStatus = !(options.requestStatus === false)
+        this.requestAccount = options.requestAccount || ''
+        this.walletType = options.walletType || 'proton'
+        this.storage = new Storage(options.storagePrefix || 'proton-link')
+        this.showingManual = false
+    }
 
     private closeModal() {
         this.hide()
@@ -66,14 +63,8 @@ export class BrowserTransport implements LinkTransport {
             this.Widget = new DialogWidget({
                 target: widgetHolder
             })
-
-            this.Widget.$on('back', () => {
-                document.dispatchEvent(new CustomEvent('backToSelector'))
-            })
-
-            this.Widget.$on('close', () => {
-                this.closeModal()
-            })
+            this.Widget.$on('back', () => document.dispatchEvent(new CustomEvent('backToSelector')))
+            this.Widget.$on('close', () => this.closeModal())
         }
     }
 
@@ -130,32 +121,16 @@ export class BrowserTransport implements LinkTransport {
 
         const props: Record<string, any> = {
             showBackButton: !args.hideBackButton,
-            walletType: this.walletType
+            walletType: this.walletType,
+            title: args.title || '',
+            subtitle: args.subtitle || '',
+            action: args.action || null,
+            footnote: args.footnote
+                ? (args.footnote instanceof HTMLElement)
+                    ? args.footnote.outerHTML
+                    : args.footnote
+                : null
         };
-
-        if (args.title) {
-            props['title'] = args.title
-        } else {
-            props['title'] = ''
-        }
-
-        if (args.subtitle) {
-            props['subtitle'] = args.subtitle
-        } else {
-            props['subtitle'] = ''
-        }
-
-        if (args.action) {
-            props['action'] = args.action
-        } else {
-            props['action'] = null
-        }
-
-        if (args.footnote) {
-            props['footnote'] = (args.footnote instanceof HTMLElement) ? args.footnote.outerHTML : args.footnote
-        } else {
-            props['footnote'] = null
-        }
 
         this.Widget?.$set({ ...props, ...(args.content || {}) })
         this.show()
@@ -164,7 +139,8 @@ export class BrowserTransport implements LinkTransport {
     private async displayRequest(
         request: SigningRequest,
         title: string,
-        subtitle: string
+        subtitle: string = '',
+        hideBackButton: boolean = false
     ) {
         const sameDeviceRequest = request.clone()
         const returnUrl = generateReturnUrl()
@@ -206,6 +182,7 @@ export class BrowserTransport implements LinkTransport {
             title,
             footnote: footnote.innerHTML,
             subtitle,
+            hideBackButton,
             content: { qrData },
         })
     }
@@ -222,11 +199,7 @@ export class BrowserTransport implements LinkTransport {
         this.clearTimers()
         this.activeRequest = request
         this.activeCancel = cancel
-        this.displayRequest(
-            request,
-            'Scan the QR-Code',
-            '',
-        ).catch(cancel)
+        this.displayRequest(request, 'Scan the QR-Code').catch(cancel)
     }
 
     public onSessionRequest(
@@ -343,26 +316,11 @@ export class BrowserTransport implements LinkTransport {
                 channelSession.addLinkInfo(request)
             }
         }
-        this.displayRequest(
-            request,
-            'Sign manually',
-            ''
-        )
+        this.displayRequest(request, 'Sign manually', '', true)
         this.showingManual = true
     }
 
     public async prepare(request: SigningRequest, session?: LinkSession) {
-        this.showLoading()
-        if (!session || request.isIdentity() || this.walletType === 'proton') {
-            // don't attempt to cosign id request or if we don't have a session attached
-            return request
-        }
-        if (
-            typeof session.metadata.cosignerVersion === 'string'
-        ) {
-            // if signer has cosigner, only attempt to cosign here if we have a newer version
-            return request
-        }
         return request
     }
 

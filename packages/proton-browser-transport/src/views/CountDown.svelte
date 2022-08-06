@@ -11,7 +11,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        margin: 40px auto 35px;
+        margin: 40px auto 5px;
         border-radius: 100%;
         background-color: white;
         font-size: 28px;
