@@ -43,3 +43,56 @@ export function isMobile() {
         typeof window.orientation !== 'undefined' || navigator.userAgent.indexOf('IEMobile') !== -1
     )
 }
+
+
+/** Generate a return url that Proton will redirect back to w/o reload. */
+export function generateReturnUrl() {
+    if (isChromeiOS()) {
+        // google chrome on iOS will always open new tab so we just ask it to open again as a workaround
+        return 'googlechrome://'
+    }
+    if (isFirefoxiOS()) {
+        // same for firefox
+        return 'firefox:://'
+    }
+    if (isAppleHandheld() && isBrave()) {
+        // and brave ios
+        return 'brave://'
+    }
+    if (isAppleHandheld()) {
+        // return url with unique fragment required for iOS safari to trigger the return url
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+        let rv = window.location.href.split('#')[0] + '#'
+        for (let i = 0; i < 8; i++) {
+            rv += alphabet.charAt(Math.floor(Math.random() * alphabet.length))
+        }
+        return rv
+    }
+
+    if (isAndroid() && isFirefox()) {
+        return 'android-intent://org.mozilla.firefox'
+    }
+
+    if (isAndroid() && isEdge()) {
+        return 'android-intent://com.microsoft.emmx'
+    }
+
+    if (isAndroid() && isOpera()) {
+        return 'android-intent://com.opera.browser'
+    }
+
+    if (isAndroid() && isBrave()) {
+        return 'android-intent://com.brave.browser'
+    }
+
+    if (isAndroid() && isAndroidWebView()) {
+        return 'android-intent://webview'
+    }
+
+    if (isAndroid() && isChromeMobile()) {
+        return 'android-intent://com.android.chrome'
+    }
+
+    return window.location.href
+}
+
