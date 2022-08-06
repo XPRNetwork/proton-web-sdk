@@ -23,9 +23,9 @@
     </div>
     <div class="proton-link-separator">OR</div>
     <div class="proton-link-uri">
-        <a class="proton-link-button" href={link} on:click|preventDefault={protonLinkClick}
-            >Open Wallet</a
-        >
+        <a class="proton-link-button" href={link} on:click|preventDefault={protonLinkClick}>
+            Open Wallet
+        </a>
     </div>
     <iframe class="proton-link-wskeepalive" src={iframeUrl} title="keepalive" />
 </div>

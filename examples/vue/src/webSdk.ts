@@ -24,7 +24,6 @@ export const createLink = async ({
     transportOptions: {
       requestAccount: REQUEST_ACCOUNT,
       requestStatus: false,
-      backButton: true,
     },
     selectorOptions: {
       appName: 'Proton Swap',

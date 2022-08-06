@@ -1,7 +1,6 @@
 <script lang="ts">
     import {createEventDispatcher} from 'svelte'
     import CountDown from './CountDown.svelte'
-    import FeeConfirm from './FeeConfirm.svelte'
     import QrCode from './QRCode.svelte'
 
     const dispatch = createEventDispatcher()
@@ -16,7 +15,6 @@
     export let subtitle: string | null = null
     export let footnote: string | null = null
 
-    export let expiresIn: string | null = null
     export let countDown: string | null = null
 
     export let qrData: {code: string; link: string} | null = null
@@ -61,12 +59,6 @@
             {/if}
             {#if qrData}
                 <QrCode {...qrData} />
-            {/if}
-
-            {#if expiresIn}
-                <div class="proton-link-info">
-                    <FeeConfirm {expiresIn} on:no-fee />
-                </div>
             {/if}
 
             {#if countDown}
