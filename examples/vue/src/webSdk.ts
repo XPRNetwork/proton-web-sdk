@@ -22,8 +22,7 @@ export const createLink = async ({
       restoreSession,
     },
     transportOptions: {
-      requestAccount: REQUEST_ACCOUNT,
-      requestStatus: true,
+      requestAccount: REQUEST_ACCOUNT
     },
     selectorOptions: {
       appName: 'Taskly',
