@@ -6,19 +6,13 @@
     const dispatch = createEventDispatcher()
 
     export let show: boolean = false
-
     export let showBackButton: boolean = false
-
     export let walletType: string = 'proton'
-
     export let title: string = ''
     export let subtitle: string | null = null
     export let footnote: string | null = null
-
     export let countDown: string | null = null
-
     export let qrData: {code: string; link: string} | null = null
-
     export let action: {text: string; callback: () => void} | null = null
 
     $: walletTypeClass = ` proton-link--${walletType}`
@@ -57,6 +51,7 @@
             {#if subtitle}
                 <span class="proton-link-subtitle">{subtitle}</span>
             {/if}
+
             {#if qrData}
                 <QrCode {...qrData} />
             {/if}
@@ -83,7 +78,6 @@
 
 <style lang="scss" global>
     /* Proton Link Modal */
-
     .proton-link {
         $module: &;
 
