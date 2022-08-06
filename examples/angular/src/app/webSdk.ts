@@ -26,7 +26,7 @@ export const createLink = async ({
       requestStatus: false
     },
     selectorOptions: {
-      appName: 'Proton Swap',
+      appName: 'Taskly',
     },
   });
   link = localLink;
