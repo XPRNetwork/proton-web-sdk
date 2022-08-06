@@ -66,12 +66,12 @@
                 <hr class="proton-link-hr" />
                 <button class="proton-link-button" on:click={doAction}>{action.text}</button>
             {/if}
-
-            {#if footnote}
+            
+            <!-- {#if footnote}
                 <div class="proton-link-footnote">
                     {@html footnote}
                 </div>
-            {/if}
+            {/if} -->
         </div>
     </div>
 </div>
@@ -295,7 +295,7 @@
             text-align: center;
             width: 100%;
             position: absolute;
-            bottom: -40px;
+            bottom: -30px;
             left: 0;
             color: white;
 

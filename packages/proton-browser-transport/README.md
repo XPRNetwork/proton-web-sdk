@@ -20,7 +20,7 @@ const transport = new ProtonBrowserTransport({
     /** Whether to inject CSS styles in the page header, defaults to true. */
     injectStyles: true,
     /** Whether to display request success and error messages, defaults to true */
-    requestStatus: false,
+    requestStatus: true,
     /** Local storage prefix, defaults to `proton-link`. */
     storagePrefix: 'my-localstorage-prefix',
     /**

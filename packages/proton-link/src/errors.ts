@@ -16,7 +16,7 @@ export type LinkErrorCode = 'E_DELIVERY' | 'E_TIMEOUT' | 'E_CANCEL' | 'E_IDENTIT
 export class CancelError extends Error {
     public code = 'E_CANCEL'
     constructor(reason?: string) {
-        super(`User canceled request ${reason ? '(' + reason + ')' : ''}`)
+        super(`Request cancelled ${reason ? '(' + reason + ')' : ''}`)
     }
 }
 

@@ -40,7 +40,7 @@ export class BrowserTransport implements LinkTransport {
         this.hide()
         if (this.activeCancel) {
             this.activeRequest = undefined
-            this.activeCancel('Modal closed')
+            this.activeCancel('')
             this.activeCancel = undefined
         }
     }
@@ -50,9 +50,7 @@ export class BrowserTransport implements LinkTransport {
         if (!this.Widget) {
             const widgetHolder = document.createElement('div')
             document.body.appendChild(widgetHolder);
-            this.Widget = new DialogWidget({
-                target: widgetHolder
-            })
+            this.Widget = new DialogWidget({ target: widgetHolder })
             this.Widget.$on('back', () => document.dispatchEvent(new CustomEvent('backToSelector')))
             this.Widget.$on('close', () => this.closeModal())
         }
@@ -119,10 +117,12 @@ export class BrowserTransport implements LinkTransport {
                 ? (args.footnote instanceof HTMLElement)
                     ? args.footnote.outerHTML
                     : args.footnote
-                : null
+                : null,
+            countDown: args.content?.countDown || null, 
+            qrData: args.content?.qrData || null, 
         };
 
-        this.Widget?.$set({ ...props, ...(args.content || {}) })
+        this.Widget?.$set({ ...props })
         this.show()
     }
 
@@ -146,7 +146,6 @@ export class BrowserTransport implements LinkTransport {
         const crossDeviceUri = request.encode(true, false)
 
         const qrCode = await QRCode.toDataURL(crossDeviceUri)
-
         const qrData = {
             code: qrCode,
             link: sameDeviceUri
@@ -181,6 +180,7 @@ export class BrowserTransport implements LinkTransport {
         this.showDialog({
             title: 'Pending...',
             subtitle: 'Preparing request...',
+            hideBackButton: true,
             type: 'loading',
         })
     }
@@ -226,7 +226,7 @@ export class BrowserTransport implements LinkTransport {
             return secondsLeft > 0 ? `${minutes}:${seconds}` : '00:00'
         }
         const updateCountdown = (startTime: number) => this.Widget?.$set({ countDown: formatCountDown(startTime) })
-        this.countdownTimer = setInterval(() => updateCountdown(start), 500)
+        this.countdownTimer = setInterval(() => updateCountdown(start), 1000)
         updateCountdown(start)
 
         // Content subtitle
@@ -317,10 +317,10 @@ export class BrowserTransport implements LinkTransport {
             this.showRecovery(request, session)
             return true
         }
-        
+
         this.showDialog({
             title: 'Unable to reach device',
-            subtitle: `Unable to deliver the request to ${session.metadata.name || 'the linked wallet'}. ${error.message}.`,
+            subtitle: error.message || `Unable to deliver the request to ${session.metadata.name || 'the linked wallet'}.`,
             type: 'warning',
             action: {
                 text: 'Optional: Sign manually using QR code',
@@ -333,32 +333,27 @@ export class BrowserTransport implements LinkTransport {
     public onSuccess(request: SigningRequest) {
         if (request === this.activeRequest) {
             this.clearTimers()
-            if (this.requestStatus) {
-                this.showDialog({
-                    title: 'Success!',
-                    subtitle: request.isIdentity() ? 'Login completed.' : 'Transaction signed.',
-                    type: 'success',
-                })
-                this.closeTimer = setTimeout(() => this.hide(), 1.5 * 1000)
-            } else {
-                this.hide()
-            }
+            this.hide()
         }
     }
 
     public onFailure(request: SigningRequest, error: Error) {
-        if (request !== this.activeRequest || (error as any)['code'] === 'E_CANCEL' || !this.requestStatus) {
+        if (request !== this.activeRequest || (error as any)['code'] === 'E_CANCEL') {
             this.hide()
+            return
         }
 
+        this.clearTimers()
+        
         if (this.requestStatus) {
-            this.clearTimers()
             this.showDialog({
                 title: 'Transaction Error',
                 subtitle: parseErrorMessage(error),
                 hideBackButton: true,
                 type: 'error',
             })
+        } else {
+            this.hide()
         }
     }
 

@@ -1,4 +1,4 @@
-import type { LinkOptions, LinkStorage, TransactArgs, TransactOptions } from "@proton/link"
+import type { LinkOptions, LinkStorage, LinkTransport, TransactArgs, TransactOptions } from "@proton/link"
 import { JsonRpc } from '@proton/js'
 
 const OPEN_SETTINGS = 'menubar=1,resizable=1,width=400,height=600'
@@ -35,6 +35,7 @@ export class ProtonWebLink {
   storage: LinkStorage | null | undefined
   client: JsonRpc | undefined
   testUrl: string | undefined
+  transport: LinkTransport
 
   public get childWindow() {
     return _childWindow;
@@ -49,6 +50,7 @@ export class ProtonWebLink {
     this.client = typeof options.client === 'string' ? new JsonRpc(options.client) : options.client
     this.storage = options.storage
     this.testUrl = options.testUrl
+    this.transport = options.transport
 
     setInterval(() => this.closeChild(), 500)
     window.addEventListener('message', (event) => this.onEvent(event), false)
@@ -78,7 +80,7 @@ export class ProtonWebLink {
   createSession(auth: Authorization) {
     return {
       auth,
-      transact: (args: TransactArgs, options?: TransactOptions): Promise<any> => {
+      transact: async (args: TransactArgs, options?: TransactOptions): Promise<any> => {
         if (this.deferredLogin) {
           this.closeChild(true)
           this.deferredLogin.reject('Trying to login')
@@ -95,10 +97,13 @@ export class ProtonWebLink {
         this.childWindow = window.open(this.childUrl('/auth'), '_blank', OPEN_SETTINGS)
 
         try {
-          return this.deferredTransact.deferral.promise
-        } catch (e) {
-          console.error(e)
-          throw e
+          const res = await this.deferredTransact.deferral.promise
+          return res
+        } catch (error) {
+          if (this.transport.onFailure) {
+            this.transport.onFailure(undefined as any, error as any)
+          }
+          throw error
         }
       },
       link: {

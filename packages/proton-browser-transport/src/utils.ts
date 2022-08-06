@@ -97,18 +97,29 @@ export function generateReturnUrl() {
     return window.location.href
 }
 
-export function parseErrorMessage (error: Error) {
+export function parseErrorMessage(error: any) {
     let errorMessage: string
-    if (isInstanceOf(error, APIError)) {
-        if (error.name === 'eosio_assert_message_exception') {
-            errorMessage = error.details[0].message
-        } else if (error.details.length > 0) {
-            errorMessage = error.details.map((d) => d.message).join('\n')
+
+    if (error.json && error.json.error) {
+        error = error.json.error
+    }
+
+    if (error.error) {
+        error = error.error
+    }
+
+    if (error.details) {
+        const { code, details, name, what } = error
+        if (name === 'eosio_assert_message_exception') {
+            errorMessage = details[0].message.replace('assertion failure with message: ', '')
+        } else if (details.length > 0) {
+            errorMessage = details.map((d) => d.message).join('\n')
         } else {
-            errorMessage = error.message
+            errorMessage = what || String(error)
         }
     } else {
-        errorMessage = (error as any).message || String(error)
+        errorMessage = error.message || String(error)
     }
+    
     return errorMessage
 }

@@ -129,7 +129,7 @@
       background: var(--proton-wallet-modal-bgcolor, var(--color-bgdefault));
 
       &-body {
-        margin-top: 55px;
+        margin-top: 35px;
       }
     }
 
@@ -144,7 +144,7 @@
       font-size: 12px;
       line-height: 16px;
       text-align: center;
-      margin-top: 55px;
+      margin-top: 35px;
       margin-bottom: 30px;
       color: var(
         --proton-wallet-color-font-secondary,
