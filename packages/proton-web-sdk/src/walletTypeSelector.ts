@@ -31,13 +31,8 @@ export default class WalletTypeSelector {
         title: 'Connect Wallet',
         subtitle: `To start using ${this.appName}`,
         hasRoundedLogo: this.hasRoundedLogo,
-        wallets: enabledWalletTypes
-      }
-
-      if (this.appLogo) {
-        props['appLogo'] = this.appLogo
-      } else {
-        props['appLogo'] = null
+        wallets: enabledWalletTypes,
+        appLogo: this.appLogo || null,
       }
 
       this.Widget?.$on('select-wallet', (event) => {
