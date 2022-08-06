@@ -258,8 +258,10 @@ export class BrowserTransport implements LinkTransport {
         const start = Date.now()
 
         const formatCountDown = (startTime: number) => {
-            const timeLeft = timeout + startTime - Date.now()
-            return timeLeft > 0 ? new Date(timeLeft).toISOString().substring(14, 5) : '00:00'
+            const secondsLeft = Math.floor((timeout + startTime - Date.now()) / 1000)
+            const seconds = String(secondsLeft % 60).padStart(2, '0')
+            const minutes = String(Math.floor(secondsLeft / 60)).padStart(2, '0')
+            return secondsLeft > 0 ? `${minutes}:${seconds}` : '00:00'
         }
 
         const updateCountdown = (startTime: number) => {
@@ -289,6 +291,7 @@ export class BrowserTransport implements LinkTransport {
             action: {
                 text: 'Optional: Sign manually using QR code',
                 callback: () => {
+                    this.clearTimers()
                     const error = new SessionError('Manual', 'E_TIMEOUT', session)
                     error[SkipToManual] = true
                     cancel(error)
@@ -326,6 +329,7 @@ export class BrowserTransport implements LinkTransport {
             this.closeTimer = undefined
         }
         if (this.countdownTimer) {
+            this.Widget?.$set({ countDown: undefined })
             clearTimeout(this.countdownTimer)
             this.countdownTimer = undefined
         }
