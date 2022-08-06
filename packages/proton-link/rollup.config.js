@@ -1,10 +1,9 @@
 import fs from 'fs'
 import dts from 'rollup-plugin-dts'
-import babel from '@rollup/plugin-babel'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import typescript from '@rollup/plugin-typescript'
-import {terser} from 'rollup-plugin-terser'
+import { terser } from 'rollup-plugin-terser'
 import json from '@rollup/plugin-json'
 import replace from '@rollup/plugin-replace'
 
@@ -47,8 +46,8 @@ export default [
             sourcemap: true,
             exports: 'default',
         },
-        plugins: [replaceVersion, typescript({target: 'es6'})],
-        external: Object.keys({...pkg.dependencies, ...pkg.peerDependencies}),
+        plugins: [replaceVersion, typescript({ target: 'es6' })],
+        external: Object.keys({ ...pkg.dependencies, ...pkg.peerDependencies }),
         onwarn,
     },
     {
@@ -59,13 +58,13 @@ export default [
             format: 'esm',
             sourcemap: true,
         },
-        plugins: [replaceVersion, typescript({target: 'es2020'})],
-        external: Object.keys({...pkg.dependencies, ...pkg.peerDependencies}),
+        plugins: [replaceVersion, typescript({ target: 'es2020' })],
+        external: Object.keys({ ...pkg.dependencies, ...pkg.peerDependencies }),
         onwarn,
     },
     {
         input: 'src/index.ts',
-        output: {banner, file: pkg.types, format: 'esm'},
+        output: { banner, file: pkg.types, format: 'esm' },
         onwarn,
         plugins: [dts()],
     },
@@ -82,22 +81,17 @@ export default [
         },
         plugins: [
             replaceVersion,
-            resolve({browser: true}),
+            resolve({ browser: true }),
             commonjs(),
+            typescript({
+                target: 'es2020'
+            }),
             json(),
-            babel({
-                babelHelpers: 'bundled',
-                exclude: /node_modules\/core-js.*/,
-                presets: [
-                    [
-                        '@babel/preset-env',
-                        {
-                            targets: '>0.25%, not dead',
-                            useBuiltIns: 'usage',
-                            corejs: '3',
-                        },
-                    ],
-                ],
+            replace({
+                preventAssignment: true,
+                values: {
+                    'process.env.NODE_ENV': JSON.stringify('production')
+                }
             }),
             terser({
                 format: {
@@ -108,7 +102,7 @@ export default [
                 },
             }),
         ],
-        external: Object.keys({...pkg.peerDependencies}),
+        external: Object.keys({ ...pkg.peerDependencies }),
         onwarn,
     },
 ]
