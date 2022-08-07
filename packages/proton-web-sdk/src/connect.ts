@@ -31,8 +31,10 @@ export const ConnectWallet = async ({
   }
 
   return login({ selectorOptions, linkOptions, transportOptions }).finally(() => {
-    walletSelector?.destroy()
-    walletSelector = undefined
+    if (walletSelector) {
+      walletSelector.destroy()
+      walletSelector = undefined
+    }
   })
 }
 
@@ -53,7 +55,7 @@ const login = async (loginOptions: LoginOptions): Promise<{
   }
 
   // Determine wallet type from storage or selector modal
-  let walletType: string | null | undefined = loginOptions.selectorOptions?.walletType
+  let walletType: string | null | undefined = loginOptions.selectorOptions ? loginOptions.selectorOptions.walletType : undefined;
 
   if (!walletType) {
     if (loginOptions.linkOptions.restoreSession) {
