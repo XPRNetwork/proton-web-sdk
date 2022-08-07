@@ -51,7 +51,7 @@ export default [
             format: 'esm',
             sourcemap: true,
         },
-        plugins: [typescript({target: 'es2020'})],
+        plugins: [typescript({target: 'es6'})],
         external: Object.keys({...pkg.dependencies, ...pkg.peerDependencies}),
         onwarn,
     },
