@@ -35,14 +35,14 @@ export default class WalletTypeSelector {
         appLogo: this.appLogo || null,
       }
 
-      this.Widget?.$on('select-wallet', (event) => {
+      this.Widget.$on('select-wallet', (event) => {
         if (event.detail.walletName) {
           this.hideSelector()
           resolve(event.detail.walletName)
         }
       })
 
-      this.Widget?.$set(props)
+      this.Widget.$set(props)
 
       this.showSelector()
     })
@@ -50,12 +50,12 @@ export default class WalletTypeSelector {
 
   public destroy() {
     this.hideSelector()
-    this.Widget?.$destroy()
+    this.Widget.$destroy()
     this.widgetHolder?.remove()
   }
 
   private hideSelector() {
-    this.Widget?.$set({
+    this.Widget.$set({
       show: false,
       appLogo: '',
       hasRoundedLogo: false,
@@ -66,7 +66,7 @@ export default class WalletTypeSelector {
   }
 
   private showSelector() {
-    this.Widget?.$set({ show: true })
+    this.Widget.$set({ show: true })
   }
 
 
