@@ -58,7 +58,7 @@ export default [
             format: 'esm',
             sourcemap: true,
         },
-        plugins: [replaceVersion, typescript({ target: 'es2020' })],
+        plugins: [replaceVersion, typescript({ target: 'es6' })],
         external: Object.keys({ ...pkg.dependencies, ...pkg.peerDependencies }),
         onwarn,
     },
@@ -84,7 +84,7 @@ export default [
             resolve({ browser: true }),
             commonjs(),
             typescript({
-                target: 'es2020'
+                target: 'es6'
             }),
             json(),
             replace({

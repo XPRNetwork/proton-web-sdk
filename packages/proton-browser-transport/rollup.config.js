@@ -94,9 +94,9 @@ export default [
                 dedupe: ['svelte']
             }),
             typescript({
-                target: 'es2020',
                 sourceMap: !production,
                 inlineSources: !production,
+                target: 'es6',
             })
         ],
         external: Object.keys({ ...pkg.dependencies, ...pkg.peerDependencies }),
@@ -143,9 +143,9 @@ export default [
             }),
             commonjs(),
             typescript({
-                target: 'es2020',
                 sourceMap: !production,
                 inlineSources: !production,
+                target: 'es6',
             }),
             terser({
                 format: {
