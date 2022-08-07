@@ -106,8 +106,9 @@ export default [
         dedupe: ['svelte']
       }),
       typescript({
-        target: 'es2020', sourceMap: !production,
+        sourceMap: !production,
         inlineSources: !production,
+        target: 'es6',
       })
     ],
     external: Object.keys({ ...pkg.dependencies, ...pkg.peerDependencies }),
@@ -158,9 +159,9 @@ export default [
       json(),
       commonjs(),
       typescript({
-        target: 'es2020',
         sourceMap: !production,
         inlineSources: !production,
+        target: 'es6',
       }),
       replace({
         preventAssignment: true,
