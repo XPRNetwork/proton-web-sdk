@@ -88,20 +88,24 @@ export class BrowserTransport implements LinkTransport {
     }
 
     private hide() {
-        this.Widget?.$set({
-            show: false,
-            title: '',
-            subtitle: null,
-            footnote: null,
-            countDown: null,
-            qrData: null,
-            action: null,
-        })
+        if (this.Widget) {
+            this.Widget.$set({
+                show: false,
+                title: '',
+                subtitle: null,
+                footnote: null,
+                countDown: null,
+                qrData: null,
+                action: null,
+            })
+        }
         this.clearTimers()
     }
 
     private show() {
-        this.Widget?.$set({ show: true })
+        if (this.Widget) {
+            this.Widget.$set({ show: true })
+        }
     }
 
     private showDialog(args: DialogArgs) {
@@ -118,11 +122,13 @@ export class BrowserTransport implements LinkTransport {
                     ? args.footnote.outerHTML
                     : args.footnote
                 : null,
-            countDown: args.content?.countDown || null, 
-            qrData: args.content?.qrData || null, 
+            countDown: (args.content && args.content.countDown) || null, 
+            qrData: (args.content && args.content.qrData) || null, 
         };
 
-        this.Widget?.$set({ ...props })
+        if (this.Widget) {
+            this.Widget.$set({ ...props })
+        }
         this.show()
     }
 
@@ -225,7 +231,7 @@ export class BrowserTransport implements LinkTransport {
             const minutes = String(Math.floor(secondsLeft / 60)).padStart(2, '0')
             return secondsLeft > 0 ? `${minutes}:${seconds}` : '00:00'
         }
-        const updateCountdown = (startTime: number) => this.Widget?.$set({ countDown: formatCountDown(startTime) })
+        const updateCountdown = (startTime: number) => this.Widget && this.Widget.$set({ countDown: formatCountDown(startTime) })
         this.countdownTimer = setInterval(() => updateCountdown(start), 1000)
         updateCountdown(start)
 
@@ -275,7 +281,9 @@ export class BrowserTransport implements LinkTransport {
             this.closeTimer = undefined
         }
         if (this.countdownTimer) {
-            this.Widget?.$set({ countDown: undefined })
+            if (this.Widget) {
+                this.Widget.$set({ countDown: undefined })
+            }
             clearTimeout(this.countdownTimer)
             this.countdownTimer = undefined
         }

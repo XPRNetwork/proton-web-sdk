@@ -35,14 +35,15 @@ export default class WalletTypeSelector {
         appLogo: this.appLogo || null,
       }
 
-      this.Widget?.$on('select-wallet', (event) => {
-        if (event.detail.walletName) {
-          this.hideSelector()
-          resolve(event.detail.walletName)
-        }
-      })
-
-      this.Widget?.$set(props)
+      if (this.Widget) {
+        this.Widget.$on('select-wallet', (event) => {
+          if (event.detail.walletName) {
+            this.hideSelector()
+            resolve(event.detail.walletName)
+          }
+        })
+        this.Widget.$set(props)
+      }
 
       this.showSelector()
     })
@@ -50,23 +51,31 @@ export default class WalletTypeSelector {
 
   public destroy() {
     this.hideSelector()
-    this.Widget?.$destroy()
-    this.widgetHolder?.remove()
+    if (this.Widget) {
+      this.Widget.$destroy()
+    }
+    if (this.widgetHolder) {
+      this.widgetHolder.remove()
+    }
   }
 
   private hideSelector() {
-    this.Widget?.$set({
-      show: false,
-      appLogo: '',
-      hasRoundedLogo: false,
-      title: '',
-      subtitle: '',
-      wallets: []
-    })
+    if (this.Widget) {
+      this.Widget.$set({
+        show: false,
+        appLogo: '',
+        hasRoundedLogo: false,
+        title: '',
+        subtitle: '',
+        wallets: []
+      })
+    }
   }
 
   private showSelector() {
-    this.Widget?.$set({ show: true })
+    if (this.Widget) {
+      this.Widget.$set({ show: true })
+    }
   }
 
 
@@ -87,8 +96,8 @@ export default class WalletTypeSelector {
             this.hasRoundedLogo = !!options.isLogoRound
           } else {
             const cssVar = CustomStyleOptionsToVarsMap.get(key as keyof CustomStyleOptions)
-            if (cssVar && options[key]) {
-              this.widgetHolder?.style.setProperty(`--${cssVar}`, options[key])
+            if (cssVar && options[key] && this.widgetHolder) {
+              this.widgetHolder.style.setProperty(`--${cssVar}`, options[key])
             }
           }
         })

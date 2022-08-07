@@ -28,7 +28,7 @@
     }
 
     function doAction() {
-        if (action?.callback) {
+        if (action && action.callback) {
             action.callback()
         }
     }
