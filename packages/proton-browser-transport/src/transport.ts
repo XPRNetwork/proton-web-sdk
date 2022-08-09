@@ -1,22 +1,17 @@
-import { Base64u, SessionError, SigningRequest } from '@proton/link'
-import type { LinkTransport, LinkStorage, LinkChannelSession, LinkSession, Bytes } from '@proton/link'
+import { Base64u, SessionError } from '@proton/link'
+import type { LinkTransport, LinkStorage, LinkChannelSession, LinkSession, Bytes, SigningRequest } from '@proton/link'
 import QRCode from 'qrcode'
 import DialogWidget from './views/Dialog.svelte'
 import { Storage } from './storage'
 import { isMobile, generateReturnUrl, parseErrorMessage } from './utils'
-import { type footNoteDownloadLinks, type BrowserTransportOptions, type DialogArgs, SkipToManual } from './types'
+import { type BrowserTransportOptions, type DialogArgs, SkipToManual } from './types'
 
-const footnoteLinks: footNoteDownloadLinks = {
-    proton: 'https://protonchain.com/wallet',
-    anchor: 'https://greymass.com/en/anchor/',
-}
 
 export class BrowserTransport implements LinkTransport {
     /** Package version. */
     static version = '__ver' // replaced by build script
 
     public storage: LinkStorage
-    private classPrefix: string
     private requestStatus: boolean
     private requestAccount: string
     private walletType: string
@@ -28,7 +23,6 @@ export class BrowserTransport implements LinkTransport {
     private Widget?: DialogWidget
 
     constructor(public readonly options: BrowserTransportOptions = {}) {
-        this.classPrefix = options.classPrefix || 'proton-link'
         this.requestStatus = !(options.requestStatus === false)
         this.requestAccount = options.requestAccount || ''
         this.walletType = options.walletType || 'proton'
@@ -56,44 +50,13 @@ export class BrowserTransport implements LinkTransport {
         }
     }
 
-    private createEl(attrs?: { [key: string]: any }): HTMLElement {
-        if (!attrs) attrs = {}
-        const el = document.createElement(attrs.tag || 'div')
-        for (const attr of Object.keys(attrs)) {
-            const value = attrs[attr]
-            switch (attr) {
-                case 'src':
-                    el.setAttribute(attr, value)
-                    break
-                case 'tag':
-                    break
-                case 'content':
-                    if (typeof value === 'string') {
-                        el.appendChild(document.createTextNode(value))
-                    } else {
-                        el.appendChild(value)
-                    }
-                    break
-                case 'text':
-                    el.appendChild(document.createTextNode(value))
-                    break
-                case 'class':
-                    el.className = `${this.classPrefix}-${value}`
-                    break
-                default:
-                    el.setAttribute(attr, value)
-            }
-        }
-        return el
-    }
-
     private hide() {
         if (this.Widget) {
             this.Widget.$set({
                 show: false,
                 title: '',
                 subtitle: null,
-                footnote: null,
+                showFootnote: false,
                 countDown: null,
                 qrData: null,
                 action: null,
@@ -117,13 +80,9 @@ export class BrowserTransport implements LinkTransport {
             title: args.title || '',
             subtitle: args.subtitle || '',
             action: args.action || null,
-            footnote: args.footnote
-                ? (args.footnote instanceof HTMLElement)
-                    ? args.footnote.outerHTML
-                    : args.footnote
-                : null,
-            countDown: (args.content && args.content.countDown) || null, 
-            qrData: (args.content && args.content.qrData) || null, 
+            showFootnote: args.showFootnote,
+            countDown: (args.content && args.content.countDown) || null,
+            qrData: (args.content && args.content.qrData) || null,
         };
 
         if (this.Widget) {
@@ -157,25 +116,9 @@ export class BrowserTransport implements LinkTransport {
             link: sameDeviceUri
         }
 
-        let footnote: HTMLElement = this.createEl({ class: 'footnote' })
-        const isIdentity = request.isIdentity()
-        if (isIdentity) {
-            footnote = this.createEl({
-                class: 'footnote',
-                text: `Don't have a wallet? `,
-            })
-            const footnoteLink = this.createEl({
-                tag: 'a',
-                target: '_blank',
-                href: footnoteLinks[this.walletType],
-                text: 'Download it here',
-            })
-            footnote.appendChild(footnoteLink)
-        }
-
         this.showDialog({
             title,
-            footnote: footnote.innerHTML,
+            showFootnote: request.isIdentity(),
             subtitle,
             hideBackButton,
             content: { qrData },
@@ -352,7 +295,7 @@ export class BrowserTransport implements LinkTransport {
         }
 
         this.clearTimers()
-        
+
         if (this.requestStatus) {
             this.showDialog({
                 title: 'Transaction Error',
