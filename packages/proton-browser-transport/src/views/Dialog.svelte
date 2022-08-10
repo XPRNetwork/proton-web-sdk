@@ -1,5 +1,6 @@
 <script lang="ts">
     import {createEventDispatcher} from 'svelte'
+    import {getFootnoteLink} from '../utils'
     import CountDown from './CountDown.svelte'
     import QrCode from './QRCode.svelte'
 
@@ -10,12 +11,13 @@
     export let walletType: string = 'proton'
     export let title: string = ''
     export let subtitle: string | null = null
-    export let footnote: string | null = null
+    export let showFootnote: boolean = false
     export let countDown: string | null = null
     export let qrData: {code: string; link: string} | null = null
     export let action: {text: string; callback: () => void} | null = null
 
     $: walletTypeClass = ` proton-link--${walletType}`
+    $: footnoteLink = showFootnote ? getFootnoteLink(walletType) : ''
 
     function back() {
         dispatch('back')
@@ -66,12 +68,12 @@
                 <hr class="proton-link-hr" />
                 <button class="proton-link-button" on:click={doAction}>{action.text}</button>
             {/if}
-            
-            <!-- {#if footnote}
+
+            {#if footnoteLink}
                 <div class="proton-link-footnote">
-                    {@html footnote}
+                    Don't have a wallet? <a href={footnoteLink} target="_blank">Download it here</a>
                 </div>
-            {/if} -->
+            {/if}
         </div>
     </div>
 </div>
