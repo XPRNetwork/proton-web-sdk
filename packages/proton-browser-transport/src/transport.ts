@@ -6,7 +6,6 @@ import { Storage } from './storage'
 import { isMobile, generateReturnUrl, parseErrorMessage } from './utils'
 import { type BrowserTransportOptions, type DialogArgs, SkipToManual } from './types'
 
-
 export class BrowserTransport implements LinkTransport {
     /** Package version. */
     static version = '__ver' // replaced by build script
