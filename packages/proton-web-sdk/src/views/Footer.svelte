@@ -17,13 +17,13 @@
     <img
       alt="Get it on Google Play"
       src="https://proton.org/static/b36e63520d1db11b0ce4989b73866ae0/DownloadGoogleEN.svg"
-    >
+    />
   </a>
 </div>
 
 <style lang="scss" global>
   .wallet-selector-footnote {
-    margin-top: 20px;
+    margin-top: 5px;
     display: flex;
     justify-content: space-between;
     position: relative;

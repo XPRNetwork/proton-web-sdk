@@ -1,4 +1,4 @@
-import { isInstanceOf, APIError } from "@proton/link"
+import type { footNoteDownloadLinks } from './types'
 
 export function isAppleHandheld() {
     return /iP(ad|od|hone)/i.test(navigator.userAgent)
@@ -120,6 +120,15 @@ export function parseErrorMessage(error: any) {
     } else {
         errorMessage = error.message || String(error)
     }
-    
+
     return errorMessage
+}
+
+const footnoteLinks: footNoteDownloadLinks = {
+    proton: 'https://protonchain.com/wallet',
+    anchor: 'https://greymass.com/en/anchor/',
+}
+
+export function getFootnoteLink(walletType: string): string {
+    return footnoteLinks[walletType] || ''
 }

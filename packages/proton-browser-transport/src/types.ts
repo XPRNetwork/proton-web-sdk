@@ -24,7 +24,7 @@ export interface DialogArgs {
     type?: string
     content?: Record<string, any>
     action?: { text: string; callback: () => void }
-    footnote?: string | HTMLElement,
+    showFootnote?: boolean,
     hideLogo?: boolean,
     hideBackButton?: boolean
 }
