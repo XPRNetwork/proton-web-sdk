@@ -106,6 +106,9 @@
             color: white;
             cursor: pointer;
             text-align: center;
+            background-color: transparent;
+            background-image: none;
+            outline: none;
         }
 
         &-subtitle {
