@@ -222,11 +222,15 @@ export class BrowserTransport implements LinkTransport {
             clearTimeout(this.closeTimer)
             this.closeTimer = undefined
         }
+        this.clearCountdown()
+    }
+
+    private clearCountdown() {
         if (this.countdownTimer) {
             if (this.Widget) {
                 this.Widget.$set({ countDown: undefined })
             }
-            clearTimeout(this.countdownTimer)
+            clearInterval(this.countdownTimer)
             this.countdownTimer = undefined
         }
     }
@@ -267,6 +271,8 @@ export class BrowserTransport implements LinkTransport {
             this.showRecovery(request, session)
             return true
         }
+
+        this.clearCountdown()
 
         this.showDialog({
             title: 'Unable to reach device',
