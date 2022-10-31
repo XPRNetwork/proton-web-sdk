@@ -1,7 +1,17 @@
 import type { footNoteDownloadLinks } from './types'
 
+/**
+ * The UserAgent for IPad has changed since IOS 13.
+ * Now it looks the same as for MacOS, so there is no `IPad` keyword anymore.
+ * So we need to check **maxTouchPoints** to know if it is an IPad
+ * */
 export function isAppleHandheld() {
-    return /iP(ad|od|hone)/i.test(navigator.userAgent)
+    return (
+        /iP(ad|od|hone)/i.test(navigator.userAgent) ||
+        (navigator.userAgent.toLowerCase().indexOf('macintosh') > -1 &&
+            navigator.maxTouchPoints &&
+            navigator.maxTouchPoints > 2)
+    )
 }
 
 export function isChromeiOS() {
