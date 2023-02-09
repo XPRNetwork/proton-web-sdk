@@ -159,6 +159,8 @@ An object which includes style options for the wallet selection. If not specifie
  - **appName** – type string – optional – text which is displayed in the modal window and the name of the app displayed in transaction
 ​
  - **appLogo** – type string – optional – image is displayed in the modal window.
+
+  - **dialogRootNode** - type string | HTMLElement - optional - The Webauth modal parent html node. Can be a valid css selector or a HTMLElement. If not provided the default parent is the ``document.body``
 ​
  - **customStyleOptions** – type Object – optional – object which can include all styles needed for the wallet selection modal window.  
 The ```CustomStyleOptions``` interface located in the ```proton-web-sdk``` directory should be changed in order to customize it.  

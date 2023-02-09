@@ -7,11 +7,13 @@ export default class WalletTypeSelector {
   private hasRoundedLogo: boolean = false
   private appName: string
   private customStyleOptions: CustomStyleOptions | undefined
+  private dialogRootNode: HTMLElement;
 
-  constructor(name?: string, logo?: string, customStyleOptions?: CustomStyleOptions) {
+  constructor(name?: string, logo?: string, customStyleOptions?: CustomStyleOptions,dialogRootNode?:HTMLElement | string) {
     this.appLogo = logo
     this.appName = name || 'app'
     this.customStyleOptions = customStyleOptions;
+    this.dialogRootNode = this.setDialogRootNode(dialogRootNode);
   }
 
   /** Container and stylesheet for Wallet Selector */
@@ -84,7 +86,7 @@ export default class WalletTypeSelector {
 
     if (!this.Widget) {
       this.widgetHolder = document.createElement('div')
-      document.body.appendChild(this.widgetHolder);
+      this.dialogRootNode.appendChild(this.widgetHolder);
       this.Widget = new DialogWidget({
         target: this.widgetHolder
       })
@@ -123,5 +125,16 @@ export default class WalletTypeSelector {
       this.fontAdded = true;
     }
   }
+
+  private setDialogRootNode(rootNode?: string | HTMLElement): HTMLElement {
+    
+    if (!rootNode) return document.body
+    if (typeof rootNode == 'string') { 
+      const node = document.body.querySelector(rootNode);
+      if (!node) throw new Error('dialogRootNode is not a valid selector');
+      return node as HTMLElement;
+    }
+    return rootNode;
+   }
 
 }

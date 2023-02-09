@@ -20,6 +20,7 @@ export interface SelectorOptions {
   appLogo?: string,
   walletType?: string,
   enabledWalletTypes?: string[],
+  dialogRootNode?: HTMLElement | string;
   customStyleOptions?: CustomStyleOptions
 }
 
