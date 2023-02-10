@@ -18,7 +18,7 @@ export const ConnectWallet = async ({
   // Add RPC
   const rpc = new JsonRpc(linkOptions.endpoints)
   linkOptions.client = rpc
-
+  
   // Add Chain ID
   if (!linkOptions.chainId) {
     const info = await rpc.get_info();;
@@ -51,7 +51,7 @@ const login = async (loginOptions: LoginOptions): Promise<{
   let loginResult
 
   if (!walletSelector) {
-    walletSelector = new WalletTypeSelector(loginOptions.selectorOptions.appName, loginOptions.selectorOptions.appLogo, loginOptions.selectorOptions.customStyleOptions);
+    walletSelector = new WalletTypeSelector(loginOptions.selectorOptions.appName, loginOptions.selectorOptions.appLogo, loginOptions.selectorOptions.customStyleOptions,loginOptions.selectorOptions.dialogRootNode);
   }
 
   // Determine wallet type from storage or selector modal
