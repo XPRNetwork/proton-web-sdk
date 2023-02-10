@@ -9,7 +9,7 @@ export default class WalletTypeSelector {
   private customStyleOptions: CustomStyleOptions | undefined
   private dialogRootNode: HTMLElement;
 
-  constructor(name?: string, logo?: string, customStyleOptions?: CustomStyleOptions,dialogRootNode?:HTMLElement | string) {
+  constructor(name?: string, logo?: string, customStyleOptions?: CustomStyleOptions, dialogRootNode?: HTMLElement | string) {
     this.appLogo = logo
     this.appName = name || 'app'
     this.customStyleOptions = customStyleOptions;
