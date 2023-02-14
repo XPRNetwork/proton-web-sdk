@@ -15,6 +15,7 @@
   }
 </script>
 
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <li class="wallet-selector-wallet" on:click|stopPropagation={selectWallet}>
   <div class="wallet-selector-logo{walletTypeClass}" />
   <span class="wallet-selector-wallet-name">{wallet.value}</span>

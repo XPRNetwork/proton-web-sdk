@@ -36,6 +36,7 @@
     }
 </script>
 
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
     class="proton-link{walletTypeClass}"
     class:is-active={show}
@@ -71,7 +72,9 @@
 
             {#if footnoteLink}
                 <div class="proton-link-footnote">
-                    Don't have a wallet? <a href={footnoteLink} target="_blank">Download it here</a>
+                    Don't have a wallet? <a href={footnoteLink} target="_blank" rel="noreferrer"
+                        >Download it here</a
+                    >
                 </div>
             {/if}
         </div>
@@ -117,6 +120,7 @@
             display: block;
             margin-top: 10px;
             text-align: center;
+            word-break: break-word;
         }
 
         &--anchor {

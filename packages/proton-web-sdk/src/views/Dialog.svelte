@@ -21,6 +21,7 @@
   }
 </script>
 
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
   class="wallet-selector"
   class:wallet-selector-active={show}
@@ -42,11 +43,13 @@
           By connecting, I accept Proton's <a
             class="wallet-selector-tos-link"
             href="https://protonchain.com/terms"
-            target="_blank">Terms of Service</a
+            target="_blank"
+            rel="noreferrer">Terms of Service</a
           >
         </p>
       </div>
     </div>
+
     <div class="wallet-selector-close" on:click={close} />
   </div>
   <Footer />

@@ -3,6 +3,7 @@
     href="https://apps.apple.com/us/app/webauth-com/id1594500069"
     id="iOS"
     target="_blank"
+    rel="noreferrer"
   >
     <img
       alt="Download on the App Store"
@@ -13,6 +14,7 @@
     href="https://play.google.com/store/apps/details?id=com.metallicus.webauth"
     id="Android"
     target="_blank"
+    rel="noreferrer"
   >
     <img
       alt="Get it on Google Play"
