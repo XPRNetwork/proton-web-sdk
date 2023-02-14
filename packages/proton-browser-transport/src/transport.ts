@@ -1,10 +1,10 @@
 import { Base64u, SessionError } from '@proton/link'
 import type { LinkTransport, LinkStorage, LinkChannelSession, LinkSession, Bytes, SigningRequest } from '@proton/link'
-import QRCode from 'qrcode'
 import DialogWidget from './views/Dialog.svelte'
 import { Storage } from './storage'
 import { isMobile, generateReturnUrl, parseErrorMessage } from './utils'
 import { type BrowserTransportOptions, type DialogArgs, SkipToManual } from './types'
+import GenerateQrCode from './qrcode'
 
 export class BrowserTransport implements LinkTransport {
     /** Package version. */
@@ -90,7 +90,7 @@ export class BrowserTransport implements LinkTransport {
         this.show()
     }
 
-    private async displayRequest(
+    private displayRequest(
         request: SigningRequest,
         title: string,
         subtitle: string = '',
@@ -109,7 +109,7 @@ export class BrowserTransport implements LinkTransport {
         const sameDeviceUri = sameDeviceRequest.encode(true, false)
         const crossDeviceUri = request.encode(true, false)
 
-        const qrCode = await QRCode.toDataURL(crossDeviceUri)
+        const qrCode = GenerateQrCode(crossDeviceUri)
         const qrData = {
             code: qrCode,
             link: sameDeviceUri
@@ -137,7 +137,11 @@ export class BrowserTransport implements LinkTransport {
         this.clearTimers()
         this.activeRequest = request
         this.activeCancel = cancel
-        this.displayRequest(request, 'Scan the QR-Code').catch(cancel)
+        try {
+            this.displayRequest(request, 'Scan the QR-Code')
+        } catch (e) {
+            cancel(e as string | Error)
+        }
     }
 
     public onSessionRequest(
