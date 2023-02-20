@@ -29,11 +29,11 @@ const ConnectWallet = async ({
   transportOptions,
 }: ConnectWalletArgs) => {
   // Add RPC
-  linkOptions.client = new JsonRpc(linkOptions.endpoints)
+  linkOptions.client = linkOptions.rpc || new JsonRpc(linkOptions.endpoints)
   
   // Add chain ID if not present
   if (!linkOptions.chainId) {
-    const info = await linkOptions.rpc!.get_info()
+    const info = await linkOptions.client!.get_info()
     linkOptions.chainId = info.chain_id
   }
 
