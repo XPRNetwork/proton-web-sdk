@@ -36,6 +36,7 @@ export class ProtonWebLink {
   client: JsonRpc | undefined
   testUrl: string | undefined
   transport: LinkTransport
+  chainId: string
 
   public get childWindow() {
     return _childWindow;
@@ -51,6 +52,7 @@ export class ProtonWebLink {
     this.storage = options.storage
     this.testUrl = options.testUrl
     this.transport = options.transport
+    this.chainId = options.chainId!.toString()
 
     setInterval(() => this.closeChild(), 500)
     window.addEventListener('message', (event) => this.onEvent(event), false)
@@ -80,6 +82,7 @@ export class ProtonWebLink {
   createSession(auth: Authorization) {
     return {
       auth,
+      chainId: this.chainId,
       transact: async (args: TransactArgs, options?: TransactOptions): Promise<any> => {
         if (this.deferredLogin) {
           this.closeChild(true)
