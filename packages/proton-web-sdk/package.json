@@ -32,7 +32,7 @@
   "dependencies": {
     "@greymass/eosio": "^0.6.1",
     "@proton/browser-transport": "^4.2.12",
-    "@proton/js": "^26.1.54",
+    "@proton/js": "^27.5.7",
     "@proton/link": "^4.2.7"
   },
   "husky": {

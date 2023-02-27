@@ -3,7 +3,7 @@
   "version": "4.2.14",
   "private": true,
   "dependencies": {
-    "@proton/js": "^26.1.36",
+    "@proton/js": "^27.5.7",
     "@proton/web-sdk": "^4.2.14",
     "@tailwindcss/forms": "^0.4.0",
     "react": "^17.0.2",

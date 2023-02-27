@@ -17,7 +17,7 @@
     "@angular/platform-browser": "~13.1.0",
     "@angular/platform-browser-dynamic": "~13.1.0",
     "@angular/router": "~13.1.0",
-    "@proton/js": "^26.1.36",
+    "@proton/js": "^27.5.7",
     "@proton/web-sdk": "^4.2.14",
     "@tailwindcss/forms": "^0.4.0",
     "rxjs": "~7.4.0",
