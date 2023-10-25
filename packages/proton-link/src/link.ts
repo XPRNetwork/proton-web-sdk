@@ -591,6 +591,8 @@ export class Link {
             },
         })
         const metadata = sessionMetadata(res.payload, res.resolved.request)
+        // add the identity proof represented as 'EOSIO <hash>' to metadata
+        metadata['identityProof'] = String(res.proof)
         const signerKey = res.proof.recover()
         let session: LinkSession
 
