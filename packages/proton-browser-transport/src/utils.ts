@@ -135,7 +135,7 @@ export function parseErrorMessage(error: any) {
 }
 
 const footnoteLinks: footNoteDownloadLinks = {
-    proton: 'https://protonchain.com/wallet',
+    proton: 'https://xprnetwork.org/wallet',
     anchor: 'https://greymass.com/en/anchor/',
 }
 

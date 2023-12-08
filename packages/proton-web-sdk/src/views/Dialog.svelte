@@ -40,9 +40,9 @@
           </ul>
         {/if}
         <p class="wallet-selector-tos-agreement">
-          By connecting, I accept Proton's <a
+          By connecting, I accept XPR Network's <a
             class="wallet-selector-tos-link"
-            href="https://protonchain.com/terms"
+            href="https://xprnetwork.org/webauth-terms"
             target="_blank"
             rel="noreferrer">Terms of Service</a
           >

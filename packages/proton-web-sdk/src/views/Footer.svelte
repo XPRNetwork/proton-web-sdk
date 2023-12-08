@@ -7,7 +7,7 @@
   >
     <img
       alt="Download on the App Store"
-      src="https://proton.org/static/719169dd7ea5089ae32be4dcae845078/DownloadApple.svg"
+      src="https://xprnetwork.org/static/719169dd7ea5089ae32be4dcae845078/DownloadApple.svg"
     />
   </a>
   <a
@@ -18,7 +18,7 @@
   >
     <img
       alt="Get it on Google Play"
-      src="https://proton.org/static/b36e63520d1db11b0ce4989b73866ae0/DownloadGoogleEN.svg"
+      src="https://xprnetwork.org/static/b36e63520d1db11b0ce4989b73866ae0/DownloadGoogleEN.svg"
     />
   </a>
 </div>
