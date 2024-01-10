@@ -46,8 +46,11 @@ export function isAndroid() {
     return /Android/.test(navigator.userAgent)
 }
 
+// @ts-ignore
+export const isNativeApp = () => !!window.ReactNativeWebView;
+
 export function isAndroidWebView() {
-    return /wv/.test(navigator.userAgent) || /Android.*AppleWebKit/.test(navigator.userAgent);
+    return /wv/.test(navigator.userAgent) || (/Android/.test(navigator.userAgent) && isNativeApp());
 }
 
 export function isMobile() {
