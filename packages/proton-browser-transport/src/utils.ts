@@ -81,27 +81,27 @@ export function generateReturnUrl() {
     }
 
     if (isAndroid() && isFirefox()) {
-        return 'android-intent://org.mozilla.firefox'
+        return 'android-app://org.mozilla.firefox'
     }
 
     if (isAndroid() && isEdge()) {
-        return 'android-intent://com.microsoft.emmx'
+        return 'android-app://com.microsoft.emmx'
     }
 
     if (isAndroid() && isOpera()) {
-        return 'android-intent://com.opera.browser'
+        return 'android-app://com.opera.browser'
     }
 
     if (isAndroid() && isBrave()) {
-        return 'android-intent://com.brave.browser'
+        return 'android-app://com.brave.browser'
     }
 
     if (isAndroid() && isAndroidWebView()) {
-        return 'android-intent://webview'
+        return 'android-app://webview'
     }
 
     if (isAndroid() && isChromeMobile()) {
-        return 'android-intent://com.android.chrome'
+        return 'android-app://com.android.chrome'
     }
 
     return window.location.href
