@@ -10,7 +10,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@proton/js": "^27.5.7",
+    "@proton/js": "^28.0.0",
     "@proton/web-sdk": "^4.2.17",
     "@tailwindcss/forms": "^0.4.0",
     "vue": "^3.2.26",
