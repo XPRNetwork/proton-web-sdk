@@ -10,6 +10,7 @@
         if (link) {
             if (isFirefox() || isBrave()) {
                 iframeUrl = link
+                window.location.href = link
             } else {
                 window.location.href = link
             }
