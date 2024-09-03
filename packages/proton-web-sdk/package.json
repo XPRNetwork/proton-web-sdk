@@ -46,7 +46,7 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "gitHead": "d81cd76c8aacc2538243e24d0801b3eae4b8dba2",
+  "gitHead": "1e249b94cdaa5078379f3ea2ac80650343999fbd",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^22.0.1",
     "@rollup/plugin-json": "^4.1.0",

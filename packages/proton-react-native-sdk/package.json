@@ -45,7 +45,7 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "gitHead": "e15e7e40cc610b4a7ceeaee75909ff6389d8f1e5",
+  "gitHead": "1e249b94cdaa5078379f3ea2ac80650343999fbd",
   "devDependencies": {
     "@types/react-native": "^0.63.43"
   }
