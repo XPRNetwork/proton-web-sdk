@@ -1,8 +1,13 @@
 {
     "root": true,
     "parser": "@typescript-eslint/parser",
-    "plugins": ["@typescript-eslint"],
-    "ignorePatterns": ["lib/*", "node_modules/**"],
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "ignorePatterns": [
+        "lib/*",
+        "node_modules/**"
+    ],
     "extends": [
         "eslint:recommended",
         "plugin:prettier/recommended",
@@ -24,6 +29,6 @@
         "@typescript-eslint/no-namespace": "off",
         "@typescript-eslint/no-non-null-assertion": "off",
         "@typescript-eslint/no-empty-function": "warn",
-        "no-inner-declarations": "off",
+        "no-inner-declarations": "off"
     }
 }
