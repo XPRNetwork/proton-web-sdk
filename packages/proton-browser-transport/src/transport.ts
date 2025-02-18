@@ -1,9 +1,17 @@
 import { Base64u, SessionError } from '@proton/link'
-import type { LinkTransport, LinkStorage, LinkChannelSession, LinkSession, Bytes, SigningRequest } from '@proton/link'
+import type {
+    Bytes,
+    LinkChannelSession,
+    LinkSession,
+    LinkStorage,
+    LinkTransport,
+    SigningRequest,
+} from '@proton/link'
 import DialogWidget from './views/Dialog.svelte'
 import { Storage } from './storage'
-import { isMobile, generateReturnUrl, parseErrorMessage } from './utils'
+import { generateReturnUrl, isMobile, parseErrorMessage } from './utils'
 import { type BrowserTransportOptions, type DialogArgs, SkipToManual } from './types'
+
 import GenerateQrCode from './qrcode'
 
 export class BrowserTransport implements LinkTransport {
@@ -42,8 +50,8 @@ export class BrowserTransport implements LinkTransport {
         this.showingManual = false
         if (!this.Widget) {
             const widgetHolder = document.createElement('div')
-            document.body.appendChild(widgetHolder);
-            this.Widget = new DialogWidget({ target: widgetHolder })
+            document.body.appendChild(widgetHolder)
+            this.Widget = new DialogWidget({target: widgetHolder})
             this.Widget.$on('back', () => document.dispatchEvent(new CustomEvent('backToSelector')))
             this.Widget.$on('close', () => this.closeModal())
         }
@@ -66,7 +74,7 @@ export class BrowserTransport implements LinkTransport {
 
     private show() {
         if (this.Widget) {
-            this.Widget.$set({ show: true })
+            this.Widget.$set({show: true})
         }
     }
 
@@ -82,10 +90,10 @@ export class BrowserTransport implements LinkTransport {
             showFootnote: args.showFootnote,
             countDown: (args.content && args.content.countDown) || null,
             qrData: (args.content && args.content.qrData) || null,
-        };
+        }
 
         if (this.Widget) {
-            this.Widget.$set({ ...props })
+            this.Widget.$set({...props})
         }
         this.show()
     }
@@ -93,8 +101,8 @@ export class BrowserTransport implements LinkTransport {
     private displayRequest(
         request: SigningRequest,
         title: string,
-        subtitle: string = '',
-        hideBackButton: boolean = false
+        subtitle = '',
+        hideBackButton = false
     ) {
         const sameDeviceRequest = request.clone()
         const returnUrl = generateReturnUrl()
@@ -112,7 +120,7 @@ export class BrowserTransport implements LinkTransport {
         const qrCode = GenerateQrCode(crossDeviceUri)
         const qrData = {
             code: qrCode,
-            link: sameDeviceUri
+            link: sameDeviceUri,
         }
 
         this.showDialog({
@@ -120,7 +128,7 @@ export class BrowserTransport implements LinkTransport {
             showFootnote: request.isIdentity(),
             subtitle,
             hideBackButton,
-            content: { qrData },
+            content: {qrData},
         })
     }
 
@@ -177,7 +185,8 @@ export class BrowserTransport implements LinkTransport {
             const minutes = String(Math.floor(secondsLeft / 60)).padStart(2, '0')
             return secondsLeft > 0 ? `${minutes}:${seconds}` : '00:00'
         }
-        const updateCountdown = (startTime: number) => this.Widget && this.Widget.$set({ countDown: formatCountDown(startTime) })
+        const updateCountdown = (startTime: number) =>
+            this.Widget && this.Widget.$set({countDown: formatCountDown(startTime)})
         this.countdownTimer = setInterval(() => updateCountdown(start), 1000)
         updateCountdown(start)
 
@@ -186,7 +195,7 @@ export class BrowserTransport implements LinkTransport {
             title: 'Signing Request',
             subtitle: `Please open ${deviceName || 'linked wallet'} to review the transaction`,
             content: {
-                countDown: formatCountDown(start)
+                countDown: formatCountDown(start),
             },
             hideBackButton: true,
             action: {
@@ -232,7 +241,7 @@ export class BrowserTransport implements LinkTransport {
     private clearCountdown() {
         if (this.countdownTimer) {
             if (this.Widget) {
-                this.Widget.$set({ countDown: undefined })
+                this.Widget.$set({countDown: undefined})
             }
             clearInterval(this.countdownTimer)
             this.countdownTimer = undefined
@@ -240,7 +249,7 @@ export class BrowserTransport implements LinkTransport {
     }
 
     private showRecovery(request: SigningRequest, session: LinkSession) {
-        request.data.info = request.data.info.filter(pair => pair.key !== 'return_path')
+        request.data.info = request.data.info.filter((pair) => pair.key !== 'return_path')
         if (session.type === 'channel') {
             const channelSession = session as Partial<LinkChannelSession>
             if (channelSession.addLinkInfo) {
@@ -256,11 +265,13 @@ export class BrowserTransport implements LinkTransport {
     }
 
     public recoverError(error: Error, request: SigningRequest) {
-        if (!(
-            request === this.activeRequest &&
-            (error['code'] === 'E_DELIVERY' || error['code'] === 'E_TIMEOUT') &&
-            error['session']
-        )) {
+        if (
+            !(
+                request === this.activeRequest &&
+                (error['code'] === 'E_DELIVERY' || error['code'] === 'E_TIMEOUT') &&
+                error['session']
+            )
+        ) {
             return false
         }
 
@@ -280,11 +291,13 @@ export class BrowserTransport implements LinkTransport {
 
         this.showDialog({
             title: 'Unable to reach device',
-            subtitle: error.message || `Unable to deliver the request to ${session.metadata.name || 'the linked wallet'}.`,
+            subtitle:
+                error.message ||
+                `Unable to deliver the request to ${session.metadata.name || 'the linked wallet'}.`,
             type: 'warning',
             action: {
                 text: 'Optional: Sign manually using QR code',
-                callback: () => this.showRecovery(request, session)
+                callback: () => this.showRecovery(request, session),
             },
         })
         return true

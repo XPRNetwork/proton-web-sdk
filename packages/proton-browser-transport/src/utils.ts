@@ -47,10 +47,10 @@ export function isAndroid() {
 }
 
 // @ts-ignore
-export const isNativeApp = () => !!window.ReactNativeWebView;
+export const isNativeApp = () => !!window.ReactNativeWebView
 
 export function isAndroidWebView() {
-    return /wv/.test(navigator.userAgent) || (/Android/.test(navigator.userAgent) && isNativeApp());
+    return /wv/.test(navigator.userAgent) || (/Android/.test(navigator.userAgent) && isNativeApp())
 }
 
 export function isMobile() {
@@ -122,7 +122,7 @@ export function parseErrorMessage(error: any) {
     }
 
     if (error.details) {
-        const { code, details, name, what } = error
+        const {code, details, name, what} = error
         if (name === 'eosio_assert_message_exception') {
             errorMessage = details[0].message.replace('assertion failure with message: ', '')
         } else if (details.length > 0) {
