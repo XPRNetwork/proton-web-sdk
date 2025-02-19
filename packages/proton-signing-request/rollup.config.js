@@ -4,10 +4,10 @@ import babel from '@rollup/plugin-babel'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import typescript from '@rollup/plugin-typescript'
-import {terser} from 'rollup-plugin-terser'
+import terser from '@rollup/plugin-terser'
 import json from '@rollup/plugin-json'
 import replace from '@rollup/plugin-replace'
-import nodePolyfills from 'rollup-plugin-polyfill-node';
+import nodePolyfills from 'rollup-plugin-polyfill-node'
 
 import pkg from './package.json'
 
@@ -70,7 +70,20 @@ export default [
             file: pkg.unpkg,
             format: 'iife',
             sourcemap: true,
-            exports: 'named'
+            exports: 'named',
+        },
+        moduleContext: (id) => {
+            // In order to match native module behaviour, Rollup sets `this`
+            // as `undefined` at the top level of modules. Rollup also outputs
+            // a warning if a module tries to access `this` at the top level.
+            // The following modules use `this` at the top level and expect it
+            // to be the global `window` object, so we tell Rollup to set
+            // `this = window` for these modules.
+            const thisAsWindowForModules = ['node_modules/core-js/internals/global-this.js']
+
+            if (thisAsWindowForModules.some((id_) => id.trimRight().endsWith(id_))) {
+                return 'window'
+            }
         },
         plugins: [
             nodePolyfills(),
@@ -91,13 +104,13 @@ export default [
                             targets: '>0.25%, not dead',
                             useBuiltIns: 'usage',
                             corejs: '3',
-                            loose: true
+                            loose: true,
                         },
                     ],
                 ],
                 plugins: [
-                    ["@babel/plugin-proposal-decorators", { "legacy": true }],
-                    ["@babel/plugin-proposal-class-properties", { "loose": true }]
+                    ['@babel/plugin-proposal-decorators', {legacy: true}],
+                    ['@babel/plugin-proposal-class-properties', {loose: true}],
                 ],
             }),
             terser({

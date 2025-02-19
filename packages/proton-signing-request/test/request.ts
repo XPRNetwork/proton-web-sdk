@@ -5,17 +5,13 @@ import abiProvider from './utils/mock-abi-provider'
 import mockAbiProvider from './utils/mock-abi-provider'
 import zlib from './utils/node-zlib-provider'
 
-import {
-    ChainName,
-    ResolvedSigningRequest,
-    SignatureProvider,
-    SigningRequestEncodingOptions,
-} from '../src'
+import { SignatureProvider, SigningRequestEncodingOptions } from '../src'
 import * as TSModule from '../src'
-import {Name, PrivateKey, Serializer, Signature, UInt64} from '@greymass/eosio'
-import {IdentityProof} from '../src/identity-proof'
+import { Serializer, Signature } from '@greymass/eosio'
 
-let {SigningRequest, PlaceholderAuth, PlaceholderName} = TSModule
+let {SigningRequest} = TSModule
+const {PlaceholderAuth, PlaceholderName} = TSModule
+
 if (process.env['TEST_UMD']) {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const UMDModule = require('./../lib/index.es5')
@@ -26,6 +22,7 @@ if (process.env['TEST_UMD']) {
 const options: SigningRequestEncodingOptions = {
     abiProvider,
     zlib,
+    scheme: 'esr',
 }
 
 const timestamp = '2018-02-15T00:00:00'
@@ -44,15 +41,17 @@ describe('signing request', function () {
             options
         )
         assert.deepStrictEqual(recode(request.data), {
-            chain_id: ['chain_alias', 1],
+            chain_id: [
+                'chain_id',
+                'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
+            ],
             req: [
                 'action',
                 {
                     account: 'eosio.token',
                     name: 'transfer',
                     authorization: [{actor: 'foo', permission: 'active'}],
-                    data:
-                        '000000000000285d000000000000ae39e80300000000000003454f53000000000b68656c6c6f207468657265',
+                    data: '000000000000285d000000000000ae39e80300000000000003454f53000000000b68656c6c6f207468657265',
                 },
             ],
             callback: '',
@@ -94,15 +93,13 @@ describe('signing request', function () {
                         account: 'eosio.token',
                         name: 'transfer',
                         authorization: [{actor: 'foo', permission: 'active'}],
-                        data:
-                            '000000000000285d000000000000ae39e80300000000000003454f53000000000b68656c6c6f207468657265',
+                        data: '000000000000285d000000000000ae39e80300000000000003454f53000000000b68656c6c6f207468657265',
                     },
                     {
                         account: 'eosio.token',
                         name: 'transfer',
                         authorization: [{actor: 'baz', permission: 'active'}],
-                        data:
-                            '000000000000be39000000000000ae39e80300000000000003454f53000000000b68656c6c6f207468657265',
+                        data: '000000000000be39000000000000ae39e80300000000000003454f53000000000b68656c6c6f207468657265',
                     },
                 ],
             ],
@@ -126,8 +123,7 @@ describe('signing request', function () {
                             account: 'eosio.token',
                             name: 'transfer',
                             authorization: [{actor: 'foo', permission: 'active'}],
-                            data:
-                                '000000000000285D000000000000AE39E80300000000000003454F53000000000B68656C6C6F207468657265',
+                            data: '000000000000285D000000000000AE39E80300000000000003454F53000000000B68656C6C6F207468657265',
                         },
                     ],
                 },
@@ -144,8 +140,7 @@ describe('signing request', function () {
                             account: 'eosio.token',
                             name: 'transfer',
                             authorization: [{actor: 'foo', permission: 'active'}],
-                            data:
-                                '000000000000285d000000000000ae39e80300000000000003454f53000000000b68656c6c6f207468657265',
+                            data: '000000000000285d000000000000ae39e80300000000000003454f53000000000b68656c6c6f207468657265',
                         },
                     ],
                     context_free_actions: [],
@@ -177,8 +172,7 @@ describe('signing request', function () {
                     account: 'eosio.token',
                     name: 'transfer',
                     authorization: [{actor: '............1', permission: '............1'}],
-                    data:
-                        '0100000000000000000000000000285d01000000000000000050454e47000000135468616e6b7320666f72207468652066697368',
+                    data: '0100000000000000000000000000285d01000000000000000050454e47000000135468616e6b7320666f72207468652066697368',
                 },
             ],
             callback: '',
@@ -554,7 +548,7 @@ describe('signing request', function () {
         )
         const expected =
             'https://example.com?tx=6aff5c203810ff6b40469fe20318856354889ff037f4cf5b89a157514a43e825&bn=1234'
-        assert.equal(callback!.url, expected)
+        assert.strictEqual(callback!.url, expected)
     })
 
     it('should handle scoped id requests', async function () {
@@ -566,24 +560,24 @@ describe('signing request', function () {
             },
             options
         )
-        assert.equal(req.encode(), 'esr://g2NgZP4PBQxMwhklJQXFVvr6qRWJuQU5qXrJ-bkMAA')
+        assert.strictEqual(req.encode(), 'esr://g2NgZP4PBQxMwhklJQXFVvr6qRWJuQU5qXrJ-bkMAA')
         const decoded = SigningRequest.from(
             'esr://g2NgZP4PBQxMwhklJQXFVvr6qRWJuQU5qXrJ-bkMAA',
             options
         )
-        assert.equal(decoded.data.equals(req.data), true)
-        assert.equal(decoded.getIdentityScope()!.toString(), scope.toString())
+        assert.strictEqual(decoded.data.equals(req.data), true)
+        assert.strictEqual(decoded.getIdentityScope()!.toString(), scope.toString())
         const resolved = req.resolve(
             new Map(),
             {actor: 'foo', permission: 'active'},
             {expiration: '2020-07-10T08:40:20'}
         )
-        assert.equal(resolved.transaction.expiration.toString(), '2020-07-10T08:40:20')
-        assert.equal(
+        assert.strictEqual(resolved.transaction.expiration.toString(), '2020-07-10T08:40:20')
+        assert.strictEqual(
             resolved.transaction.actions[0].data.hexString,
             'ffffffffffffffff01000000000000285d00000000a8ed3232'
         )
-        assert.equal(
+        assert.strictEqual(
             resolved.signingDigest.hexString,
             '70d1fd5bda1998135ed44cbf26bd1cc2ed976219b2b6913ac13f41d4dd013307'
         )
@@ -600,8 +594,8 @@ describe('signing request', function () {
                 background: false,
             },
         })
-        assert.equal(req.isMultiChain(), true)
-        assert.deepEqual(req.getChainIds()!.map(String), [
+        assert.strictEqual(req.isMultiChain(), true)
+        assert.deepStrictEqual(req.getChainIds()!.map(String), [
             'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906',
             '1064487b3cd1a897ce03ae5b6a865651747e2e152090f99c1d19d44e01aea5a4',
         ])
@@ -616,17 +610,15 @@ describe('signing request', function () {
         const key = PrivateKey.from('PVT_K1_2wFL8Ne8JoGrxz6GdnfB7d4yhUYpqNgubHeKUC64qT3XE6Ro84')
         const sig = key.signDigest(resolved.signingDigest)
         const callback = resolved.getCallback([sig])
-        assert.deepEqual(callback, {
+        assert.deepStrictEqual(callback, {
             background: false,
             payload: {
-                sig:
-                    'SIG_K1_K4nkCupUx3hDXSHq4rhGPpDMPPPjJyvmF3M6j7ppYUzkR3L93endwnxf3YhJSG4SSvxxU1ytD8hj39kukTeYxjwy5H3XNJ',
+                sig: 'SIG_K1_K4nkCupUx3hDXSHq4rhGPpDMPPPjJyvmF3M6j7ppYUzkR3L93endwnxf3YhJSG4SSvxxU1ytD8hj39kukTeYxjwy5H3XNJ',
                 tx: 'b8e921a7b68d7309847e633d74963f25eb5a7d0b15b1aceb143723c234686a8d',
                 rbn: '0',
                 rid: '0',
                 ex: '2020-07-10T08:40:20',
-                req:
-                    'esr://AwAAAwAAAAAAAChdAAAVbXlhcHA6Ly9sb2dpbj17e2NpZH19AQljaGFpbl9pZHMFAgABAAo',
+                req: 'esr://AwAAAwAAAAAAAChdAAAVbXlhcHA6Ly9sb2dpbj17e2NpZH19AQljaGFpbl9pZHMFAgABAAo',
                 sa: 'foo',
                 sp: 'active',
                 cid: '1064487b3cd1a897ce03ae5b6a865651747e2e152090f99c1d19d44e01aea5a4',
@@ -634,13 +626,13 @@ describe('signing request', function () {
             url: 'myapp://login=1064487b3cd1a897ce03ae5b6a865651747e2e152090f99c1d19d44e01aea5a4',
         })
         const recreated = await ResolvedSigningRequest.fromPayload(callback!.payload)
-        assert.equal(recreated.request.encode(), req.encode())
-        assert.equal(
+        assert.strictEqual(recreated.request.encode(), req.encode())
+        assert.strictEqual(
             recreated.chainId.hexString,
             '1064487b3cd1a897ce03ae5b6a865651747e2e152090f99c1d19d44e01aea5a4'
         )
         const proof = recreated.getIdentityProof(sig)
-        assert.equal(
+        assert.strictEqual(
             String(proof),
             'EOSIO EGRIezzRqJfOA65baoZWUXR+LhUgkPmcHRnUTgGupaQAAAAAAAAoXXQpCF8AAAAAAAAoXQAAAACo7TIyAB9I36p6NdMCKzksNwp4nFbiEhq8/sVAeji/4JMzk/CHAwc5ipaF8G/SNuXkJ9XWaDSu98DWzbXuvaVcimXUvGDQ'
         )
