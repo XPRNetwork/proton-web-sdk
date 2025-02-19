@@ -5,8 +5,6 @@ import {
     ABISerializable,
     AnyAction,
     AnyTransaction,
-    API,
-    APIClient,
     Bytes,
     Name,
     NameType,
@@ -35,15 +33,15 @@ import {
     SigningRequestEncodingOptions,
 } from '@proton/signing-request'
 
-import {CancelError, IdentityError} from './errors'
-import {LinkChainConfig, LinkOptions} from './link-options'
-import {LinkChannelSession, LinkFallbackSession, LinkSession} from './link-session'
-import {LinkStorage} from './link-storage'
-import {LinkTransport} from './link-transport'
-import {LinkCreate} from './link-types'
-import {BuoyCallbackService, LinkCallback, LinkCallbackService} from './link-callback'
-import {sessionMetadata} from './utils'
-import { RpcInterfaces, JsonRpc } from '@proton/js'
+import { CancelError, IdentityError } from './errors'
+import { LinkChainConfig, LinkOptions } from './link-options'
+import { LinkChannelSession, LinkFallbackSession, LinkSession } from './link-session'
+import { LinkStorage } from './link-storage'
+import { LinkTransport } from './link-transport'
+import { LinkCreate } from './link-types'
+import { BuoyCallbackService, LinkCallback, LinkCallbackService } from './link-callback'
+import { sessionMetadata } from './utils'
+import { JsonRpc, RpcInterfaces } from '@proton/js'
 
 /**
  * Payload accepted by the [[Link.transact]] method.
@@ -429,7 +427,7 @@ export class Link {
                     serializedTransaction: packedTx.packed_trx.array,
                     serializedContextFreeData: packedTx.packed_context_free_data.array,
                     signatures: signedTxParsed.signatures,
-                    transactionHeader: signedTxParsed
+                    transactionHeader: signedTxParsed,
                 })
                 result.processed = res.processed
             }
@@ -439,7 +437,7 @@ export class Link {
             return result
         } catch (error) {
             if (t.onFailure) {
-                t.onFailure(request, (error as any))
+                t.onFailure(request, error as any)
             }
             throw error
         }
@@ -679,7 +677,9 @@ export class Link {
             sessionData = JSON.parse(data)
         } catch (error) {
             throw new Error(
-                `Unable to restore session: Stored JSON invalid (${(error as any).message || String(error)})`
+                `Unable to restore session: Stored JSON invalid (${
+                    (error as any).message || String(error)
+                })`
             )
         }
         const session = LinkSession.restore(this, sessionData)
