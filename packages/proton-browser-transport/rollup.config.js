@@ -5,12 +5,12 @@ import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import typescript from '@rollup/plugin-typescript'
 import replace from '@rollup/plugin-replace'
-import { terser } from 'rollup-plugin-terser'
-import sveltePreprocess from 'svelte-preprocess';
+import terser from '@rollup/plugin-terser'
+import sveltePreprocess from 'svelte-preprocess'
 
 import pkg from './package.json'
 
-const production = false;
+const production = false
 
 const license = fs.readFileSync('LICENSE').toString('utf-8').trim()
 const banner = `
@@ -40,10 +40,12 @@ export default [
         },
         plugins: [
             svelte({
-                preprocess: sveltePreprocess({ sourceMap: !production }),
+                preprocess: sveltePreprocess({
+                    sourceMap: !production,
+                }),
                 compilerOptions: {
                     // enable run-time checks when not in production
-                    dev: !production
+                    dev: !production,
                 },
                 emitCss: false,
             }),
@@ -55,15 +57,15 @@ export default [
             // https://github.com/rollup/plugins/tree/master/packages/commonjs
             resolve({
                 browser: true,
-                dedupe: ['svelte']
+                dedupe: ['svelte'],
             }),
             typescript({
                 sourceMap: !production,
                 inlineSources: !production,
-                target: 'es6'
-            })
+                target: 'es6',
+            }),
         ],
-        external: Object.keys({ ...pkg.dependencies, ...pkg.peerDependencies }),
+        external: Object.keys({...pkg.dependencies, ...pkg.peerDependencies}),
         onwarn,
     },
     {
@@ -76,10 +78,10 @@ export default [
         },
         plugins: [
             svelte({
-                preprocess: sveltePreprocess({ sourceMap: !production }),
+                preprocess: sveltePreprocess({sourceMap: !production}),
                 compilerOptions: {
                     // enable run-time checks when not in production
-                    dev: !production
+                    dev: !production,
                 },
                 emitCss: false,
             }),
@@ -91,15 +93,15 @@ export default [
             // https://github.com/rollup/plugins/tree/master/packages/commonjs
             resolve({
                 browser: true,
-                dedupe: ['svelte']
+                dedupe: ['svelte'],
             }),
             typescript({
                 sourceMap: !production,
                 inlineSources: !production,
                 target: 'es6',
-            })
+            }),
         ],
-        external: Object.keys({ ...pkg.dependencies, ...pkg.peerDependencies }),
+        external: Object.keys({...pkg.dependencies, ...pkg.peerDependencies}),
         onwarn,
     },
     {
@@ -107,7 +109,7 @@ export default [
         output: {
             banner,
             file: pkg.types,
-            format: 'esm'
+            format: 'esm',
         },
         onwarn,
         plugins: [dts()],
@@ -115,7 +117,7 @@ export default [
     {
         input: 'src/index.ts',
         output: {
-            globals: { '@proton/link': 'ProtonLink' },
+            globals: {'@proton/link': 'ProtonLink'},
             banner,
             name: 'ProtonBrowserTransport',
             file: pkg.unpkg,
@@ -124,10 +126,10 @@ export default [
         },
         plugins: [
             svelte({
-                preprocess: sveltePreprocess({ sourceMap: !production }),
+                preprocess: sveltePreprocess({sourceMap: !production}),
                 compilerOptions: {
                     // enable run-time checks when not in production
-                    dev: !production
+                    dev: !production,
                 },
                 emitCss: false,
             }),
@@ -139,7 +141,7 @@ export default [
             // https://github.com/rollup/plugins/tree/master/packages/commonjs
             resolve({
                 browser: true,
-                dedupe: ['svelte']
+                dedupe: ['svelte'],
             }),
             commonjs(),
             typescript({
@@ -156,7 +158,7 @@ export default [
                 },
             }),
         ],
-        external: Object.keys({ ...pkg.peerDependencies }),
+        external: Object.keys({...pkg.peerDependencies}),
         onwarn,
     },
 ]
