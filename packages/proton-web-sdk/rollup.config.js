@@ -5,13 +5,13 @@ import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import typescript from '@rollup/plugin-typescript'
 import replace from '@rollup/plugin-replace'
-import { terser } from 'rollup-plugin-terser'
+import terser from '@rollup/plugin-terser'
 import json from '@rollup/plugin-json'
 import sveltePreprocess from 'svelte-preprocess';
 
 import pkg from './package.json'
 
-const production = false;
+const production = false
 
 const license = fs.readFileSync('LICENSE').toString('utf-8').trim()
 const banner = `
@@ -37,7 +37,7 @@ const exportFix = `
 
 const replaceVersion = replace({
   preventAssignment: true,
-  __ver: pkg.version,
+  __ver: `${pkg.version}`,
 })
 
 export default [
@@ -52,7 +52,9 @@ export default [
     },
     plugins: [
       svelte({
-        preprocess: sveltePreprocess({ sourceMap: !production }),
+        preprocess: sveltePreprocess({ 
+          sourceMap: !production 
+        }),
         compilerOptions: {
           // enable run-time checks when not in production
           dev: !production
@@ -91,7 +93,7 @@ export default [
         preprocess: sveltePreprocess({ sourceMap: !production }),
         compilerOptions: {
           // enable run-time checks when not in production
-          dev: !production
+          dev: !production,
         },
         emitCss: false,
       }),

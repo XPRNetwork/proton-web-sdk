@@ -1,18 +1,18 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "module": "esnext",
+        "downlevelIteration": true,
+        "esModuleInterop": true,
+        "importHelpers": true,
         "lib": [
             "esnext",
             "dom"
         ],
-        "target": "es2020",
-        "importHelpers": true,
-        "downlevelIteration": true,
-        "esModuleInterop": true,
+        "module": "esnext",
         "moduleResolution": "node",
         "noImplicitAny": false,
         "strict": true,
+        "target": "ES2022",
         "declarationDir": "./dist/types",
         /**
         Svelte Preprocess cannot figure out whether you have a value or a type, so tell TypeScript
