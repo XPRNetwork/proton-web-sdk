@@ -206,7 +206,7 @@ export class LinkChannelSession extends LinkSession implements LinkTransport {
             body: payload.array,
         })
             .then((response) => {
-                if (Math.floor(response.status / 100) !== 2) {
+                if (response.status !== 0 && Math.floor(response.status / 100) !== 2) {
                     clearTimeout(timer)
                     if (response.status === 202) {
                         // eslint-disable-next-line no-console
