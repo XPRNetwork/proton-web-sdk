@@ -10,13 +10,13 @@ import {
     Serializer,
 } from '@greymass/eosio'
 
-import {ChainId, ChainIdType, SigningRequest} from '@proton/signing-request'
+import { ChainId, ChainIdType, SigningRequest } from '@proton/signing-request'
 
-import {SessionError} from './errors'
-import {Link, TransactArgs, TransactOptions, TransactResult} from './link'
-import {LinkTransport} from './link-transport'
-import {LinkCreate, LinkInfo, SealedMessage} from './link-types'
-import {fetch, logWarn, sealMessage, sessionMetadata} from './utils'
+import { SessionError } from './errors'
+import { Link, TransactArgs, TransactOptions, TransactResult } from './link'
+import { LinkTransport } from './link-transport'
+import { LinkCreate, LinkInfo, SealedMessage } from './link-types'
+import { fetch, logWarn, sealMessage, sessionMetadata } from './utils'
 
 /**
  * Type describing a link session that can create a eosjs compatible
@@ -202,14 +202,15 @@ export class LinkChannelSession extends LinkSession implements LinkTransport {
             headers: {
                 'X-Buoy-Wait': (this.timeout / 1000).toFixed(0),
             },
+            mode: 'no-cors',
             body: payload.array,
         })
             .then((response) => {
-                if (Math.floor(response.status / 100) !== 2) {
+                if (response.status !== 0 && Math.floor(response.status / 100) !== 2) {
                     clearTimeout(timer)
                     if (response.status === 202) {
-                       // eslint-disable-next-line no-console
-                       console.warn('Missing delivery ack from session channel')
+                        // eslint-disable-next-line no-console
+                        console.warn('Missing delivery ack from session channel')
                     }
                     cancel(new SessionError('Unable to push message', 'E_DELIVERY', this))
                 } else {
