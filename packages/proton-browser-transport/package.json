@@ -1,6 +1,6 @@
 {
   "name": "@proton/browser-transport",
-  "version": "4.2.19",
+  "version": "4.2.20",
   "description": "Vanilla JS browser transport for Proton Link",
   "homepage": "https://github.com/protonprotocol/proton-browser-transport",
   "license": "BSD-3-Clause",
@@ -37,7 +37,6 @@
     "eslint": "^7.15.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-prettier": "^3.2.0",
-    "node-sass": "^7.0.1",
     "postcss": "^8.4.14",
     "prettier": "^2.2.1",
     "rollup": "^2.75.7",
