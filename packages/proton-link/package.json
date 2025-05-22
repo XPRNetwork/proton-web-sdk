@@ -1,6 +1,6 @@
 {
     "name": "@proton/link",
-    "version": "4.2.19",
+    "version": "4.2.20",
     "description": "Library for authenticating and signing transactions using the Proton Link protocol",
     "license": "BSD-3-Clause",
     "main": "lib/proton-link.js",
@@ -37,7 +37,7 @@
     "dependencies": {
         "@greymass/eosio": "^0.6.1",
         "@jafri/asmcrypto.js": "^2.3.2",
-        "@proton/js": "^28.0.0",
+        "@proton/js": "^28.1.2",
         "@proton/signing-request": "^4.2.7",
         "bson": "^4.6.0",
         "fetch-ponyfill": "^7.1.0",
@@ -67,7 +67,7 @@
         "eslint": "^7.18.0",
         "eslint-config-prettier": "^8.1.0",
         "eslint-plugin-prettier": "^3.3.1",
-        "gh-pages": "^3.1.0",
+        "gh-pages": "^5.0.0",
         "mocha": "^9.0.2",
         "nyc": "^15.1.0",
         "prettier": "^2.2.1",
