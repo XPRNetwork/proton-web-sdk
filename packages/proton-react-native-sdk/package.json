@@ -47,6 +47,7 @@
   },
   "gitHead": "e15e7e40cc610b4a7ceeaee75909ff6389d8f1e5",
   "devDependencies": {
-    "@types/react-native": "^0.63.43"
+    "@types/react-native": "^0.63.43",
+    "tsdx": "^0.14.1"
   }
 }

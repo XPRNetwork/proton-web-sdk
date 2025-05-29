@@ -1,25 +1,28 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
 
-  const dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher<{
+    'select-wallet': { walletName: string };
+  }>();
   import type { WalletItem } from '../types';
 
   export let wallet: WalletItem;
 
   $: walletTypeClass = ` wallet-selector-logo--${wallet.key.toLowerCase()}`;
 
-  function selectWallet() {
+  const selectWallet = () => {
     dispatch('select-wallet', {
       walletName: wallet.key,
     });
   }
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<li class="wallet-selector-wallet" on:click|stopPropagation={selectWallet}>
-  <div class="wallet-selector-logo{walletTypeClass}" />
-  <span class="wallet-selector-wallet-name">{wallet.value}</span>
-  <div class="wallet-selector-right-arrow" />
+<li>
+  <div role="button" class="wallet-selector-wallet" on:click|stopPropagation={selectWallet}>
+    <div class="wallet-selector-logo{walletTypeClass}" />
+    <span class="wallet-selector-wallet-name">{wallet.value}</span>
+    <div class="wallet-selector-right-arrow" />
+  </div>
 </li>
 
 <style lang="scss" global>

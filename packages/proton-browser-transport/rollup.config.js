@@ -7,7 +7,8 @@ import commonjs from '@rollup/plugin-commonjs'
 import typescript from '@rollup/plugin-typescript'
 import replace from '@rollup/plugin-replace'
 import terser from '@rollup/plugin-terser'
-import sveltePreprocess from 'svelte-preprocess'
+import json from '@rollup/plugin-json'
+import {sveltePreprocess} from 'svelte-preprocess'
 
 const pkg = createRequire(import.meta.url)("./package.json");
 
@@ -151,6 +152,7 @@ export default [
                 browser: true,
                 dedupe: ['svelte'],
             }),
+            json(),
             commonjs(),
             typescript({
                 sourceMap: !production,

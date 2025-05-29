@@ -6,7 +6,9 @@
 
   import type { WalletItem } from '../types';
 
-  const dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher<{
+    close: void
+  }>();
 
   export let title: string = '';
   export let subtitle: string = '';
@@ -15,7 +17,7 @@
   export let hasRoundedLogo: boolean = false;
   export let wallets: WalletItem[] = [];
 
-  function close() {
+  const close = () => {
     show = false;
     dispatch('close');
   }
@@ -23,6 +25,7 @@
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
+  role="presentation"
   class="wallet-selector"
   class:wallet-selector-active={show}
   on:click|self|stopPropagation={close}
@@ -50,7 +53,7 @@
       </div>
     </div>
 
-    <div class="wallet-selector-close" on:click={close} />
+    <div class="wallet-selector-close" role="button" on:click={close} />
   </div>
   <Footer />
 </div>

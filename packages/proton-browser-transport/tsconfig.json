@@ -1,18 +1,18 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "downlevelIteration": true,
-        "esModuleInterop": true,
-        "importHelpers": true,
+        "module": "esnext",
         "lib": [
             "esnext",
             "dom"
         ],
-        "module": "esnext",
+        "target": "es2020",
+        "importHelpers": true,
+        "downlevelIteration": true,
+        "esModuleInterop": true,
         "moduleResolution": "node",
         "noImplicitAny": false,
         "strict": true,
-        "target": "es2020",
         "declaration": true,
         "declarationDir": "./lib",
         "verbatimModuleSyntax": true,
