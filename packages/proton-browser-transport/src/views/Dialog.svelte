@@ -4,7 +4,10 @@
     import CountDown from './CountDown.svelte'
     import QrCode from './QRCode.svelte'
 
-    const dispatch = createEventDispatcher()
+    const dispatch = createEventDispatcher<{
+        back: void;
+        close: void;
+    }>()
 
     export let show: boolean = false
     export let showBackButton: boolean = false
@@ -19,25 +22,25 @@
     $: walletTypeClass = ` proton-link--${walletType}`
     $: footnoteLink = showFootnote ? getFootnoteLink(walletType) : ''
 
-    function back() {
+    const back = () => {
         dispatch('back')
         close()
     }
 
-    function close() {
+    const close = () => {
         show = false
         dispatch('close')
     }
 
-    function doAction() {
+    const doAction = () => {
         if (action && action.callback) {
             action.callback()
         }
     }
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
+    role="presentation"
     class="proton-link{walletTypeClass}"
     class:is-active={show}
     on:click|self|stopPropagation={close}
@@ -45,10 +48,10 @@
     <div class="proton-link-inner">
         <div class="proton-link-nav">
             {#if showBackButton}
-                <div class="proton-link-back" on:click={back} />
+                <div class="proton-link-back" role="button" on:click={back} />
             {/if}
             <span class="proton-link-header">{title}</span>
-            <div class="proton-link-close" on:click={close} />
+            <div class="proton-link-close" role="button" on:click={close} />
         </div>
         <div class="proton-link-request">
             {#if subtitle}
@@ -167,9 +170,11 @@
             }
         }
 
+
         &.is-active {
             display: flex;
         }
+        
 
         &-inner {
             background-color: white;

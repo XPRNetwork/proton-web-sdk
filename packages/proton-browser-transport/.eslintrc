@@ -12,8 +12,16 @@
         "eslint:recommended",
         "plugin:prettier/recommended",
         "plugin:@typescript-eslint/eslint-recommended",
-        "plugin:@typescript-eslint/recommended"
+        "plugin:@typescript-eslint/recommended",
+        "plugin:svelte/recommended"
     ],
+    "parserOptions": {
+        "sourceType": "module",
+        "ecmaVersion": 2020,
+        "extraFileExtensions": [
+            ".svelte"
+        ]
+    },
     "rules": {
         "prettier/prettier": "warn",
         "no-console": "warn",
@@ -29,6 +37,17 @@
         "@typescript-eslint/no-namespace": "off",
         "@typescript-eslint/no-non-null-assertion": "off",
         "@typescript-eslint/no-empty-function": "warn",
-        "no-inner-declarations": "off"
-    }
+        "no-inner-declarations": "off",
+    },
+    "overrides": [
+        {
+            "files": [
+                "*.svelte"
+            ],
+            "parser": "svelte-eslint-parser",
+            "parserOptions": {
+                "parser": "@typescript-eslint/parser"
+            }
+        }
+    ]
 }

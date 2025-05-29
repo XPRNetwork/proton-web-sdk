@@ -7,7 +7,7 @@ import util from './util'
 export default class QRCode {
     typeNumber: number
     errorCorrectLevel: any
-    modules: any
+    modules: any[][]
     moduleCount: number
     dataCache: any
     dataList: any
@@ -15,7 +15,7 @@ export default class QRCode {
     constructor(typeNumber, errorCorrectLevel) {
         this.typeNumber = typeNumber
         this.errorCorrectLevel = errorCorrectLevel
-        this.modules = null
+        this.modules = []
         this.moduleCount = 0
         this.dataCache = null
         this.dataList = []
@@ -28,6 +28,8 @@ export default class QRCode {
     }
 
     isDark(row: string | number, col: string | number) {
+        row = +row
+        col = +col
         if (row < 0 || this.moduleCount <= row || col < 0 || this.moduleCount <= col) {
             throw new Error(row + ',' + col)
         }

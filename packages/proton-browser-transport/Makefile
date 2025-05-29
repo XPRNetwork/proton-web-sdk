@@ -2,7 +2,7 @@ SRC_FILES := $(shell find src -name '*.ts' -or -name '*.svelte')
 
 all: lib
 
-lib: ${SRC_FILES} package.json tsconfig.json node_modules rollup.config.js
+lib: ${SRC_FILES} package.json tsconfig.json node_modules rollup.config.mjs
 	@./node_modules/.bin/rollup -c && touch lib
 
 .PHONY: lint
