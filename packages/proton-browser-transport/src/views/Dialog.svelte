@@ -115,6 +115,7 @@
             background-color: transparent;
             background-image: none;
             outline: none;
+            border: none;
         }
 
         &-subtitle {
