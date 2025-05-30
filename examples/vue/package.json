@@ -13,7 +13,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "@proton/js": "^28.1.2",
+    "@proton/js": "^28.0.0",
     "@proton/web-sdk": "^4.3.0",
     "@tailwindcss/vite": "^4.1.8",
     "pinia": "^3.0.1",

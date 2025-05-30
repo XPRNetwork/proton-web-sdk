@@ -1,6 +1,7 @@
 <script lang="ts">
-	import Header from "./Header.svelte";
-	import Transfer from "./Transfer.svelte";
+	import Header from "$lib/components/Header.svelte";
+	import Transfer from "$lib/components/Transfer.svelte";
+	import "../app.css";
 </script>
 
 <svelte:head>

@@ -5,15 +5,15 @@ import type {
   TransactResult,
   Link
 } from "@proton/web-sdk";
-import { Serialize, JsonRpc, RpcInterfaces } from "@proton/js";
+import { Serialize, JsonRpc } from "@proton/js";
+import type {RpcInterfaces} from "@proton/js";
 
 export let link: ProtonWebLink | Link | undefined;
 export let session: LinkSession | undefined;
 
-const REQUEST_ACCOUNT = "taskly";
-const CHAIN_ID =
-  "384da888112027f0321850a169f737c33e53b388aad48b5adace4bab97f437e0";
-const ENDPOINTS = ["https://proton.greymass.com"];
+const REQUEST_ACCOUNT = "taskly"
+const CHAIN_ID = "71ee83bcf52142d61019d95f9cc5427ba6a0d7ff8accd9e2088ae2abeaf3d3dd"
+const ENDPOINTS = ["https://rpc.api.testnet.metalx.com"]
 
 const rpc = new JsonRpc(ENDPOINTS);
 

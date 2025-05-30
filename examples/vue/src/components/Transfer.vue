@@ -8,7 +8,7 @@
           <input type="text"
                  name="from"
                  id="from"
-                 class="shadow-sm border focus:ring-indigo-500 focus:border-transparent block w-full sm:text-sm border-gray-300 rounded-md px-3 py-2"
+                 class="shadow-sm border focus:ring focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md px-3 py-2 outline-none"
                  :disabled="true"
                  placeholder="Please login"
                  :value="actor">
@@ -22,7 +22,7 @@
           <input type="text"
                  name="to"
                  id="to"
-                 class="shadow-sm border focus:ring-indigo-500 focus:border-transparent block w-full sm:text-sm border-gray-300 rounded-md px-3 py-2"
+                 class="shadow-sm border focus:ring focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md px-3 py-2 outline-none"
                  placeholder="e.g. token.burn"
                  v-model="to">
         </div>
@@ -34,7 +34,7 @@
           <input type="text"
                  name="amount"
                  id="amount"
-                 class="shadow-sm border focus:ring-indigo-500 focus:border-transparent block w-full sm:text-sm border-gray-300 rounded-md px-3 py-2"
+                 class="shadow-sm border focus:ring focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md px-3 py-2 outline-none"
                  placeholder="e.g. 1.3"
                  v-model="amount">
         </div>

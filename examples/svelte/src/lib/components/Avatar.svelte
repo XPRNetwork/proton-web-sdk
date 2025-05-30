@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { login, logout, actor, avatar } from "./userState";
 	import { onMount } from "svelte";
+	import { login, logout, actor, avatar } from "$lib/userState";
 
 	onMount(async () => {
 	  login(true);
@@ -10,7 +10,7 @@
 <div>
 	{#if $actor === ''}
     <div
-	  on:click={() => login(false)}
+	  onclick={() => login(false)}
       class="cursor-pointer whitespace-nowrap bg-purple-100 border border-transparent rounded-md py-2 px-4 inline-flex items-center justify-center text-base font-medium text-purple-600 hover:bg-purple-200"
     >
       Login
@@ -42,7 +42,7 @@
 					xmlns="http://www.w3.org/2000/svg"
 					viewBox="0 0 448 512"
 					class="ml-2 w-4 h-4 cursor-pointer"
-					on:click={() => logout()}
+					onclick={() => logout()}
 				>
 					<path
 						fill="currentColor"

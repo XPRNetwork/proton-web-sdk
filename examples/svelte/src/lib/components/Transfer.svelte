@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { transfer, actor } from "./userState";
+    import { transfer, actor } from "$lib/userState";
     
     let to = "";
     let amount = "";
@@ -14,7 +14,7 @@
                 type="text"
                 name="from"
                 id="from"
-                class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                class="shadow-sm border focus:ring focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md px-3 py-2 outline-none"
                 disabled={true}
                 placeholder="Please login"
                 value={$actor}
@@ -29,7 +29,7 @@
                 type="text"
                 name="to"
                 id="to"
-                class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                class="shadow-sm border focus:ring focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md px-3 py-2 outline-none"
                 placeholder="e.g. token.burn"
                 bind:value={to}
               >
@@ -42,7 +42,7 @@
                 type="text"
                 name="amount"
                 id="amount"
-                class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                class="shadow-sm border focus:ring focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md px-3 py-2 outline-none"
                 placeholder="e.g. 1.3"
                 bind:value={amount}
               >
@@ -52,7 +52,7 @@
           <div class="flex justify-center">
             <div
               class="cursor-pointer whitespace-nowrap bg-purple-100 border border-transparent rounded-md py-2 px-4 inline-flex items-center justify-center text-base font-medium text-purple-600 hover:bg-purple-200"
-              on:click={() => transfer({ to, amount })}
+              onclick={() => transfer({ to, amount })}
             >
               Transfer
             </div>

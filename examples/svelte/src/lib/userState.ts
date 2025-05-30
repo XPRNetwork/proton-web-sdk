@@ -7,9 +7,9 @@ export const permission = writable("");
 export const avatar = writable("");
 
 const clear = () => {
-  actor.update((v) => "");
-  permission.update((v) => "");
-  avatar.update((v) => "");
+  actor.set("");
+  permission.set("");
+  avatar.set("");
 };
 
 const getAvatar = (accountData: RpcInterfaces.UserInfo | undefined) => {
@@ -23,7 +23,7 @@ const getAvatar = (accountData: RpcInterfaces.UserInfo | undefined) => {
     }
   }
 
-  return "https://bloks.io/img/proton_avatar.png";
+  return "https://explorer.xprnetwork.org/img/proton_avatar.png";
 };
 
 export const login = async (reconnect: boolean = false) => {
@@ -36,11 +36,11 @@ export const login = async (reconnect: boolean = false) => {
   }
 
   if (SDK.session && SDK.session.auth) {
-    actor.update((_) => SDK.session!.auth.actor.toString());
-    permission.update((_) => SDK.session!.auth.permission.toString());
+    actor.set(SDK.session!.auth.actor.toString());
+    permission.set(SDK.session!.auth.permission.toString());
 
     const userInfo = await SDK.getProtonAvatar(get(actor));
-    avatar.update((_) => getAvatar(userInfo));
+    avatar.set(getAvatar(userInfo));
   }
 };
 
