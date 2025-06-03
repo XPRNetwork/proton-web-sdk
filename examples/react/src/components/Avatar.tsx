@@ -1,38 +1,51 @@
-import { useRecoilState, useRecoilValue } from "recoil";
-import { userAvatar, userState } from "../atoms/user";
+import { useSelector } from 'react-redux';
+import { selectUser, selectUserAvatar, setUser } from '../store/slices/user.slice';
 import * as SDK from "../webSdk";
+import { useCallback, useEffect } from 'react';
+import { useAppDispatch } from '../hooks/store';
 
 export const Avatar = () => {
-  const [user, setUser] = useRecoilState(userState);
-  const avatar = useRecoilValue(userAvatar)
-  
-  const clear = () => setUser({
-    actor: '',
-    permission: '',
-    accountData: undefined
-  })
 
-  const login = async (reconnect: boolean = false) => {
-    clear()
+  const user = useSelector(selectUser)
+  const avatar = useSelector(selectUserAvatar)
 
+  const dispatch = useAppDispatch()
+ 
+  const clear = useCallback(() => dispatch(
+    setUser({
+      actor: '',
+      permission: '',
+      accountData: undefined
+    })
+  ), [dispatch])
+
+  const login = useCallback(async (reconnect: boolean = false) => {
+    clear();
+    
     if (reconnect) {
-      await SDK.reconnect()
+      await SDK.reconnect();
     } else {
-      await SDK.login()
+      await SDK.login();
     }
 
     if (SDK.session && SDK.session.auth) {
-      setUser({
-        actor: SDK.session.auth.actor.toString(),
-        permission: SDK.session.auth.permission.toString(),
-        accountData: await SDK.getProtonAvatar(SDK.session.auth.actor.toString())
-      })
+      dispatch(
+        setUser({
+          actor: SDK.session.auth.actor.toString(),
+          permission: SDK.session.auth.permission.toString(),
+          accountData: await SDK.getProtonAvatar(SDK.session.auth.actor.toString())
+        })
+      );
     }
-  }
+  }, [clear, dispatch])
+
+  useEffect(() => {
+    login(true)
+  }, [login])
 
   const logout = async () => {
-    await SDK.logout()
-    clear()
+    await SDK.logout();
+    clear();
   }
 
   if (!user.actor) {
@@ -45,7 +58,6 @@ export const Avatar = () => {
       </div>
     )
   }
-
   return (
     <div className="relative">
       <div>

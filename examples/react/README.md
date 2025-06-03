@@ -2,26 +2,21 @@
 
 Small boilerplate to get started with Proton on React
 
-[CodeSandbox Playground](https://codesandbox.io/s/proton-react-demo-jpg5l)
+## Developing
 
-## Available Scripts
+Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
 
-In the project directory, you can run:
+```bash
+npm run dev
 
-### `npm start`
+# or start the server and open the app in a new browser tab
+npm run dev -- --open
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Building
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+To create a production version of your app:
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+npm run build
+```
