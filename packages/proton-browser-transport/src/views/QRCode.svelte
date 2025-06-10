@@ -4,9 +4,10 @@
     export let code: string = ''
     export let link: string = ''
 
+    
     let iframeUrl: string = 'about:blank'
 
-    function protonLinkClick() {
+    const protonLinkClick = () => {
         if (link) {
             if (isFirefox() || isBrave()) {
                 iframeUrl = link

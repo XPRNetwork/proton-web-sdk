@@ -1,13 +1,13 @@
 <template>
-  <router-view/>
+  <Header />
+  <Transfer />
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script setup lang="ts">
+import Header from '@/components/Header.vue'
+import Transfer from '@/components/Transfer.vue'
+</script>
+
+<style scoped>
+
 </style>

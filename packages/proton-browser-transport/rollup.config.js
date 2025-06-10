@@ -1,3 +1,4 @@
+import { createRequire } from "module";
 import fs from 'fs'
 import dts from 'rollup-plugin-dts'
 import svelte from 'rollup-plugin-svelte'
@@ -5,12 +6,13 @@ import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import typescript from '@rollup/plugin-typescript'
 import replace from '@rollup/plugin-replace'
-import { terser } from 'rollup-plugin-terser'
-import sveltePreprocess from 'svelte-preprocess';
+import terser from '@rollup/plugin-terser'
+import json from '@rollup/plugin-json'
+import {sveltePreprocess} from 'svelte-preprocess'
 
-import pkg from './package.json'
+const pkg = createRequire(import.meta.url)("./package.json");
 
-const production = false;
+const production = false
 
 const license = fs.readFileSync('LICENSE').toString('utf-8').trim()
 const banner = `
@@ -28,6 +30,12 @@ const replaceVersion = replace({
     __ver: `${pkg.version}`,
 })
 
+const svelteOnWarn = (warning, handler) => {
+    if (['a11y-click-events-have-key-events', 'a11y-interactive-supports-focus'].includes(warning.code)) return;
+    // let Rollup handle all other warnings normally
+    handler(warning);
+}
+
 export default [
     {
         input: 'src/index.ts',
@@ -40,12 +48,13 @@ export default [
         },
         plugins: [
             svelte({
-                preprocess: sveltePreprocess({ sourceMap: !production }),
+                preprocess: sveltePreprocess({sourceMap: !production}),
                 compilerOptions: {
                     // enable run-time checks when not in production
-                    dev: !production
+                    dev: !production,
                 },
                 emitCss: false,
+                onwarn: svelteOnWarn,
             }),
             replaceVersion,
             // If you have external dependencies installed from
@@ -55,15 +64,15 @@ export default [
             // https://github.com/rollup/plugins/tree/master/packages/commonjs
             resolve({
                 browser: true,
-                dedupe: ['svelte']
+                dedupe: ['svelte'],
             }),
             typescript({
                 sourceMap: !production,
                 inlineSources: !production,
-                target: 'es6'
-            })
+                target: 'es6',
+            }),
         ],
-        external: Object.keys({ ...pkg.dependencies, ...pkg.peerDependencies }),
+        external: Object.keys({...pkg.dependencies, ...pkg.peerDependencies}),
         onwarn,
     },
     {
@@ -76,12 +85,13 @@ export default [
         },
         plugins: [
             svelte({
-                preprocess: sveltePreprocess({ sourceMap: !production }),
+                preprocess: sveltePreprocess({sourceMap: !production}),
                 compilerOptions: {
                     // enable run-time checks when not in production
-                    dev: !production
+                    dev: !production,
                 },
                 emitCss: false,
+                onwarn: svelteOnWarn,
             }),
             replaceVersion,
             // If you have external dependencies installed from
@@ -91,15 +101,15 @@ export default [
             // https://github.com/rollup/plugins/tree/master/packages/commonjs
             resolve({
                 browser: true,
-                dedupe: ['svelte']
+                dedupe: ['svelte'],
             }),
             typescript({
                 sourceMap: !production,
                 inlineSources: !production,
                 target: 'es6',
-            })
+            }),
         ],
-        external: Object.keys({ ...pkg.dependencies, ...pkg.peerDependencies }),
+        external: Object.keys({...pkg.dependencies, ...pkg.peerDependencies}),
         onwarn,
     },
     {
@@ -107,7 +117,7 @@ export default [
         output: {
             banner,
             file: pkg.types,
-            format: 'esm'
+            format: 'esm',
         },
         onwarn,
         plugins: [dts()],
@@ -115,7 +125,7 @@ export default [
     {
         input: 'src/index.ts',
         output: {
-            globals: { '@proton/link': 'ProtonLink' },
+            globals: {'@proton/link': 'ProtonLink'},
             banner,
             name: 'ProtonBrowserTransport',
             file: pkg.unpkg,
@@ -124,12 +134,13 @@ export default [
         },
         plugins: [
             svelte({
-                preprocess: sveltePreprocess({ sourceMap: !production }),
+                preprocess: sveltePreprocess({sourceMap: !production}),
                 compilerOptions: {
                     // enable run-time checks when not in production
-                    dev: !production
+                    dev: !production,
                 },
                 emitCss: false,
+                onwarn: svelteOnWarn,
             }),
             replaceVersion,
             // If you have external dependencies installed from
@@ -139,8 +150,9 @@ export default [
             // https://github.com/rollup/plugins/tree/master/packages/commonjs
             resolve({
                 browser: true,
-                dedupe: ['svelte']
+                dedupe: ['svelte'],
             }),
+            json(),
             commonjs(),
             typescript({
                 sourceMap: !production,
@@ -156,7 +168,7 @@ export default [
                 },
             }),
         ],
-        external: Object.keys({ ...pkg.peerDependencies }),
+        external: Object.keys({...pkg.peerDependencies}),
         onwarn,
     },
 ]

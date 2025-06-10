@@ -1,3 +1,4 @@
+import { createRequire } from "module";
 import fs from 'fs'
 import dts from 'rollup-plugin-dts'
 import svelte from 'rollup-plugin-svelte'
@@ -5,11 +6,11 @@ import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import typescript from '@rollup/plugin-typescript'
 import replace from '@rollup/plugin-replace'
-import { terser } from 'rollup-plugin-terser'
+import terser from '@rollup/plugin-terser'
 import json from '@rollup/plugin-json'
-import sveltePreprocess from 'svelte-preprocess';
+import {sveltePreprocess} from 'svelte-preprocess';
 
-import pkg from './package.json'
+const pkg = createRequire(import.meta.url)("./package.json");
 
 const production = false;
 
@@ -40,6 +41,12 @@ const replaceVersion = replace({
   __ver: pkg.version,
 })
 
+const svelteOnWarn = (warning, handler) => {
+    if (['a11y-click-events-have-key-events', 'a11y-interactive-supports-focus'].includes(warning.code)) return;
+    // let Rollup handle all other warnings normally
+    handler(warning);
+}
+
 export default [
   {
     input: 'src/index.ts',
@@ -58,6 +65,7 @@ export default [
           dev: !production
         },
         emitCss: false,
+        onwarn: svelteOnWarn,
       }),
       replaceVersion,
       // If you have external dependencies installed from
@@ -94,6 +102,7 @@ export default [
           dev: !production
         },
         emitCss: false,
+        onwarn: svelteOnWarn,
       }),
       replaceVersion,
       // If you have external dependencies installed from
@@ -144,6 +153,7 @@ export default [
           dev: !production
         },
         emitCss: false,
+        onwarn: svelteOnWarn,
       }),
       replaceVersion,
       // If you have external dependencies installed from

@@ -23,15 +23,6 @@
   </div>
 </template>
 
-<script>
-import { defineComponent } from 'vue';
+<script setup lang="ts">
 import Avatar from '@/components/Avatar.vue'
-
-export default defineComponent({
-  name: 'AppHeader',
-
-  components: {
-    Avatar
-  }
-})
 </script>

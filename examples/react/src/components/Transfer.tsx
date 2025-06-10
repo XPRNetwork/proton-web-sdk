@@ -1,10 +1,12 @@
-import { useRecoilState } from "recoil";
-import { userState } from "../atoms/user";
+
 import { useState } from "react";
 import * as SDK from '../webSdk'
+import { useSelector } from 'react-redux';
+import { selectUser } from '../store/slices/user.slice';
 
 export const Transfer = () => {
-  const [user] = useRecoilState(userState);
+  const user = useSelector(selectUser)
+  
   const [to, setTo] = useState('')
   const [amount, setAmount] = useState('')
 
@@ -22,7 +24,7 @@ export const Transfer = () => {
               type="text"
               name="from"
               id="from"
-              className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+              className="shadow-sm border focus:ring focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md px-3 py-2 outline-none"
               disabled={true}
               placeholder="Please login"
               value={user.actor}
@@ -37,7 +39,7 @@ export const Transfer = () => {
               type="text"
               name="to"
               id="to"
-              className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+              className="shadow-sm border focus:ring focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md px-3 py-2 outline-none"
               placeholder="e.g. token.burn"
               value={to}
               onInput={input => setTo(input.currentTarget.value)}
@@ -51,7 +53,7 @@ export const Transfer = () => {
               type="text"
               name="amount"
               id="amount"
-              className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+              className="shadow-sm border focus:ring focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border-gray-300 rounded-md px-3 py-2 outline-none"
               placeholder="e.g. 1.3"
               value={amount}
               onInput={input => setAmount(input.currentTarget.value)}

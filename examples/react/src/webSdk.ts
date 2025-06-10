@@ -1,5 +1,7 @@
-import ProtonWebSDK, { ProtonWebLink, LinkSession, TransactResult, Link } from '@proton/web-sdk';
-import { Serialize, JsonRpc, RpcInterfaces } from '@proton/js';
+import ProtonWebSDK from '@proton/web-sdk';
+import type { ProtonWebLink, LinkSession, TransactResult, Link } from '@proton/web-sdk';
+import { Serialize, JsonRpc } from '@proton/js';
+import type { RpcInterfaces } from '@proton/js';
 
 export let link: ProtonWebLink | Link | undefined;
 export let session: LinkSession | undefined;
