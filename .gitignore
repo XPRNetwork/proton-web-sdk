@@ -1,2 +1,4 @@
 node_modules
 .angular
+
+packages/proton-react-native-sdk/example/*.lock
