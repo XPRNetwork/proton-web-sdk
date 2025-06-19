@@ -1,4 +1,4 @@
-import { TextDecoder, TextEncoder } from 'text-encoding-shim'
+import {TextDecoder, TextEncoder} from 'text-encoding-shim';
 
 global.TextDecoder = TextDecoder;
-global.TextEncoder = TextEncoder
+global.TextEncoder = TextEncoder;
