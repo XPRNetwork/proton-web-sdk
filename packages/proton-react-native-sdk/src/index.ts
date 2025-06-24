@@ -14,7 +14,7 @@ import Storage from './storage'
 type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
 
 interface ConnectWalletArgs {
-  linkOptions: PartialBy<LinkOptions, 'transport'> & {
+  linkOptions: PartialBy<LinkOptions, 'transport' | 'chains' | 'scheme'> & {
     endpoints: string[]
     rpc?: JsonRpc
     storage?: LinkStorage
@@ -70,8 +70,8 @@ const ConnectWallet = async ({
   })
 
   // Create link
-  const options = {
-    ...linkOptions,
+  const options: LinkOptions = {
+    ...linkOptions as LinkOptions,
     transport,
     walletType: 'proton',
     chains: []

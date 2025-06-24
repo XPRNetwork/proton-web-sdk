@@ -3,12 +3,12 @@
   "author": "Metallicus",
   "module": "dist/index.js",
   "unpkg": "dist/bundle.js",
-  "types": "dist/index.d.ts",
+  "types": "types/index.d.ts",
   "source": "src/index.ts",
   "version": "4.3.0",
   "license": "MIT",
   "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "typings": "types/index.d.ts",
   "files": [
     "dist",
     "src"
@@ -33,6 +33,10 @@
     "react-native": "^0.70.0",
     "react-native-get-random-values": "^1.11.0",
     "text-encoding-shim": "^1.0.5"
+  },
+  "peerDependencies": {
+    "@react-native-async-storage/async-storage": "^1.24.0",
+    "react-native-get-random-values": "^1.11.0"
   },
   "husky": {
     "hooks": {
