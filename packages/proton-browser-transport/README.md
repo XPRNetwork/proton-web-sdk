@@ -15,10 +15,6 @@ Parameters can be passed to the transport during construction as an object, allo
 
 ```ts
 const transport = new ProtonBrowserTransport({
-    /** CSS class prefix, defaults to `proton-link` */
-    classPrefix: 'my-css-prefix',
-    /** Whether to inject CSS styles in the page header, defaults to true. */
-    injectStyles: true,
     /** Whether to display request success and error messages, defaults to true */
     requestStatus: true,
     /** Local storage prefix, defaults to `proton-link`. */

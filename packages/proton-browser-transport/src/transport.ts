@@ -28,6 +28,7 @@ export class BrowserTransport implements LinkTransport {
     private closeTimer?: NodeJS.Timeout
     private showingManual: boolean
     private Widget?: DialogWidget
+    private widgetHolder?: HTMLElement
 
     constructor(public readonly options: BrowserTransportOptions = {}) {
         this.requestStatus = !(options.requestStatus === false)
@@ -49,9 +50,12 @@ export class BrowserTransport implements LinkTransport {
     private setupWidget() {
         this.showingManual = false
         if (!this.Widget) {
-            const widgetHolder = document.createElement('div')
-            document.body.appendChild(widgetHolder)
-            this.Widget = new DialogWidget({target: widgetHolder})
+            if(!this.widgetHolder) {
+                this.widgetHolder = document.createElement('div')
+                document.body.appendChild(this.widgetHolder)
+            }
+            
+            this.Widget = new DialogWidget({target: this.widgetHolder})
             this.Widget.$on('back', () => document.dispatchEvent(new CustomEvent('backToSelector')))
             this.Widget.$on('close', () => this.closeModal())
         }
@@ -59,23 +63,14 @@ export class BrowserTransport implements LinkTransport {
 
     private hide() {
         if (this.Widget) {
-            this.Widget.$set({
-                show: false,
-                title: '',
-                subtitle: null,
-                showFootnote: false,
-                countDown: null,
-                qrData: null,
-                action: null,
-            })
+            this.Widget.$destroy()
+            this.Widget = undefined;
+        }
+        if (this.widgetHolder) {
+            this.widgetHolder.remove()
+            this.widgetHolder = undefined;
         }
         this.clearTimers()
-    }
-
-    private show() {
-        if (this.Widget) {
-            this.Widget.$set({show: true})
-        }
     }
 
     private showDialog(args: DialogArgs) {
@@ -90,12 +85,12 @@ export class BrowserTransport implements LinkTransport {
             showFootnote: args.showFootnote,
             countDown: (args.content && args.content.countDown) || null,
             qrData: (args.content && args.content.qrData) || null,
+            show: true
         }
 
         if (this.Widget) {
             this.Widget.$set({...props})
         }
-        this.show()
     }
 
     private displayRequest(
