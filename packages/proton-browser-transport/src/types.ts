@@ -1,8 +1,6 @@
 export const SkipToManual = Symbol()
 
 export interface BrowserTransportOptions {
-    /** CSS class prefix, defaults to `proton-link` */
-    classPrefix?: string
     /** Whether to display request success and error messages, defaults to true */
     requestStatus?: boolean
     /** Requesting account of the dapp (optional) */

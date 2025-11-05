@@ -27,7 +27,7 @@ export default class WalletTypeSelector {
    */
   public displayWalletSelector(enabledWalletTypes: WalletItem[]): Promise<string> {
     return new Promise((resolve, reject) => {
-      this.setUpSelectorContainer(reject)
+      this.setUpSelectorContainer()
 
       const props: Record<string, any> = {
         title: 'Connect Wallet',
@@ -38,12 +38,24 @@ export default class WalletTypeSelector {
       }
 
       if (this.Widget) {
-        this.Widget.$on('select-wallet', (event) => {
+        const hide = () => {
+          this.hideSelector()
+          offSelect();
+          offClose();
+        }
+        
+        const offSelect = this.Widget.$on('select-wallet', (event) => {
           if (event.detail.walletName) {
-            this.hideSelector()
+            hide()
             resolve(event.detail.walletName)
           }
         })
+        
+        const offClose = this.Widget.$on('close', () => {
+          hide()
+          reject('no wallet selected')
+        })
+
         this.Widget.$set(props)
       }
 
@@ -81,7 +93,7 @@ export default class WalletTypeSelector {
   }
 
 
-  private setUpSelectorContainer(reject: any) {
+  private setUpSelectorContainer() {
     this.addFont()
 
     if (!this.Widget) {
@@ -104,11 +116,6 @@ export default class WalletTypeSelector {
           }
         })
       }
-
-      this.Widget.$on('close', () => {
-        this.hideSelector()
-        reject('no wallet selected')
-      })
     }
   }
 

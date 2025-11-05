@@ -10,13 +10,13 @@ import {
     Serializer,
 } from '@greymass/eosio'
 
-import { ChainId, ChainIdType, SigningRequest } from '@proton/signing-request'
+import {ChainId, ChainIdType, SigningRequest} from '@proton/signing-request'
 
-import { SessionError } from './errors'
-import { Link, TransactArgs, TransactOptions, TransactResult } from './link'
-import { LinkTransport } from './link-transport'
-import { LinkCreate, LinkInfo, SealedMessage } from './link-types'
-import { fetch, logWarn, sealMessage, sessionMetadata } from './utils'
+import {SessionError} from './errors'
+import {Link, TransactArgs, TransactOptions, TransactResult} from './link'
+import {LinkTransport} from './link-transport'
+import {LinkCreate, LinkInfo, SealedMessage} from './link-types'
+import {fetch, logWarn, sealMessage, sessionMetadata} from './utils'
 
 /**
  * Type describing a link session that can create a eosjs compatible
@@ -181,8 +181,13 @@ export class LinkChannelSession extends LinkSession implements LinkTransport {
         if (this.link.transport.onSessionRequest) {
             this.link.transport.onSessionRequest(this, request, cancel)
         }
+        const controller = new AbortController()
+        let reachedTimeout = false
+
         const timer = setTimeout(() => {
             cancel(new SessionError('Wallet did not respond in time', 'E_TIMEOUT', this))
+            reachedTimeout = true
+            controller.abort()
         }, this.timeout)
         request.setInfoKey('link', info)
         // let payloadSent = false
@@ -204,6 +209,7 @@ export class LinkChannelSession extends LinkSession implements LinkTransport {
             },
             mode: 'no-cors',
             body: payload.array,
+            signal: controller.signal,
         })
             .then((response) => {
                 if (response.status !== 0 && Math.floor(response.status / 100) !== 2) {
@@ -218,14 +224,16 @@ export class LinkChannelSession extends LinkSession implements LinkTransport {
                 }
             })
             .catch((error) => {
-                clearTimeout(timer)
-                cancel(
-                    new SessionError(
-                        `Unable to reach link service (${error.message || String(error)})`,
-                        'E_DELIVERY',
-                        this
+                if (!reachedTimeout) {
+                    clearTimeout(timer)
+                    cancel(
+                        new SessionError(
+                            `Unable to reach link service (${error.message || String(error)})`,
+                            'E_DELIVERY',
+                            this
+                        )
                     )
-                )
+                }
             })
     }
 

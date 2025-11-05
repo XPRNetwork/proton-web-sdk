@@ -54,5 +54,4 @@ export interface LoginOptions {
   selectorOptions: SelectorOptions;
   linkOptions: LocalLinkOptions;
   transportOptions: BrowserTransportOptions;
-  repeat?: boolean
 }
