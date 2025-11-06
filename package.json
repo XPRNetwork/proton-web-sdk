@@ -1,10 +1,21 @@
 {
   "name": "root",
   "private": true,
-  "devDependencies": {
-    "lerna": "^6.5.1"
-  },
+  "workspaces": [
+    "packages/*",
+    "examples/*"
+  ],
   "scripts": {
-    "watch": "lerna run --parallel watch"
-  }
+    "publish-packages": "turbo run build lint && changeset version && changeset publish && pnpm i",
+    "build": "turbo run build",
+    "dev": "turbo run watch --parallel"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.25.0",
+    "turbo": "^2.5.6"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "packageManager": "pnpm@10.17.0"
 }

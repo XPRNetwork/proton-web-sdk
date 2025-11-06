@@ -14,9 +14,10 @@
         "noImplicitAny": false,
         "strict": true,
         "declaration": true,
-        "declarationDir": "./lib",
+        "declarationDir": "./lib/types",
         "verbatimModuleSyntax": true,
         "isolatedModules": true,
+        "outDir": "./lib",
         /**
           To have warnings/errors of the Svelte compiler at the correct position,
           enable source maps by default.

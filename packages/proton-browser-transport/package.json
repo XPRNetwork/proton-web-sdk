@@ -9,20 +9,21 @@
   "module": "lib/proton-browser-transport.m.js",
   "unpkg": "lib/proton-browser-transport.bundle.js",
   "types": "lib/proton-browser-transport.d.ts",
-  "typings": "lib/index.d.ts",
+  "typings": "lib/types/index.d.ts",
   "scripts": {
     "watch": "rollup -c -w",
-    "prepare": "make"
+    "prepare": "make",
+    "build": "make"
   },
   "files": [
     "lib/*",
     "src/*"
   ],
   "dependencies": {
-    "@proton/link": "^4.2.4"
+    "@proton/link": "workspace:^"
   },
   "peerDependencies": {
-    "@proton/link": "^4.2.4"
+    "@proton/link": "workspace:^"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.3",

@@ -1,13 +1,14 @@
 SRC_FILES := $(shell find src -name '*.ts' -or -name '*.svelte')
+BIN := ./node_modules/.bin
 
 all: lib
 
 lib: ${SRC_FILES} package.json tsconfig.json node_modules rollup.config.js
-	@./node_modules/.bin/rollup -c && touch lib
+	@${BIN}/rollup -c && touch lib
 
 .PHONY: lint
 lint: node_modules
-	@./node_modules/.bin/eslint src --ext .ts --fix
+	@${BIN}/eslint src --ext .ts --fix
 
 .PHONY: publish
 publish: | distclean node_modules

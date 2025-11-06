@@ -1,15 +1,16 @@
+import { createRequire } from "module";
 import fs from 'fs'
 import dts from 'rollup-plugin-dts'
-import babel from '@rollup/plugin-babel'
+import {babel} from '@rollup/plugin-babel'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import typescript from '@rollup/plugin-typescript'
-import {terser} from 'rollup-plugin-terser'
+import terser from '@rollup/plugin-terser'
 import json from '@rollup/plugin-json'
 import replace from '@rollup/plugin-replace'
 import nodePolyfills from 'rollup-plugin-polyfill-node';
 
-import pkg from './package.json'
+const pkg = createRequire(import.meta.url)("./package.json");
 
 const license = fs.readFileSync('LICENSE').toString('utf-8').trim()
 const banner = `
@@ -97,7 +98,7 @@ export default [
                 ],
                 plugins: [
                     ["@babel/plugin-proposal-decorators", { "legacy": true }],
-                    ["@babel/plugin-proposal-class-properties", { "loose": true }]
+                    ["@babel/plugin-transform-class-properties", { "loose": true }]
                 ],
             }),
             terser({

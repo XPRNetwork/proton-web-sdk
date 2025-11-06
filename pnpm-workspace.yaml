@@ -1,0 +1,13 @@
+packages:
+  - examples/*
+  - packages/*
+
+ignoredBuiltDependencies:
+  - '@parcel/watcher'
+  - core-js
+  - lmdb
+  - msgpackr-extract
+
+onlyBuiltDependencies:
+  - esbuild
+  - svelte-preprocess

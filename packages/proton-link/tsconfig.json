@@ -5,14 +5,20 @@
         "esModuleInterop": true,
         "experimentalDecorators": true,
         "importHelpers": true,
-        "lib": ["esnext", "dom"],
+        "lib": [
+            "esnext",
+            "dom"
+        ],
         "module": "esnext",
         "moduleResolution": "node",
         "noImplicitAny": false,
         "sourceMap": true,
         "strict": true,
         "target": "es2020",
-        "declarationDir": "./dist/types",
+        "declarationDir": "./lib/types",
+        "outDir": "./lib"
     },
-    "include": ["src/*"]
+    "include": [
+        "src/*"
+    ]
 }
