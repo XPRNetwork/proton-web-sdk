@@ -85,7 +85,7 @@ export class BrowserTransport implements LinkTransport {
     private showDialog(args: DialogArgs) {
         this.setupWidget()
         if (this.Widget) {
-            this.widgetProps.showBackButton = args.hideBackButton ?? true;
+            this.widgetProps.showBackButton = !args.hideBackButton;
             this.widgetProps.walletType = this.walletType;
             this.widgetProps.title = args.title || '';
             this.widgetProps.subtitle = args.subtitle || '';

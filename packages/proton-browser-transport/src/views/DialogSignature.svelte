@@ -132,6 +132,7 @@
         background-image: none;
         outline: none;
         border: none;
+        line-height: 1.2;
       }
 
       &-subtitle {
@@ -307,7 +308,7 @@
       &-request {
         display: flex;
         flex-direction: column;
-        padding: 20px 55px 40px 55px;
+        padding: 20px 40px 40px 40px;
         border-radius: 20px;
         border-top-left-radius: 0;
         border-top-right-radius: 0;
