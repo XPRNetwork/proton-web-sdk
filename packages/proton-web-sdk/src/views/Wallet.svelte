@@ -1,27 +1,30 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+  import type {WalletItem} from '../types';
 
-  const dispatch = createEventDispatcher<{
-    'select-wallet': { walletName: string };
-  }>();
-  import type { WalletItem } from '../types';
-
-  export let wallet: WalletItem;
-
-  $: walletTypeClass = ` wallet-selector-logo--${wallet.key.toLowerCase()}`;
-
-  const selectWallet = () => {
-    dispatch('select-wallet', {
-      walletName: wallet.key,
-    });
+  interface Props {
+    wallet: WalletItem;
+    select_wallet: (walletName: string) => void;
   }
+
+  let {wallet, select_wallet}: Props = $props();
+
+  const walletTypeClass = $derived(` wallet-selector-logo--${wallet.key.toLowerCase()}`);
 </script>
 
 <li class="wallet-selector-item">
-  <div role="button" class="wallet-selector-wallet" on:click|stopPropagation={selectWallet}>
-    <div class="wallet-selector-logo{walletTypeClass}" />
+  <!-- svelte-ignore a11y_click_events_have_key_events -->
+  <div
+    role="button"
+    class="wallet-selector-wallet"
+    tabindex="0"
+    onclick={(e) => {
+      e.stopPropagation();
+      select_wallet(wallet.key);
+    }}
+  >
+    <div class="wallet-selector-logo{walletTypeClass}"></div>
     <span class="wallet-selector-wallet-name">{wallet.value}</span>
-    <div class="wallet-selector-right-arrow" />
+    <div class="wallet-selector-right-arrow"></div>
   </div>
 </li>
 
