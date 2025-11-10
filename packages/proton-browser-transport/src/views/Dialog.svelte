@@ -1,40 +1,45 @@
 <script lang="ts">
-    import {createEventDispatcher} from 'svelte'
+    import type { DialogProps } from '../state.svelte'
     import {getFootnoteLink} from '../utils'
     import CountDown from './CountDown.svelte'
     import QrCode from './QRCode.svelte'
 
-    const dispatch = createEventDispatcher<{
-        back: void;
-        close: void;
-    }>()
+    let { 
+        show = false,
+        showBackButton = false,
+        walletType = 'proton',
+        title = '',
+        subtitle = null,
+        showFootnote = false,
+        countDown = null,
+        qrData = null,
+        action = null,
+        close = () => {}, 
+        back = () => {} }: DialogProps = $props()
 
-    export let show: boolean = false
-    export let showBackButton: boolean = false
-    export let walletType: string = 'proton'
-    export let title: string = ''
-    export let subtitle: string | null = null
-    export let showFootnote: boolean = false
-    export let countDown: string | null = null
-    export let qrData: {code: string; link: string} | null = null
-    export let action: {text: string; callback: () => void} | null = null
+    const walletTypeClass = $derived(` proton-link--${walletType}`)
+    const footnoteLink = $derived.by(() => showFootnote ? getFootnoteLink(walletType) : '')
 
-    $: walletTypeClass = ` proton-link--${walletType}`
-    $: footnoteLink = showFootnote ? getFootnoteLink(walletType) : ''
-
-    const back = () => {
-        dispatch('back')
-        close()
+    const onBack = () => {
+        back()
+        onClose()
     }
 
-    const close = () => {
+    const onClose = () => {
         show = false
-        dispatch('close')
+        close()
     }
 
     const doAction = () => {
         if (action && action.callback) {
             action.callback()
+        }
+    }
+
+    const onBackdropClick = (e: MouseEvent) => {
+        if(e.target === e.currentTarget) {
+            e.stopPropagation();
+            onClose();
         }
     }
 </script>
@@ -43,15 +48,17 @@
     role="presentation"
     class="proton-link{walletTypeClass}"
     class:is-active={show}
-    on:click|self|stopPropagation={close}
+    onclick={onBackdropClick}
 >
     <div class="proton-link-inner">
         <div class="proton-link-nav">
             {#if showBackButton}
-                <div class="proton-link-back" role="button" on:click={back} />
+                <!-- svelte-ignore a11y_click_events_have_key_events -->
+                <div class="proton-link-back" role="button" tabindex="0" onclick={onBack}></div>
             {/if}
             <span class="proton-link-header">{title}</span>
-            <div class="proton-link-close" role="button" on:click={close} />
+            <!-- svelte-ignore a11y_click_events_have_key_events -->
+            <div class="proton-link-close" role="button" tabindex="0" onclick={onClose}></div>
         </div>
         <div class="proton-link-request">
             {#if subtitle}
@@ -70,7 +77,7 @@
 
             {#if action}
                 <hr class="proton-link-hr" />
-                <button class="proton-link-button" on:click={doAction}>{action.text}</button>
+                <button class="proton-link-button" onclick={doAction}>{action.text}</button>
             {/if}
 
             {#if footnoteLink}
@@ -175,7 +182,6 @@
         &.is-active {
             display: flex;
         }
-        
 
         &-inner {
             background-color: white;

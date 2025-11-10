@@ -1,11 +1,9 @@
 <script lang="ts">
     import {isBrave, isFirefox} from '../utils'
 
-    export let code: string = ''
-    export let link: string = ''
-
-    
-    let iframeUrl: string = 'about:blank'
+    let { code = '', link = '' }: { code: string; link: string; } = $props()
+        
+    let iframeUrl: string = $state('about:blank')
 
     const protonLinkClick = () => {
         if (link) {
@@ -25,11 +23,11 @@
     </div>
     <div class="proton-link-separator">OR</div>
     <div class="proton-link-uri">
-        <a class="proton-link-button" href={link} on:click|preventDefault={protonLinkClick}>
+        <a class="proton-link-button" href={link} onclick={(e) => {e.preventDefault(); protonLinkClick()}}>
             Open Wallet
         </a>
     </div>
-    <iframe class="proton-link-wskeepalive" src={iframeUrl} title="keepalive" />
+    <iframe class="proton-link-wskeepalive" src={iframeUrl} title="keepalive"></iframe>
 </div>
 
 <style lang="scss" global>

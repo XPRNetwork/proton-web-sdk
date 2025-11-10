@@ -1,5 +1,5 @@
 <script lang="ts">
-    export let countDown: string = '00:00'
+    let {countDown = '00:00' }: { countDown: string } = $props()
 </script>
 
 <div class="proton-link-countdown">{countDown}</div>
