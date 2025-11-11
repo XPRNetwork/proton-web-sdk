@@ -7,7 +7,7 @@ import type {
     LinkTransport,
     SigningRequest,
 } from '@proton/link'
-import DialogWidget from './views/DialogSignature.svelte'
+import DialogWidget from './views/Dialog.svelte'
 import { Storage } from './storage'
 import { generateReturnUrl, isMobile, parseErrorMessage } from './utils'
 import { type BrowserTransportOptions, type DialogArgs, SkipToManual } from './types'

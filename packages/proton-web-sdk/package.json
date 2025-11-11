@@ -1,18 +1,18 @@
 {
   "name": "@proton/web-sdk",
+  "version": "4.4.0",
+  "license": "MIT",
   "author": "metallicus",
   "publishConfig": {
     "access": "public"
   },
   "type": "module",
-  "module": "dist/index.js",
-  "unpkg": "dist/bundle.js",
-  "types": "dist/types/index.d.ts",
+  "main": "lib/proton-web-sdk.js",
+  "module": "lib/proton-web-sdk.m.js",
+  "unpkg": "lib/proton-web-sdk.bundle.js",
+  "types": "lib/types/proton-web-sdk.d.ts",
+  "typings": "lib/types/index.d.ts",
   "source": "src/index.ts",
-  "version": "4.4.0",
-  "license": "MIT",
-  "main": "dist/index.js",
-  "typings": "dist/types/index.d.ts",
   "files": [
     "dist",
     "cdn",

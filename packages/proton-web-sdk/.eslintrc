@@ -27,6 +27,9 @@
         "sourceType": "module",
         "ecmaVersion": 2020,
         "parser": "@typescript-eslint/parser",
+        "extraFileExtensions": [
+            ".svelte"
+        ]
     },
     "rules": {
         "prettier/prettier": "warn",

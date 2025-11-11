@@ -14,7 +14,7 @@
         "noImplicitAny": false,
         "strict": true,
         "declaration": true,
-        "declarationDir": "./dist/types",
+        "declarationDir": "./lib/types",
         "verbatimModuleSyntax": true,
         "isolatedModules": true,
         /**
@@ -24,7 +24,7 @@
         "sourceMap": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
-        "outDir": "./dist"
+        "outDir": "./lib"
     },
     "include": [
         "src/**/*"

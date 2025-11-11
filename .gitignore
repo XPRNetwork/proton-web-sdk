@@ -1,4 +1,7 @@
 node_modules
 .angular
+.turbo
+dist
+lib
 
 packages/proton-react-native-sdk/example/*.lock

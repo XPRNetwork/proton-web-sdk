@@ -2,7 +2,7 @@ import { mount, unmount } from 'svelte'
 import { DIALOG_STATE } from './state.svelte'
 import { CustomStyleOptionsToVarsMap } from './styles'
 import type { CustomStyleOptions, WalletItem } from './types'
-import DialogWidget from './views/DialogWallet.svelte'
+import DialogWidget from './views/Dialog.svelte'
 
 export default class WalletTypeSelector {
   private appLogo: string | undefined

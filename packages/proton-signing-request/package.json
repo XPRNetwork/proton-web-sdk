@@ -4,10 +4,10 @@
     "description": "Proton Signing Request (ESR / EEP-7) encoder and decoder",
     "homepage": "https://github.com/ProtonProtocol/proton-signing-request",
     "license": "MIT",
-    "main": "lib/esr.js",
-    "module": "lib/esr.m.js",
+    "main": "lib/proton-signing-request.js",
+    "module": "lib/proton-signing-request.m.js",
     "unpkg": "lib/proton-signing-request.bundle.js",
-    "types": "lib/types/esr.d.ts",
+    "types": "lib/types/proton-signing-request.d.ts",
     "sideEffects": false,
     "type": "module",
     "files": [
