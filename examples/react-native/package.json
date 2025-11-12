@@ -10,7 +10,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@proton/react-native-sdk": "^4.2.18",
+    "@proton/react-native-sdk": "workspace:^",
     "@react-native-async-storage/async-storage": "^2.2.0",
     "react": "18.1.0",
     "react-native": "0.70.10",

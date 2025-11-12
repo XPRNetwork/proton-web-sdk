@@ -1,24 +1,24 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
-import { LinkStorage } from '@proton/link';
+import {LinkStorage} from '@proton/link'
 
 class Storage implements LinkStorage {
   constructor(readonly keyPrefix: string) {}
   async write(key: string, data: string): Promise<void> {
-    AsyncStorage.setItem(this.storageKey(key), data);
+    AsyncStorage.setItem(this.storageKey(key), data)
   }
 
   async read(key: string): Promise<string | null> {
-    return AsyncStorage.getItem(this.storageKey(key));
+    return AsyncStorage.getItem(this.storageKey(key))
   }
 
   async remove(key: string): Promise<void> {
-    AsyncStorage.removeItem(this.storageKey(key));
+    AsyncStorage.removeItem(this.storageKey(key))
   }
 
   storageKey(key: string) {
-    return `${this.keyPrefix}-${key}`;
+    return `${this.keyPrefix}-${key}`
   }
 }
 
-export default Storage;
+export default Storage
