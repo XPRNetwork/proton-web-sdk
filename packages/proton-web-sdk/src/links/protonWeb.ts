@@ -39,12 +39,22 @@ export class ProtonWebLink {
   chainId: string
 
   public get childWindow() {
-    return _childWindow;
+    return _childWindow
   }
 
   public set childWindow(window: Window | null) {
-    _childWindow = window
+    if(_childWindow !== window) {
+      _childWindow = window
+      if(!_childWindow && this.closeCheckInterval) {
+        clearInterval(this.closeCheckInterval);
+      }
+      if(_childWindow) {
+        this.closeCheckInterval = setInterval(() => this.checkChildWindowClosed(), 500)
+      }
+    }
   }
+
+  private closeCheckInterval: NodeJS.Timer | null = null
 
   constructor(options: LinkOptions & { testUrl?: string }) {
     this.scheme = options.scheme
@@ -54,7 +64,6 @@ export class ProtonWebLink {
     this.transport = options.transport
     this.chainId = options.chainId!.toString()
 
-    setInterval(() => this.closeChild(), 500)
     window.addEventListener('message', (event) => this.onEvent(event), false)
   }
 
@@ -67,15 +76,15 @@ export class ProtonWebLink {
     return `${base}${path}`
   }
 
-  closeChild(force = false) {
+  closeChild() {
     if (this.childWindow) {
-      if (force) {
-        this.childWindow.close()
-      }
-
-      if (force || this.childWindow.closed) {
+        if(this.closeCheckInterval) {
+          clearInterval(this.closeCheckInterval);
+        }
+        if(!this.childWindow.closed) {
+          this.childWindow.close()
+        }
         this.childWindow = null
-      }
     }
   }
 
@@ -85,7 +94,7 @@ export class ProtonWebLink {
       chainId: this.chainId,
       transact: async (args: TransactArgs, options?: TransactOptions): Promise<any> => {
         if (this.deferredLogin) {
-          this.closeChild(true)
+          this.closeChild()
           this.deferredLogin.reject('Trying to login')
           this.deferredLogin = undefined
         }
@@ -118,7 +127,7 @@ export class ProtonWebLink {
 
   async login() {
     if (this.deferredTransact) {
-      this.closeChild(true)
+      this.closeChild()
       this.deferredTransact.deferral.reject('Trying to login')
       this.deferredTransact = undefined
     }
@@ -203,7 +212,7 @@ export class ProtonWebLink {
       }
       // Close child
       else if (type === 'close') {
-        this.closeChild(true)
+        this.closeChild()
 
         if (this.deferredTransact) {
           this.deferredTransact.deferral.reject('Closed')
@@ -213,7 +222,7 @@ export class ProtonWebLink {
       }
       // TX Success
       else if (type === 'transactionSuccess') {
-        this.closeChild(true)
+        this.closeChild()
 
         if (this.deferredTransact) {
           if (error) {
@@ -227,7 +236,7 @@ export class ProtonWebLink {
       }
       // Login success
       else if (type === 'loginSuccess') {
-        this.closeChild(true)
+        this.closeChild()
 
         if (this.deferredLogin) {
           this.deferredLogin.resolve(data)
@@ -236,6 +245,19 @@ export class ProtonWebLink {
       }
     } catch (e) {
       console.error(e)
+    }
+  }
+
+  private checkChildWindowClosed() {
+    if (this.childWindow && this.childWindow.closed) {
+      
+      window.postMessage(
+				JSON.stringify({
+					type: 'close',
+				}),
+				'*',
+			)
+
     }
   }
 }
