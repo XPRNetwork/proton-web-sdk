@@ -3,7 +3,7 @@ import type {ChainIdType, SigningRequestEncodingOptions} from '@proton/signing-r
 import type {LinkStorage} from './link-storage'
 import type {LinkTransport} from './link-transport'
 import type {LinkCallbackService} from './link-callback'
-import { JsonRpc } from '@proton/js'
+import {JsonRpc} from '@proton/js'
 
 /**
  * Type describing a EOSIO chain.

@@ -1,21 +1,20 @@
 <script lang="ts">
-	import { onMount } from "svelte";
-	import { login, logout, actor, avatar } from "$lib/userState";
+	import { onMount } from 'svelte';
+	import { login, logout, actor, avatar } from '$lib/userState';
 
 	onMount(async () => {
-	  login(true);
+		login(true);
 	});
 </script>
 
 <div>
 	{#if $actor === ''}
-    <div
-	  onclick={() => login(false)}
-      class="cursor-pointer whitespace-nowrap bg-purple-100 border border-transparent rounded-md py-2 px-4 inline-flex items-center justify-center text-base font-medium text-purple-600 hover:bg-purple-200"
-    >
-      Login
-    </div>
-
+		<div
+			onclick={() => login(false)}
+			class="cursor-pointer whitespace-nowrap bg-purple-100 border border-transparent rounded-md py-2 px-4 inline-flex items-center justify-center text-base font-medium text-purple-600 hover:bg-purple-200"
+		>
+			Login
+		</div>
 	{:else}
 		<div class="relative">
 			<div
@@ -23,16 +22,12 @@
 				id="user-menu"
 				aria-haspopup="true"
 			>
-				<img
-					class="hidden sm:block h-8 w-8 rounded-full"
-					alt="Profile"
-					src={$avatar}
-				/>
-	
+				<img class="hidden sm:block h-8 w-8 rounded-full" alt="Profile" src={$avatar} />
+
 				<span class="ml-1 sm:ml-3 text-gray-700 text-sm font-medium lg:block">
-					{ $actor }
+					{$actor}
 				</span>
-				
+
 				<svg
 					aria-hidden="true"
 					focusable="false"

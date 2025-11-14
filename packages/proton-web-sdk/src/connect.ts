@@ -1,27 +1,27 @@
 import ProtonLinkBrowserTransport from '@proton/browser-transport'
 import ProtonLink from '@proton/link'
-import type { LinkOptions, PermissionLevel } from '@proton/link'
+import type {LinkOptions, PermissionLevel} from '@proton/link'
 import WalletTypeSelector from './walletTypeSelector'
-import { ProtonWebLink } from './links/protonWeb'
-import { Storage } from './storage'
-import { WALLET_TYPES } from './constants'
-import type { ConnectWalletArgs, ConnectWalletRet, LoginOptions } from './types'
-import { JsonRpc } from '@proton/js'
+import {ProtonWebLink} from './links/protonWeb'
+import {Storage} from './storage'
+import {WALLET_TYPES} from './constants'
+import type {ConnectWalletArgs, ConnectWalletRet, LoginOptions} from './types'
+import {JsonRpc} from '@proton/js'
 
-let walletSelector: WalletTypeSelector | undefined;
+let walletSelector: WalletTypeSelector | undefined
 
 export const ConnectWallet = async ({
   linkOptions,
   transportOptions = {},
-  selectorOptions = {}
+  selectorOptions = {},
 }: ConnectWalletArgs): Promise<ConnectWalletRet> => {
   // Add RPC
   const rpc = new JsonRpc(linkOptions.endpoints)
   linkOptions.client = rpc
-  
+
   // Add Chain ID
   if (!linkOptions.chainId) {
-    const info = await rpc.get_info();;
+    const info = await rpc.get_info()
     linkOptions.chainId = info.chain_id
   }
 
@@ -30,7 +30,7 @@ export const ConnectWallet = async ({
     linkOptions.storage = new Storage(linkOptions.storagePrefix || 'proton-storage')
   }
 
-  return login({ selectorOptions, linkOptions, transportOptions }).finally(() => {
+  return login({selectorOptions, linkOptions, transportOptions}).finally(() => {
     if (walletSelector) {
       walletSelector.destroy()
       walletSelector = undefined
@@ -38,38 +38,48 @@ export const ConnectWallet = async ({
   })
 }
 
-const login = async (loginOptions: LoginOptions): Promise<{
-  link: any;
-  session: any;
-  loginResult: any
-} | {
-  error: any
-}> => {
-
+const login = async (
+  loginOptions: LoginOptions
+): Promise<
+  | {
+      link: any
+      session: any
+      loginResult: any
+    }
+  | {
+      error: any
+    }
+> => {
   const doLogin = async (loginOptions: LoginOptions) => {
-  // Initialize link and session
+    // Initialize link and session
     let session: any
     let link
     let loginResult
 
     if (!walletSelector) {
       walletSelector = new WalletTypeSelector(
-        loginOptions.selectorOptions.appName, 
-        loginOptions.selectorOptions.appLogo, 
+        loginOptions.selectorOptions.appName,
+        loginOptions.selectorOptions.appLogo,
         loginOptions.selectorOptions.customStyleOptions,
         loginOptions.selectorOptions.dialogRootNode
-      );
+      )
     }
 
     // Determine wallet type from storage or selector modal
-    let walletType: string | null | undefined = loginOptions.selectorOptions ? loginOptions.selectorOptions.walletType : undefined;
+    let walletType: string | null | undefined = loginOptions.selectorOptions
+      ? loginOptions.selectorOptions.walletType
+      : undefined
 
     if (!walletType) {
       if (loginOptions.linkOptions.restoreSession) {
         walletType = await loginOptions.linkOptions.storage!.read('wallet-type')
       } else {
         const enabledWalletTypes = loginOptions.selectorOptions.enabledWalletTypes
-          ? WALLET_TYPES.filter(wallet => loginOptions.selectorOptions.enabledWalletTypes && loginOptions.selectorOptions.enabledWalletTypes.includes(wallet.key))
+          ? WALLET_TYPES.filter(
+              (wallet) =>
+                loginOptions.selectorOptions.enabledWalletTypes &&
+                loginOptions.selectorOptions.enabledWalletTypes.includes(wallet.key)
+            )
           : WALLET_TYPES
 
         try {
@@ -77,7 +87,7 @@ const login = async (loginOptions: LoginOptions): Promise<{
         } catch (e) {
           console.log('CANCEL', e)
           return {
-            error: e
+            error: e,
           }
         }
       }
@@ -85,13 +95,16 @@ const login = async (loginOptions: LoginOptions): Promise<{
 
     if (!walletType) {
       return {
-        error: new Error('Wallet Type Unavailable: No wallet provided')
+        error: new Error('Wallet Type Unavailable: No wallet provided'),
       }
     }
 
     // Determine chain
     let chain = 'proton'
-    if (loginOptions.linkOptions.chainId === '71ee83bcf52142d61019d95f9cc5427ba6a0d7ff8accd9e2088ae2abeaf3d3dd') {
+    if (
+      loginOptions.linkOptions.chainId ===
+      '71ee83bcf52142d61019d95f9cc5427ba6a0d7ff8accd9e2088ae2abeaf3d3dd'
+    ) {
       chain = 'proton-test'
     }
 
@@ -108,10 +121,10 @@ const login = async (loginOptions: LoginOptions): Promise<{
       scheme,
       transport: new ProtonLinkBrowserTransport({
         ...loginOptions.transportOptions,
-        walletType
+        walletType,
       }) as any,
       walletType,
-      chains: []
+      chains: [],
     }
 
     // Create link
@@ -125,7 +138,9 @@ const login = async (loginOptions: LoginOptions): Promise<{
     if (!loginOptions.linkOptions.restoreSession) {
       let backToSelector = false
       const listenBackToSelector = () => {
-        const callback = () => { backToSelector = true }
+        const callback = () => {
+          backToSelector = true
+        }
         document.addEventListener('backToSelector', callback)
 
         return () => {
@@ -134,7 +149,7 @@ const login = async (loginOptions: LoginOptions): Promise<{
       }
 
       const stopListening = listenBackToSelector()
-      
+
       try {
         loginResult = await link.login(loginOptions.transportOptions?.requestAccount || '')
         session = loginResult.session as any
@@ -152,7 +167,7 @@ const login = async (loginOptions: LoginOptions): Promise<{
           return null
         } else {
           return {
-            error: e
+            error: e,
           }
         }
       }
@@ -160,9 +175,13 @@ const login = async (loginOptions: LoginOptions): Promise<{
     } else {
       const stringifiedUserAuth = await loginOptions.linkOptions.storage!.read('user-auth')
       const parsedUserAuth = stringifiedUserAuth ? JSON.parse(stringifiedUserAuth) : {}
-      const savedUserAuth: PermissionLevel = Object.keys(parsedUserAuth).length > 0 ? parsedUserAuth : null
+      const savedUserAuth: PermissionLevel =
+        Object.keys(parsedUserAuth).length > 0 ? parsedUserAuth : null
       if (savedUserAuth) {
-        session = await link.restoreSession(loginOptions.transportOptions.requestAccount || '', savedUserAuth) as any
+        session = (await link.restoreSession(
+          loginOptions.transportOptions.requestAccount || '',
+          savedUserAuth
+        )) as any
 
         // Could not restore
         if (!session) {
@@ -184,21 +203,22 @@ const login = async (loginOptions: LoginOptions): Promise<{
         actor: session.auth.actor.toString(),
         permission: session.auth.permission.toString(),
       } as any
-      session.publicKey = session.publicKey ? session.publicKey.toString() : undefined as any
+      session.publicKey = session.publicKey ? session.publicKey.toString() : (undefined as any)
     }
 
     return {
       session,
       link,
-      loginResult
+      loginResult,
     } as any
   }
 
+  // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve) => {
-    let res = null;
-    while(res === null) {
+    let res = null
+    while (res === null) {
       res = await doLogin({...loginOptions})
     }
-    resolve(res);
-  });
+    resolve(res)
+  })
 }

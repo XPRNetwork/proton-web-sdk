@@ -1,14 +1,14 @@
 <script lang="ts">
-  import type {WalletItem} from '../types';
+  import type {WalletItem} from '../types'
 
   interface Props {
-    wallet: WalletItem;
-    select_wallet: (walletName: string) => void;
+    wallet: WalletItem
+    select_wallet: (walletName: string) => void
   }
 
-  let {wallet, select_wallet}: Props = $props();
+  let {wallet, select_wallet}: Props = $props()
 
-  const walletTypeClass = $derived(` wallet-selector-logo--${wallet.key.toLowerCase()}`);
+  const walletTypeClass = $derived(` wallet-selector-logo--${wallet.key.toLowerCase()}`)
 </script>
 
 <li class="wallet-selector-item">
@@ -18,8 +18,8 @@
     class="wallet-selector-wallet"
     tabindex="0"
     onclick={(e) => {
-      e.stopPropagation();
-      select_wallet(wallet.key);
+      e.stopPropagation()
+      select_wallet(wallet.key)
     }}
   >
     <div class="wallet-selector-logo{walletTypeClass}"></div>

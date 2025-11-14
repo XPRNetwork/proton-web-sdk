@@ -1,4 +1,3 @@
-
 # Proton Web SDK - Svelte Example
 
 Small boilerplate to get started with Proton on Svelte

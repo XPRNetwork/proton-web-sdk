@@ -190,6 +190,9 @@ In order to install the **Proton Web SDK** and use it on your local environment 
 ``` 
 git clone [https://github.com/ProtonProtocol/ProtonWeb.git]
 ``` 
+## Select proper Node version
+For now the project uses Node v18.19.1 for development. You can use NVM to switch to this version. The version is set in `.nvmrc` file. Run command `nvm use` in the root folder to activate it.
+
 ## Install
 ```
 pnpm i
@@ -201,8 +204,7 @@ To build all apps and packages, run the following command:
 ```
 pnpm run build
 ```
-## Publish
+## Publish packages
 ```
-changeset
 pnpm run publish-packages
 ```

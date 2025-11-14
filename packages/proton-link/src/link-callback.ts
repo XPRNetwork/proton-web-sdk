@@ -72,15 +72,15 @@ function waitForCallback(url: string, ctx: {cancel?: () => void}) {
             try {
                 resolve(JSON.parse(response))
             } catch (error) {
-                (error as any).message = 'Unable to parse callback JSON: ' + (error as any).message
+                ;(error as any).message = 'Unable to parse callback JSON: ' + (error as any).message
                 reject(error)
             }
         }
         const connect = () => {
-            const socket = new WebSocket(socketUrl);
-            
+            const socket = new WebSocket(socketUrl)
+
             if (typeof navigator != 'undefined' && navigator.product == 'ReactNative') {
-                (socket as any).binaryType = 'blob'
+                ;(socket as any).binaryType = 'blob'
             }
 
             ctx.cancel = () => {

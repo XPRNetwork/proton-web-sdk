@@ -1,11 +1,11 @@
 <script lang="ts">
   interface Props {
-    isLogoRound?: boolean;
-    logo?: string | null;
-    title?: string;
-    subtitle?: string;
+    isLogoRound?: boolean
+    logo?: string | null
+    title?: string
+    subtitle?: string
   }
-  let {isLogoRound = false, logo = '', title = '', subtitle = ''}: Props = $props();
+  let {isLogoRound = false, logo = '', title = '', subtitle = ''}: Props = $props()
 </script>
 
 <div class="wallet-selector-connect-header">

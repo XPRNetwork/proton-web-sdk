@@ -43,7 +43,7 @@ import {LinkTransport} from './link-transport'
 import {LinkCreate} from './link-types'
 import {BuoyCallbackService, LinkCallback, LinkCallbackService} from './link-callback'
 import {sessionMetadata} from './utils'
-import { RpcInterfaces, JsonRpc } from '@proton/js'
+import {JsonRpc, RpcInterfaces} from '@proton/js'
 
 /**
  * Payload accepted by the [[Link.transact]] method.
@@ -191,7 +191,7 @@ export class LinkChain implements AbiProvider {
  */
 export class Link {
     /** Package version. */
-    static version: string = '__ver' // eslint-disable-line @typescript-eslint/no-inferrable-types
+    static version: string = '__ver'
 
     /** Chains this instance is configured with. */
     public readonly chains: LinkChain[]
@@ -429,7 +429,7 @@ export class Link {
                     serializedTransaction: packedTx.packed_trx.array,
                     serializedContextFreeData: packedTx.packed_context_free_data.array,
                     signatures: signedTxParsed.signatures,
-                    transactionHeader: signedTxParsed
+                    transactionHeader: signedTxParsed,
                 })
                 result.processed = res.processed
             }
@@ -439,7 +439,7 @@ export class Link {
             return result
         } catch (error) {
             if (t.onFailure) {
-                t.onFailure(request, (error as any))
+                t.onFailure(request, error as any)
             }
             throw error
         }

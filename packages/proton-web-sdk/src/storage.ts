@@ -1,7 +1,7 @@
-import type { LinkStorage } from "@proton/link"
+import type {LinkStorage} from '@proton/link'
 
 export class Storage implements LinkStorage {
-  constructor(readonly keyPrefix: string) { }
+  constructor(readonly keyPrefix: string) {}
 
   async write(key: string, data: string): Promise<void> {
     localStorage.setItem(this.storageKey(key), data)

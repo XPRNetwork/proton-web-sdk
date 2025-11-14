@@ -1,10 +1,16 @@
-import type { LinkOptions, LinkStorage, LinkTransport, TransactArgs, TransactOptions } from "@proton/link"
-import { JsonRpc } from '@proton/js'
+import type {
+  LinkOptions,
+  LinkStorage,
+  LinkTransport,
+  TransactArgs,
+  TransactOptions,
+} from '@proton/link'
+import {JsonRpc} from '@proton/js'
 
 const OPEN_SETTINGS = 'menubar=1,resizable=1,width=400,height=600'
 
 interface Authorization {
-  actor: string,
+  actor: string
   permission: string
 }
 class Deferred {
@@ -24,12 +30,14 @@ class Deferred {
 let _childWindow: Window | null = null
 
 export class ProtonWebLink {
-  deferredTransact: {
-    deferral: Deferred
-    transaction: any,
-    params: any,
-    waitingForOpen: boolean
-  } | undefined
+  deferredTransact:
+    | {
+        deferral: Deferred
+        transaction: any
+        params: any
+        waitingForOpen: boolean
+      }
+    | undefined
   deferredLogin: Deferred | undefined
   scheme: string
   storage: LinkStorage | null | undefined
@@ -39,14 +47,14 @@ export class ProtonWebLink {
   chainId: string
 
   public get childWindow() {
-    return _childWindow;
+    return _childWindow
   }
 
   public set childWindow(window: Window | null) {
     _childWindow = window
   }
 
-  constructor(options: LinkOptions & { testUrl?: string }) {
+  constructor(options: LinkOptions & {testUrl?: string}) {
     this.scheme = options.scheme
     this.client = typeof options.client === 'string' ? new JsonRpc(options.client) : options.client
     this.storage = options.storage
@@ -92,9 +100,9 @@ export class ProtonWebLink {
 
         this.deferredTransact = {
           deferral: new Deferred(),
-          transaction: args.transaction || { actions: args.actions },
+          transaction: args.transaction || {actions: args.actions},
           params: options,
-          waitingForOpen: true
+          waitingForOpen: true,
         }
 
         this.childWindow = window.open(this.childUrl('/auth'), '_blank', OPEN_SETTINGS)
@@ -111,8 +119,8 @@ export class ProtonWebLink {
       },
       link: {
         walletType: 'webauth',
-        client: this.client
-      }
+        client: this.client,
+      },
     }
   }
 
@@ -130,11 +138,11 @@ export class ProtonWebLink {
       this.storage!.write('wallet-type', 'webauth')
 
       const auth: {
-        actor: string,
+        actor: string
         permission: string
       } = await this.deferredLogin.promise
       return {
-        session: this.createSession(auth)
+        session: this.createSession(auth),
       }
     } catch (e) {
       console.error(e)
@@ -162,7 +170,7 @@ export class ProtonWebLink {
     return {
       appIdentifier,
       auth,
-      chainId
+      chainId,
     }
   }
 
@@ -182,7 +190,7 @@ export class ProtonWebLink {
     }
 
     try {
-      const { type, data, error } = eventData
+      const {type, data, error} = eventData
       if (!type) {
         return
       }
@@ -192,13 +200,16 @@ export class ProtonWebLink {
         if (this.deferredTransact && this.deferredTransact.waitingForOpen) {
           this.deferredTransact.waitingForOpen = false
 
-          this.childWindow!.postMessage(JSON.stringify({
-            type: 'transaction',
-            data: {
-              transaction: this.deferredTransact.transaction,
-              params: this.deferredTransact.params
-            }
-          }), '*')
+          this.childWindow!.postMessage(
+            JSON.stringify({
+              type: 'transaction',
+              data: {
+                transaction: this.deferredTransact.transaction,
+                params: this.deferredTransact.params,
+              },
+            }),
+            '*'
+          )
         }
       }
       // Close child

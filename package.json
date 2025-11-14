@@ -6,7 +6,8 @@
     "examples/*"
   ],
   "scripts": {
-    "publish-packages": "turbo run build lint && changeset version && changeset publish && pnpm i",
+    "publish-packages": "turbo run build lint --filter=./packages/* && changeset version && changeset publish && pnpm i",
+    "lint": "turbo run build lint",
     "build": "turbo run build",
     "dev": "turbo run watch --parallel"
   },

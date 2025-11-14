@@ -24,7 +24,7 @@ import {fetch, logWarn, sealMessage, sessionMetadata} from './utils'
  */
 export abstract class LinkSession {
     /** @internal */
-    constructor() {} // eslint-disable-line @typescript-eslint/no-empty-function
+    constructor() {}
     /** The underlying link instance used by the session. */
     abstract link: Link
     /** App identifier that owns the session. */

@@ -1,10 +1,8 @@
 <script lang="ts">
-  import type {WalletItem} from '../types';
-
-  import Header from './Header.svelte';
-  import Footer from './Footer.svelte';
-  import Wallet from './Wallet.svelte';
-  import type {DialogProps} from '../state.svelte';
+  import Header from './Header.svelte'
+  import Footer from './Footer.svelte'
+  import Wallet from './Wallet.svelte'
+  import type {DialogProps} from '../state.svelte'
 
   let {
     title = '',
@@ -14,20 +12,20 @@
     hasRoundedLogo = false,
     wallets = [],
     close = () => {},
-    select_wallet = (walletName) => {},
-  }: DialogProps = $props();
+    select_wallet = (_) => {},
+  }: DialogProps = $props()
 
   const onClose = () => {
-    show = false;
-    close();
-  };
+    show = false
+    close()
+  }
 
   const onBackdropClick = (e: MouseEvent) => {
     if (e.target === e.currentTarget) {
-      e.stopPropagation();
-      onClose();
+      e.stopPropagation()
+      onClose()
     }
-  };
+  }
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -44,7 +42,7 @@
       <div class="wallet-selector-connect-body">
         {#if wallets && wallets.length}
           <ul class="wallet-selector-wallet-list">
-            {#each wallets as wallet}
+            {#each wallets as wallet (wallet.key)}
               <Wallet {wallet} {select_wallet} />
             {/each}
           </ul>
