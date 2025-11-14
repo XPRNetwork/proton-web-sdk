@@ -1,12 +1,22 @@
 {
   "compilerOptions": {
-    "baseUrl": "./packages",
+    "baseUrl": "./",
     "paths": {
-      "@proton/browser-transport": ["proton-browser-transport"],
-      "@proton/link": ["proton-link"],
-      "@proton/react-native-sdk": ["proton-react-native-sdk"],
-      "@proton/signing-request": ["proton-signing-request"],
-      "@proton/web-sdk": ["proton-web-sdk"],
+      "@proton/browser-transport": [
+        "proton-browser-transport"
+      ],
+      "@proton/link": [
+        "proton-link"
+      ],
+      "@proton/react-native-sdk": [
+        "proton-react-native-sdk"
+      ],
+      "@proton/signing-request": [
+        "proton-signing-request"
+      ],
+      "@proton/web-sdk": [
+        "proton-web-sdk"
+      ],
     },
     "downlevelIteration": true,
     "declaration": true,

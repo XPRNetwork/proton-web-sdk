@@ -1,13 +1,8 @@
 import './registerGlobals'
-import ReactNativeTransport, { ReactNativeTransportOptions } from './transport'
+import ReactNativeTransport, {ReactNativeTransportOptions} from './transport'
 
-import ProtonLink, {
-  LinkStorage,
-  LinkOptions,
-  LinkSession,
-  PermissionLevel,
-} from '@proton/link'
-import { JsonRpc } from '@proton/js'
+import ProtonLink, {LinkOptions, LinkSession, LinkStorage, PermissionLevel} from '@proton/link'
+import {JsonRpc} from '@proton/js'
 
 import Storage from './storage'
 
@@ -24,13 +19,10 @@ interface ConnectWalletArgs {
   transportOptions: ReactNativeTransportOptions
 }
 
-const ConnectWallet = async ({
-  linkOptions,
-  transportOptions,
-}: ConnectWalletArgs) => {
+const ConnectWallet = async ({linkOptions, transportOptions}: ConnectWalletArgs) => {
   // Add RPC
   linkOptions.client = linkOptions.rpc || new JsonRpc(linkOptions.endpoints)
-  
+
   // Add chain ID if not present
   if (!linkOptions.chainId) {
     const info = await linkOptions.client!.get_info()
@@ -39,9 +31,7 @@ const ConnectWallet = async ({
 
   // Add storage if not present
   if (!linkOptions.storage) {
-    linkOptions.storage = new Storage(
-      linkOptions.storagePrefix || 'proton-storage'
-    )
+    linkOptions.storage = new Storage(linkOptions.storagePrefix || 'proton-storage')
   }
 
   // Stop restore session if no saved data
@@ -50,16 +40,13 @@ const ConnectWallet = async ({
     if (!savedUserAuth) {
       // clean storage to remove unexpected side effects if session restore fails
       linkOptions.storage.remove('user-auth')
-      return { link: null, session: null }
+      return {link: null, session: null}
     }
   }
 
   let session, link, loginResult
 
-  if (
-    linkOptions.chainId ===
-    '71ee83bcf52142d61019d95f9cc5427ba6a0d7ff8accd9e2088ae2abeaf3d3dd'
-  ) {
+  if (linkOptions.chainId === '71ee83bcf52142d61019d95f9cc5427ba6a0d7ff8accd9e2088ae2abeaf3d3dd') {
     linkOptions.scheme = 'proton-dev'
   } else {
     linkOptions.scheme = 'proton'
@@ -71,10 +58,10 @@ const ConnectWallet = async ({
 
   // Create link
   const options: LinkOptions = {
-    ...linkOptions as LinkOptions,
+    ...(linkOptions as LinkOptions),
     transport,
     walletType: 'proton',
-    chains: []
+    chains: [],
   }
 
   link = new ProtonLink(options)
@@ -86,20 +73,16 @@ const ConnectWallet = async ({
     linkOptions.storage.write('user-auth', JSON.stringify(loginResult.session.auth))
   } else {
     const stringifiedUserAuth = await linkOptions.storage.read('user-auth')
-    const parsedUserAuth = stringifiedUserAuth
-      ? JSON.parse(stringifiedUserAuth)
-      : {}
-    const savedUserAuth: PermissionLevel = Object.keys(parsedUserAuth).length > 0 ? parsedUserAuth : null
+    const parsedUserAuth = stringifiedUserAuth ? JSON.parse(stringifiedUserAuth) : {}
+    const savedUserAuth: PermissionLevel =
+      Object.keys(parsedUserAuth).length > 0 ? parsedUserAuth : null
     if (savedUserAuth) {
-      session = await link.restoreSession(
-        transportOptions.requestAccount || '',
-        savedUserAuth
-      )
+      session = await link.restoreSession(transportOptions.requestAccount || '', savedUserAuth)
     }
   }
 
-  return { link, session, loginResult }
+  return {link, session, loginResult}
 }
 
-export { ProtonLink, LinkSession }
+export {ProtonLink, LinkSession}
 export default ConnectWallet

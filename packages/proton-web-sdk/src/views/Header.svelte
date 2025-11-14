@@ -1,8 +1,11 @@
 <script lang="ts">
-  export let isLogoRound = false;
-  export let logo: string = '';
-  export let title: string = '';
-  export let subtitle: string = '';
+  interface Props {
+    isLogoRound?: boolean;
+    logo?: string | null;
+    title?: string;
+    subtitle?: string;
+  }
+  let {isLogoRound = false, logo = '', title = '', subtitle = ''}: Props = $props();
 </script>
 
 <div class="wallet-selector-connect-header">
@@ -28,10 +31,7 @@
     &-logo {
       width: 100px;
       height: 100px;
-      background: var(
-        --proton-wallet-color-bglogo,
-        var(--color-logo-bgdefault)
-      );
+      background: var(--proton-wallet-color-bglogo, var(--color-logo-bgdefault));
 
       &.is-rounded {
         width: 120px;
@@ -55,10 +55,7 @@
       font-size: 16px;
       font-family: 'Circular Std Book', sans-serif;
       line-height: 24px;
-      color: var(
-        --proton-wallet-color-font-secondary,
-        var(--color-font-secondary)
-      );
+      color: var(--proton-wallet-color-font-secondary, var(--color-font-secondary));
       text-align: center;
     }
   }

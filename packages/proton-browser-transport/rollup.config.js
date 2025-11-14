@@ -12,7 +12,7 @@ import {sveltePreprocess} from 'svelte-preprocess'
 
 const pkg = createRequire(import.meta.url)("./package.json");
 
-const production = false
+const production = !process.env.ROLLUP_WATCH;
 
 const license = fs.readFileSync('LICENSE').toString('utf-8').trim()
 const banner = `
@@ -36,6 +36,10 @@ const svelteOnWarn = (warning, handler) => {
     handler(warning);
 }
 
+const getCssHash = ({ hash, css, filename }) => {
+    return `pbt-${hash(filename + css)}`
+}
+
 export default [
     {
         input: 'src/index.ts',
@@ -50,6 +54,7 @@ export default [
             svelte({
                 preprocess: sveltePreprocess({sourceMap: !production}),
                 compilerOptions: {
+                    cssHash: getCssHash,
                     // enable run-time checks when not in production
                     dev: !production,
                 },
@@ -87,6 +92,7 @@ export default [
             svelte({
                 preprocess: sveltePreprocess({sourceMap: !production}),
                 compilerOptions: {
+                    cssHash: getCssHash,
                     // enable run-time checks when not in production
                     dev: !production,
                 },
@@ -136,6 +142,7 @@ export default [
             svelte({
                 preprocess: sveltePreprocess({sourceMap: !production}),
                 compilerOptions: {
+                    cssHash: getCssHash,
                     // enable run-time checks when not in production
                     dev: !production,
                 },

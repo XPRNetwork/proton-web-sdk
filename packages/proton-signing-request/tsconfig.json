@@ -6,7 +6,10 @@
         "experimentalDecorators": true,
         "importHelpers": true,
         "isolatedModules": true,
-        "lib": ["dom", "es2020"],
+        "lib": [
+            "dom",
+            "es2020"
+        ],
         "module": "es2020",
         "moduleResolution": "node",
         "noImplicitAny": false,
@@ -14,7 +17,10 @@
         "sourceMap": true,
         "strict": true,
         "target": "es2020",
-        "declarationDir": "./dist/types"
+        "declarationDir": "./lib/types",
+        "outDir": "./lib"
     },
-    "include": ["src/**/*"]
+    "include": [
+        "src/**/*"
+    ]
 }

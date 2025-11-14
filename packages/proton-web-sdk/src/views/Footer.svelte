@@ -23,7 +23,7 @@
   </a>
 </div>
 
-<style lang="scss" global>
+<style lang="scss">
   .wallet-selector-footnote {
     margin-top: 5px;
     display: flex;

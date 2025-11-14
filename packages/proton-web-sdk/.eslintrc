@@ -4,8 +4,12 @@
     "plugins": [
         "@typescript-eslint"
     ],
+    "env": {
+        "browser": true,
+        "es6": true
+    },
     "ignorePatterns": [
-        "lib/*",
+        "dist/*",
         "node_modules/**"
     ],
     "extends": [
@@ -15,13 +19,17 @@
         "plugin:@typescript-eslint/recommended",
         "plugin:svelte/recommended"
     ],
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
     "parserOptions": {
         "sourceType": "module",
         "ecmaVersion": 2020,
+        "parser": "@typescript-eslint/parser",
         "extraFileExtensions": [
             ".svelte"
-        ],
-        "parser": "@typescript-eslint/parser"
+        ]
     },
     "rules": {
         "prettier/prettier": "warn",
@@ -38,7 +46,7 @@
         "@typescript-eslint/no-namespace": "off",
         "@typescript-eslint/no-non-null-assertion": "off",
         "@typescript-eslint/no-empty-function": "warn",
-        "no-inner-declarations": "off"
+        "no-inner-declarations": "off",
     },
     "overrides": [
         {

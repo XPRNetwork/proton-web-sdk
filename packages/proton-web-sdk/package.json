@@ -1,18 +1,18 @@
 {
   "name": "@proton/web-sdk",
+  "version": "4.4.0",
+  "license": "MIT",
   "author": "metallicus",
   "publishConfig": {
     "access": "public"
   },
   "type": "module",
-  "module": "dist/index.js",
-  "unpkg": "dist/bundle.js",
-  "types": "dist/index.d.ts",
+  "main": "lib/proton-web-sdk.js",
+  "module": "lib/proton-web-sdk.m.js",
+  "unpkg": "lib/proton-web-sdk.bundle.js",
+  "types": "lib/types/proton-web-sdk.d.ts",
+  "typings": "lib/types/index.d.ts",
   "source": "src/index.ts",
-  "version": "4.3.1",
-  "license": "MIT",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
   "files": [
     "dist",
     "cdn",
@@ -31,20 +31,14 @@
   },
   "dependencies": {
     "@greymass/eosio": "^0.6.1",
-    "@proton/browser-transport": "^4.3.0",
+    "@proton/browser-transport": "workspace:^",
     "@proton/js": "^28.1.2",
-    "@proton/link": "^4.2.18"
+    "@proton/link": "workspace:^"
   },
   "husky": {
     "hooks": {
       "pre-commit": "tsdx lint"
     }
-  },
-  "prettier": {
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "es5"
   },
   "gitHead": "d81cd76c8aacc2538243e24d0801b3eae4b8dba2",
   "devDependencies": {
@@ -60,13 +54,17 @@
     "@typescript-eslint/parser": "^8.33.0",
     "core-js": "^3.42.0",
     "eslint": "^8.57.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.4.0",
+    "eslint-plugin-svelte": "^3.13.0",
     "postcss": "^8.5.3",
+    "prettier": "^3.5.3",
     "rollup": "^4.40.0",
     "rollup-plugin-dts": "^6.2.1",
     "rollup-plugin-svelte": "^7.2.0",
     "sass": "^1.89.0",
-    "svelte": "^4.0.0",
-    "svelte-check": "^4.0.0",
+    "svelte": "^5.41.0",
+    "svelte-check": "^4.3.3",
     "svelte-preprocess": "^6.0.3",
     "ts-node": "^10.0.0",
     "tslib": "^2.4.0",

@@ -13,6 +13,8 @@ import { generateReturnUrl, isMobile, parseErrorMessage } from './utils'
 import { type BrowserTransportOptions, type DialogArgs, SkipToManual } from './types'
 
 import GenerateQrCode from './qrcode'
+import { mount, unmount } from 'svelte'
+import { DIALOG_STATE } from './state.svelte'
 
 export class BrowserTransport implements LinkTransport {
     /** Package version. */
@@ -27,9 +29,10 @@ export class BrowserTransport implements LinkTransport {
     private countdownTimer?: NodeJS.Timeout
     private closeTimer?: NodeJS.Timeout
     private showingManual: boolean
-    private Widget?: DialogWidget
-    private widgetHolder?: HTMLElement
-
+    private Widget?: any
+    private widgetProps = DIALOG_STATE
+    private widgetHolder?: Element
+    
     constructor(public readonly options: BrowserTransportOptions = {}) {
         this.requestStatus = !(options.requestStatus === false)
         this.requestAccount = options.requestAccount || ''
@@ -55,16 +58,22 @@ export class BrowserTransport implements LinkTransport {
                 document.body.appendChild(this.widgetHolder)
             }
             
-            this.Widget = new DialogWidget({target: this.widgetHolder})
-            this.Widget.$on('back', () => document.dispatchEvent(new CustomEvent('backToSelector')))
-            this.Widget.$on('close', () => this.closeModal())
+            if(this.widgetHolder) {
+                this.widgetProps.back = () => {
+                    document.dispatchEvent(new CustomEvent('backToSelector'))
+                }
+                this.widgetProps.close = () => {
+                    this.closeModal()
+                }
+                this.Widget = mount(DialogWidget, { props: this.widgetProps, target: this.widgetHolder })
+            }
         }
     }
 
     private hide() {
         if (this.Widget) {
-            this.Widget.$destroy()
-            this.Widget = undefined;
+            unmount(this.Widget)
+            this.Widget = undefined
         }
         if (this.widgetHolder) {
             this.widgetHolder.remove()
@@ -75,21 +84,16 @@ export class BrowserTransport implements LinkTransport {
 
     private showDialog(args: DialogArgs) {
         this.setupWidget()
-
-        const props: Record<string, any> = {
-            showBackButton: !args.hideBackButton,
-            walletType: this.walletType,
-            title: args.title || '',
-            subtitle: args.subtitle || '',
-            action: args.action || null,
-            showFootnote: args.showFootnote,
-            countDown: (args.content && args.content.countDown) || null,
-            qrData: (args.content && args.content.qrData) || null,
-            show: true
-        }
-
         if (this.Widget) {
-            this.Widget.$set({...props})
+            this.widgetProps.showBackButton = !args.hideBackButton;
+            this.widgetProps.walletType = this.walletType;
+            this.widgetProps.title = args.title || '';
+            this.widgetProps.subtitle = args.subtitle || '';
+            this.widgetProps.action = args.action || null;
+            this.widgetProps.showFootnote = args.showFootnote;
+            this.widgetProps.countDown = (args.content && args.content.countDown) || null;
+            this.widgetProps.qrData = (args.content && args.content.qrData) || null;
+            this.widgetProps.show = true;
         }
     }
 
@@ -180,8 +184,12 @@ export class BrowserTransport implements LinkTransport {
             const minutes = String(Math.floor(secondsLeft / 60)).padStart(2, '0')
             return secondsLeft > 0 ? `${minutes}:${seconds}` : '00:00'
         }
-        const updateCountdown = (startTime: number) =>
-            this.Widget && this.Widget.$set({countDown: formatCountDown(startTime)})
+        const updateCountdown = (startTime: number) => {
+            if(this.Widget) {
+                this.widgetProps.countDown = formatCountDown(startTime)
+            }
+        }
+            
         this.countdownTimer = setInterval(() => updateCountdown(start), 1000)
         updateCountdown(start)
 
@@ -236,7 +244,7 @@ export class BrowserTransport implements LinkTransport {
     private clearCountdown() {
         if (this.countdownTimer) {
             if (this.Widget) {
-                this.Widget.$set({countDown: undefined})
+                this.widgetProps.countDown = undefined
             }
             clearInterval(this.countdownTimer)
             this.countdownTimer = undefined

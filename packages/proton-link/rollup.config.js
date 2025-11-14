@@ -1,13 +1,15 @@
+import {createRequire} from 'module'
 import fs from 'fs'
 import dts from 'rollup-plugin-dts'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import typescript from '@rollup/plugin-typescript'
-import { terser } from 'rollup-plugin-terser'
+import terser from '@rollup/plugin-terser'
 import json from '@rollup/plugin-json'
 import replace from '@rollup/plugin-replace'
 
-import pkg from './package.json'
+const pkg = createRequire(import.meta.url)('./package.json')
+const production = !process.env.ROLLUP_WATCH
 
 const license = fs.readFileSync('LICENSE').toString('utf-8').trim()
 const banner = `
@@ -43,11 +45,17 @@ export default [
             banner,
             file: pkg.main,
             format: 'cjs',
-            sourcemap: true,
+            sourcemap: !production,
             exports: 'default',
         },
-        plugins: [replaceVersion, typescript({ target: 'es6' })],
-        external: Object.keys({ ...pkg.dependencies, ...pkg.peerDependencies }),
+        plugins: [
+            replaceVersion,
+            typescript({
+                sourceMap: !production,
+                target: 'es6',
+            }),
+        ],
+        external: Object.keys({...pkg.dependencies, ...pkg.peerDependencies}),
         onwarn,
     },
     {
@@ -56,15 +64,21 @@ export default [
             banner,
             file: pkg.module,
             format: 'esm',
-            sourcemap: true,
+            sourcemap: !production,
         },
-        plugins: [replaceVersion, typescript({ target: 'es6' })],
-        external: Object.keys({ ...pkg.dependencies, ...pkg.peerDependencies }),
+        plugins: [
+            replaceVersion,
+            typescript({
+                sourceMap: !production,
+                target: 'es6',
+            }),
+        ],
+        external: Object.keys({...pkg.dependencies, ...pkg.peerDependencies}),
         onwarn,
     },
     {
         input: 'src/index.ts',
-        output: { banner, file: pkg.types, format: 'esm' },
+        output: {banner, file: pkg.types, format: 'esm'},
         onwarn,
         plugins: [dts()],
     },
@@ -76,22 +90,23 @@ export default [
             name: 'ProtonLink',
             file: pkg.unpkg,
             format: 'iife',
-            sourcemap: true,
+            sourcemap: !production,
             exports: 'named',
         },
         plugins: [
             replaceVersion,
-            resolve({ browser: true }),
+            resolve({browser: true}),
             commonjs(),
             typescript({
-                target: 'es6'
+                sourceMap: !production,
+                target: 'es6',
             }),
             json(),
             replace({
                 preventAssignment: true,
                 values: {
-                    'process.env.NODE_ENV': JSON.stringify('production')
-                }
+                    'process.env.NODE_ENV': JSON.stringify('production'),
+                },
             }),
             terser({
                 format: {
@@ -102,7 +117,7 @@ export default [
                 },
             }),
         ],
-        external: Object.keys({ ...pkg.peerDependencies }),
+        external: Object.keys({...pkg.peerDependencies}),
         onwarn,
     },
 ]

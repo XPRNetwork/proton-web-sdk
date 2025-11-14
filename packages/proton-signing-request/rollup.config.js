@@ -1,15 +1,18 @@
+import {createRequire} from 'module'
 import fs from 'fs'
 import dts from 'rollup-plugin-dts'
-import babel from '@rollup/plugin-babel'
+import {babel} from '@rollup/plugin-babel'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import typescript from '@rollup/plugin-typescript'
-import {terser} from 'rollup-plugin-terser'
+import terser from '@rollup/plugin-terser'
 import json from '@rollup/plugin-json'
 import replace from '@rollup/plugin-replace'
-import nodePolyfills from 'rollup-plugin-polyfill-node';
+import nodePolyfills from 'rollup-plugin-polyfill-node'
 
-import pkg from './package.json'
+const pkg = createRequire(import.meta.url)('./package.json')
+
+const production = !process.env.ROLLUP_WATCH
 
 const license = fs.readFileSync('LICENSE').toString('utf-8').trim()
 const banner = `
@@ -36,10 +39,10 @@ export default [
             banner,
             file: pkg.main,
             format: 'cjs',
-            sourcemap: true,
+            sourcemap: !production,
             exports: 'named',
         },
-        plugins: [typescript({target: 'es6'})],
+        plugins: [typescript({target: 'es6', sourceMap: !production})],
         external: Object.keys({...pkg.dependencies, ...pkg.peerDependencies}),
         onwarn,
     },
@@ -49,9 +52,9 @@ export default [
             banner,
             file: pkg.module,
             format: 'esm',
-            sourcemap: true,
+            sourcemap: !production,
         },
-        plugins: [typescript({target: 'es6'})],
+        plugins: [typescript({target: 'es6', sourceMap: !production})],
         external: Object.keys({...pkg.dependencies, ...pkg.peerDependencies}),
         onwarn,
     },
@@ -69,8 +72,8 @@ export default [
             name: 'ProtonSigningRequest',
             file: pkg.unpkg,
             format: 'iife',
-            sourcemap: true,
-            exports: 'named'
+            sourcemap: !production,
+            exports: 'named',
         },
         plugins: [
             nodePolyfills(),
@@ -91,14 +94,15 @@ export default [
                             targets: '>0.25%, not dead',
                             useBuiltIns: 'usage',
                             corejs: '3',
-                            loose: true
+                            loose: true,
                         },
                     ],
                 ],
                 plugins: [
-                    ["@babel/plugin-proposal-decorators", { "legacy": true }],
-                    ["@babel/plugin-proposal-class-properties", { "loose": true }]
+                    ['@babel/plugin-proposal-decorators', {legacy: true}],
+                    ['@babel/plugin-transform-class-properties', {loose: true}],
                 ],
+                sourceMaps: !production,
             }),
             terser({
                 format: {

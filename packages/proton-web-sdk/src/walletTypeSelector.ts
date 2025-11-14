@@ -1,3 +1,5 @@
+import { mount, unmount } from 'svelte'
+import { DIALOG_STATE } from './state.svelte'
 import { CustomStyleOptionsToVarsMap } from './styles'
 import type { CustomStyleOptions, WalletItem } from './types'
 import DialogWidget from './views/Dialog.svelte'
@@ -8,6 +10,7 @@ export default class WalletTypeSelector {
   private appName: string
   private customStyleOptions: CustomStyleOptions | undefined
   private dialogRootNode: HTMLElement;
+  private dialogProps = DIALOG_STATE;
 
   constructor(name?: string, logo?: string, customStyleOptions?: CustomStyleOptions, dialogRootNode?: HTMLElement | string) {
     this.appLogo = logo
@@ -17,7 +20,7 @@ export default class WalletTypeSelector {
   }
 
   /** Container and stylesheet for Wallet Selector */
-  private Widget?: DialogWidget
+  private Widget?: any
   private widgetHolder?: HTMLElement
 
   private fontAdded: boolean = false;
@@ -29,44 +32,34 @@ export default class WalletTypeSelector {
     return new Promise((resolve, reject) => {
       this.setUpSelectorContainer()
 
-      const props: Record<string, any> = {
-        title: 'Connect Wallet',
-        subtitle: `To start using ${this.appName}`,
-        hasRoundedLogo: this.hasRoundedLogo,
-        wallets: enabledWalletTypes,
-        appLogo: this.appLogo || null,
-      }
-
       if (this.Widget) {
-        const hide = () => {
+        this.dialogProps.title = 'Connect Wallet'
+        this.dialogProps.subtitle = `To start using ${this.appName}`
+        this.dialogProps.hasRoundedLogo = this.hasRoundedLogo
+        this.dialogProps.wallets = enabledWalletTypes
+        this.dialogProps.appLogo = this.appLogo || null
+
+        this.dialogProps.select_wallet = (walletName) => {
+          if(walletName) {
+           this.hideSelector()
+            resolve(walletName)
+          }
+        }
+
+        this.dialogProps.close = () => {
           this.hideSelector()
-          offSelect();
-          offClose();
+          reject('no wallet selected')
         }
         
-        const offSelect = this.Widget.$on('select-wallet', (event) => {
-          if (event.detail.walletName) {
-            hide()
-            resolve(event.detail.walletName)
-          }
-        })
-        
-        const offClose = this.Widget.$on('close', () => {
-          hide()
-          reject('no wallet selected')
-        })
-
-        this.Widget.$set(props)
+        this.dialogProps.show = true;
       }
-
-      this.showSelector()
     })
   }
 
   public destroy() {
     this.hideSelector()
     if (this.Widget) {
-      this.Widget.$destroy()
+      unmount(this.Widget)
     }
     if (this.widgetHolder) {
       this.widgetHolder.remove()
@@ -75,23 +68,14 @@ export default class WalletTypeSelector {
 
   private hideSelector() {
     if (this.Widget) {
-      this.Widget.$set({
-        show: false,
-        appLogo: '',
-        hasRoundedLogo: false,
-        title: '',
-        subtitle: '',
-        wallets: []
-      })
+      this.dialogProps.show = false;
+      this.dialogProps.appLogo = '';
+      this.dialogProps.hasRoundedLogo = false;
+      this.dialogProps.title = '';
+      this.dialogProps.subtitle = '';
+      this.dialogProps.wallets = [];
     }
   }
-
-  private showSelector() {
-    if (this.Widget) {
-      this.Widget.$set({ show: true })
-    }
-  }
-
 
   private setUpSelectorContainer() {
     this.addFont()
@@ -99,7 +83,8 @@ export default class WalletTypeSelector {
     if (!this.Widget) {
       this.widgetHolder = document.createElement('div')
       this.dialogRootNode.appendChild(this.widgetHolder);
-      this.Widget = new DialogWidget({
+
+      this.Widget = mount(DialogWidget, { props: this.dialogProps,
         target: this.widgetHolder
       })
 

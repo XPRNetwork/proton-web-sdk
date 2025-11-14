@@ -190,20 +190,19 @@ In order to install the **Proton Web SDK** and use it on your local environment 
 ``` 
 git clone [https://github.com/ProtonProtocol/ProtonWeb.git]
 ``` 
- - After repository was cloned successfully, proceed to ```yarn``` and ```lerna``` npm packages global installation by executing following command:  
+## Install
 ```
-npm i -g yarn lerna
-```  
-This commands execution may require ```sudo``` rights on Mac OS systems.
+pnpm i
+```
 ​
- - Proceed to main directory, which contains **Proton Web SDK** cloned before, and execute the ```lerna bootstrap``` command.
-> This command searches for all ```package.json``` files in directories included in ```lerna.json``` file that’s located at the projects root directory, and manages all dependencies installation as well as required system processes work.
-​
- - When execution of ```lerna bootstrap``` command ends successfully – proceed through the installation process by executing ```yarn watch``` command.
-​
-> This command will initiate project assembly process and watch (auto-update on change) all files located in ```packages``` directory.
-​
- - From now on, every change saved in the project will make ```lerna``` package compile new build instance.
-​
-As soon as you finished all steps listed above, please make an issue in our repository and we will handle your request as soon as possible.
-​
+## Build
+
+To build all apps and packages, run the following command:
+```
+pnpm run build
+```
+## Publish
+```
+changeset
+pnpm run publish-packages
+```

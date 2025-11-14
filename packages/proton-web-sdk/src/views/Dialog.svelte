@@ -1,34 +1,41 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+  import type {WalletItem} from '../types';
+
   import Header from './Header.svelte';
   import Footer from './Footer.svelte';
   import Wallet from './Wallet.svelte';
+  import type {DialogProps} from '../state.svelte';
 
-  import type { WalletItem } from '../types';
+  let {
+    title = '',
+    subtitle = '',
+    show = false,
+    appLogo = '',
+    hasRoundedLogo = false,
+    wallets = [],
+    close = () => {},
+    select_wallet = (walletName) => {},
+  }: DialogProps = $props();
 
-  const dispatch = createEventDispatcher<{
-    close: void
-  }>();
-
-  export let title: string = '';
-  export let subtitle: string = '';
-  export let show: boolean = false;
-  export let appLogo: string = '';
-  export let hasRoundedLogo: boolean = false;
-  export let wallets: WalletItem[] = [];
-
-  const close = () => {
+  const onClose = () => {
     show = false;
-    dispatch('close');
-  }
+    close();
+  };
+
+  const onBackdropClick = (e: MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      e.stopPropagation();
+      onClose();
+    }
+  };
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
 <div
   role="presentation"
   class="wallet-selector"
   class:wallet-selector-active={show}
-  on:click|self|stopPropagation={close}
+  onclick={onBackdropClick}
 >
   <div class="wallet-selector-inner">
     <div class="wallet-selector-connect">
@@ -38,7 +45,7 @@
         {#if wallets && wallets.length}
           <ul class="wallet-selector-wallet-list">
             {#each wallets as wallet}
-              <Wallet {wallet} on:select-wallet />
+              <Wallet {wallet} {select_wallet} />
             {/each}
           </ul>
         {/if}
@@ -53,7 +60,8 @@
       </div>
     </div>
 
-    <div class="wallet-selector-close" role="button" on:click={close} />
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <div class="wallet-selector-close" role="button" tabindex="0" onclick={onClose}></div>
   </div>
   <Footer />
 </div>
@@ -68,8 +76,15 @@
     --color-option-bg: transparent;
     --color-option-font: #000531;
 
-    font-family: 'Circular Std Book', -apple-system, system-ui,
-      BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    font-family:
+      'Circular Std Book',
+      -apple-system,
+      system-ui,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      Roboto,
+      'Helvetica Neue',
+      Arial,
       sans-serif;
     font-size: 13px;
     background: rgba(0, 0, 0, 0.65);
@@ -152,10 +167,7 @@
       text-align: center;
       margin-top: 35px;
       margin-bottom: 30px;
-      color: var(
-        --proton-wallet-color-font-secondary,
-        var(--color-font-secondary)
-      );
+      color: var(--proton-wallet-color-font-secondary, var(--color-font-secondary));
     }
 
     &-tos-link {

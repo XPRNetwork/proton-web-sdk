@@ -1,14 +1,29 @@
 {
     "root": true,
     "parser": "@typescript-eslint/parser",
-    "plugins": ["@typescript-eslint"],
-    "ignorePatterns": ["lib/*", "node_modules/**"],
+    "env": {
+        "browser": true,
+        "es6": true,
+        "node": true
+    },
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "ignorePatterns": [
+        "lib/*",
+        "node_modules/**"
+    ],
     "extends": [
         "eslint:recommended",
         "plugin:prettier/recommended",
         "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended"
     ],
+    "parserOptions": {
+        "sourceType": "module",
+        "ecmaVersion": 2020,
+        "parser": "@typescript-eslint/parser"
+    },
     "rules": {
         "prettier/prettier": "warn",
         "no-console": "warn",
@@ -24,6 +39,6 @@
         "@typescript-eslint/no-namespace": "off",
         "@typescript-eslint/no-non-null-assertion": "off",
         "@typescript-eslint/no-empty-function": "warn",
-        "no-inner-declarations": "off",
+        "no-inner-declarations": "off"
     }
 }
