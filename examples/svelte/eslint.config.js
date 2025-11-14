@@ -20,9 +20,7 @@ export default ts.config(
 		languageOptions: {
 			globals: { ...globals.browser, ...globals.node }
 		},
-		rules: { 'no-undef': 'off',
-			"svelte/valid-compile": ["error", { "ignoreWarnings": true }]
-		}
+		rules: { 'no-undef': 'off', 'svelte/valid-compile': ['error', { ignoreWarnings: true }] }
 	},
 	{
 		files: ['**/*.svelte', '**/*.svelte.ts', '**/*.svelte.js'],

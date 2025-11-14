@@ -1,7 +1,7 @@
-import { mount, unmount } from 'svelte'
-import { DIALOG_STATE } from './state.svelte'
-import { CustomStyleOptionsToVarsMap } from './styles'
-import type { CustomStyleOptions, WalletItem } from './types'
+import {mount, unmount} from 'svelte'
+import {DIALOG_STATE} from './state.svelte'
+import {CustomStyleOptionsToVarsMap} from './styles'
+import type {CustomStyleOptions, WalletItem} from './types'
 import DialogWidget from './views/Dialog.svelte'
 
 export default class WalletTypeSelector {
@@ -9,21 +9,26 @@ export default class WalletTypeSelector {
   private hasRoundedLogo: boolean = false
   private appName: string
   private customStyleOptions: CustomStyleOptions | undefined
-  private dialogRootNode: HTMLElement;
-  private dialogProps = DIALOG_STATE;
+  private dialogRootNode: HTMLElement
+  private dialogProps = DIALOG_STATE
 
-  constructor(name?: string, logo?: string, customStyleOptions?: CustomStyleOptions, dialogRootNode?: HTMLElement | string) {
+  constructor(
+    name?: string,
+    logo?: string,
+    customStyleOptions?: CustomStyleOptions,
+    dialogRootNode?: HTMLElement | string
+  ) {
     this.appLogo = logo
     this.appName = name || 'app'
-    this.customStyleOptions = customStyleOptions;
-    this.dialogRootNode = this.setDialogRootNode(dialogRootNode);
+    this.customStyleOptions = customStyleOptions
+    this.dialogRootNode = this.setDialogRootNode(dialogRootNode)
   }
 
   /** Container and stylesheet for Wallet Selector */
   private Widget?: any
   private widgetHolder?: HTMLElement
 
-  private fontAdded: boolean = false;
+  private fontAdded: boolean = false
 
   /**
    * Only Proton and Anchor are available
@@ -40,8 +45,8 @@ export default class WalletTypeSelector {
         this.dialogProps.appLogo = this.appLogo || null
 
         this.dialogProps.select_wallet = (walletName) => {
-          if(walletName) {
-           this.hideSelector()
+          if (walletName) {
+            this.hideSelector()
             resolve(walletName)
           }
         }
@@ -50,8 +55,8 @@ export default class WalletTypeSelector {
           this.hideSelector()
           reject('no wallet selected')
         }
-        
-        this.dialogProps.show = true;
+
+        this.dialogProps.show = true
       }
     })
   }
@@ -68,12 +73,12 @@ export default class WalletTypeSelector {
 
   private hideSelector() {
     if (this.Widget) {
-      this.dialogProps.show = false;
-      this.dialogProps.appLogo = '';
-      this.dialogProps.hasRoundedLogo = false;
-      this.dialogProps.title = '';
-      this.dialogProps.subtitle = '';
-      this.dialogProps.wallets = [];
+      this.dialogProps.show = false
+      this.dialogProps.appLogo = ''
+      this.dialogProps.hasRoundedLogo = false
+      this.dialogProps.title = ''
+      this.dialogProps.subtitle = ''
+      this.dialogProps.wallets = []
     }
   }
 
@@ -82,11 +87,9 @@ export default class WalletTypeSelector {
 
     if (!this.Widget) {
       this.widgetHolder = document.createElement('div')
-      this.dialogRootNode.appendChild(this.widgetHolder);
+      this.dialogRootNode.appendChild(this.widgetHolder)
 
-      this.Widget = mount(DialogWidget, { props: this.dialogProps,
-        target: this.widgetHolder
-      })
+      this.Widget = mount(DialogWidget, {props: this.dialogProps, target: this.widgetHolder})
 
       if (this.customStyleOptions) {
         const options = this.customStyleOptions
@@ -105,28 +108,26 @@ export default class WalletTypeSelector {
   }
 
   private addFont() {
-    const fontToAdd = 'https://fonts.cdnfonts.com/css/circular-std-book';
+    const fontToAdd = 'https://fonts.cdnfonts.com/css/circular-std-book'
     if (!this.fontAdded) {
       const alreadyExists = Array.from(document.styleSheets).some((item) => item.href === fontToAdd)
       if (!alreadyExists) {
         const font = document.createElement('link')
         font.href = fontToAdd
         font.rel = 'stylesheet'
-        document.head.appendChild(font);
+        document.head.appendChild(font)
       }
-      this.fontAdded = true;
+      this.fontAdded = true
     }
   }
 
   private setDialogRootNode(rootNode?: string | HTMLElement): HTMLElement {
-    
     if (!rootNode) return document.body
-    if (typeof rootNode == 'string') { 
-      const node = document.body.querySelector(rootNode);
-      if (!node) throw new Error('dialogRootNode is not a valid selector');
-      return node as HTMLElement;
+    if (typeof rootNode == 'string') {
+      const node = document.body.querySelector(rootNode)
+      if (!node) throw new Error('dialogRootNode is not a valid selector')
+      return node as HTMLElement
     }
-    return rootNode;
-   }
-
+    return rootNode
+  }
 }

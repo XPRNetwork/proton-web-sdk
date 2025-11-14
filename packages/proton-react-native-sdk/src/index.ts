@@ -44,7 +44,7 @@ const ConnectWallet = async ({linkOptions, transportOptions}: ConnectWalletArgs)
     }
   }
 
-  let session, link, loginResult
+  let session, loginResult
 
   if (linkOptions.chainId === '71ee83bcf52142d61019d95f9cc5427ba6a0d7ff8accd9e2088ae2abeaf3d3dd') {
     linkOptions.scheme = 'proton-dev'
@@ -64,7 +64,7 @@ const ConnectWallet = async ({linkOptions, transportOptions}: ConnectWalletArgs)
     chains: [],
   }
 
-  link = new ProtonLink(options)
+  const link = new ProtonLink(options)
 
   // Get session based on login or restore session
   if (!linkOptions.restoreSession) {

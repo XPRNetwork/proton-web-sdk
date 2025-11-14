@@ -358,7 +358,7 @@ export class SigningRequest {
         options: SigningRequestEncodingOptions = {scheme: DEFAULT_SCHEME},
         abis: Record<string, ABIDef> = {}
     ) {
-        let version = 2
+        const version = 2
         const data: any = {}
         const encode = (action: AnyAction) => encodeAction(action, abis)
 
@@ -472,7 +472,7 @@ export class SigningRequest {
             this.storageType(version).from(data),
             options.scheme,
             options.zlib,
-            options.abiProvider,
+            options.abiProvider
         )
 
         // sign the request if given a signature provider
@@ -538,7 +538,10 @@ export class SigningRequest {
     }
 
     /** Creates a signing request from encoded `esr:` uri string. */
-    public static from(uri: string, options: SigningRequestEncodingOptions = {scheme: DEFAULT_SCHEME}) {
+    public static from(
+        uri: string,
+        options: SigningRequestEncodingOptions = {scheme: DEFAULT_SCHEME}
+    ) {
         if (typeof uri !== 'string') {
             throw new Error('Invalid request uri')
         }
@@ -553,7 +556,10 @@ export class SigningRequest {
         return SigningRequest.fromData(data, options)
     }
 
-    public static fromData(data: BytesType, options: SigningRequestEncodingOptions = {scheme: DEFAULT_SCHEME}) {
+    public static fromData(
+        data: BytesType,
+        options: SigningRequestEncodingOptions = {scheme: DEFAULT_SCHEME}
+    ) {
         data = Bytes.from(data)
         const header = data.array[0]
         const version = header & ~(1 << 7)
@@ -606,7 +612,7 @@ export class SigningRequest {
         scheme: SigningRequestEncodingOptions['scheme'],
         zlib?: ZlibProvider,
         abiProvider?: AbiProvider,
-        signature?: RequestSignature,
+        signature?: RequestSignature
     ) {
         if (data.flags.broadcast && data.req.variantName === 'identity') {
             throw new Error('Invalid request (identity request cannot be broadcast)')
@@ -856,7 +862,7 @@ export class SigningRequest {
         }
         const actions = this.resolveActions(abis, signer)
         // TODO: resolve context free actions
-        const context_free_actions = (tx.context_free_actions as unknown) as ResolvedAction[]
+        const context_free_actions = tx.context_free_actions as unknown as ResolvedAction[]
         return {...tx, context_free_actions, actions} as ResolvedTransaction
     }
 
@@ -975,18 +981,20 @@ export class SigningRequest {
                         }),
                     ]
                 } else {
-                    // eslint-disable-next-line prefer-const
                     let {
                         // scope,
-                        permission
+                        permission,
                     } = req.value as IdentityV3
                     if (!permission) {
                         permission = PlaceholderAuth
                     }
-                    const data = Serializer.encode({object: {
-                        // scope,
-                        permission
-                    }, type: IdentityV3})
+                    const data = Serializer.encode({
+                        object: {
+                            // scope,
+                            permission,
+                        },
+                        type: IdentityV3,
+                    })
                     return [
                         Action.from({
                             account: '',
@@ -1156,7 +1164,7 @@ export class SigningRequest {
             this.scheme,
             this.zlib,
             this.abiProvider,
-            signature,
+            signature
         )
     }
 

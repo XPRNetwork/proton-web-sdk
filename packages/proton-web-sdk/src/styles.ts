@@ -1,4 +1,4 @@
-import type { CustomStyleOptions } from "./types";
+import type {CustomStyleOptions} from './types'
 
 export const CustomStyleOptionsToVarsMap: Map<keyof CustomStyleOptions, string> = new Map([
   ['modalBackgroundColor', 'proton-wallet-modal-bgcolor'],
@@ -9,4 +9,3 @@ export const CustomStyleOptionsToVarsMap: Map<keyof CustomStyleOptions, string> 
   ['secondaryFontColor', 'proton-wallet-color-font-secondary'],
   ['linkColor', 'proton-wallet-color-link'],
 ])
-

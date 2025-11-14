@@ -2,7 +2,7 @@
 export * from './index-module'
 
 // default export is Link class for convenience
-import { Link } from './index-module'
+import {Link} from './index-module'
 export default Link
 
 // expose dependencies
