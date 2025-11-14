@@ -1,6 +1,6 @@
 {
     "name": "@proton/link",
-    "version": "4.4.0",
+    "version": "4.4.1",
     "description": "Library for authenticating and signing transactions using the Proton Link protocol",
     "license": "BSD-3-Clause",
     "main": "lib/proton-link.js",
@@ -8,6 +8,9 @@
     "types": "lib/types/proton-link.d.ts",
     "unpkg": "lib/proton-link.bundle.js",
     "type": "module",
+    "publishConfig": {
+        "access": "public"
+    },
     "scripts": {
         "watch": "rollup -c -w",
         "prepare": "make",
@@ -30,8 +33,8 @@
     },
     "homepage": "https://github.com/protonprotocol/proton-link",
     "files": [
-        "lib/*",
-        "src/*"
+        "lib",
+        "src"
     ],
     "browser": {
         "buffer": false,
