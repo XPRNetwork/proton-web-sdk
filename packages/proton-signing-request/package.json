@@ -1,6 +1,6 @@
 {
     "name": "@proton/signing-request",
-    "version": "4.4.0",
+    "version": "4.4.1",
     "description": "Proton Signing Request (ESR / EEP-7) encoder and decoder",
     "homepage": "https://github.com/ProtonProtocol/proton-signing-request",
     "license": "MIT",
@@ -11,8 +11,8 @@
     "sideEffects": false,
     "type": "module",
     "files": [
-        "src/*",
-        "lib/*"
+        "lib",
+        "src"
     ],
     "publishConfig": {
         "access": "public"

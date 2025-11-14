@@ -1,6 +1,6 @@
 {
   "name": "@proton/browser-transport",
-  "version": "4.4.0",
+  "version": "4.4.1",
   "description": "Vanilla JS browser transport for Proton Link",
   "homepage": "https://github.com/protonprotocol/proton-browser-transport",
   "license": "BSD-3-Clause",
@@ -20,8 +20,8 @@
     "lint": "make lint"
   },
   "files": [
-    "lib/*",
-    "src/*"
+    "lib",
+    "src"
   ],
   "dependencies": {
     "@proton/link": "workspace:^"
