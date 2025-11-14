@@ -17,6 +17,9 @@
   "engines": {
     "node": ">=10"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "watch": "rollup -c -w",
     "prepare": "make",

@@ -8,6 +8,9 @@
     "types": "lib/types/proton-link.d.ts",
     "unpkg": "lib/proton-link.bundle.js",
     "type": "module",
+    "publishConfig": {
+        "access": "public"
+    },
     "scripts": {
         "watch": "rollup -c -w",
         "prepare": "make",

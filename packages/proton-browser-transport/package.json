@@ -10,6 +10,9 @@
   "unpkg": "lib/proton-browser-transport.bundle.js",
   "types": "lib/types/proton-browser-transport.d.ts",
   "typings": "lib/types/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "watch": "rollup -c -w",
     "prepare": "make",
