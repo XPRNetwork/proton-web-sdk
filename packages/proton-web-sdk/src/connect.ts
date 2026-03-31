@@ -10,6 +10,12 @@ import {WebRenderer} from '@proton/web-renderer'
 let renderer: WebRenderer | undefined
 let uiTheme: UIOptions['theme'] = undefined
 
+const PULSE_VM_DEFAULT_ENDPOINTS = [
+  'https://pulsevm-devnet-01.metalblockchain.org/ext/bc/2T6FphmDo8szR3UERGsDsXaQPb52xUn2djnAt7S6LECbHDhc5L/rpc',
+]
+const PULSE_VM_DEFAULT_CHAIN_ID =
+  'bef02258ee702d2d8df016ce2f2cbcf6bfa986dcd8c8641acd9068b8f9c4c7ef'
+
 export const setUITheme = (value: UIOptions['theme']) => {
   if (value) {
     uiTheme = value
@@ -32,6 +38,10 @@ export const ConnectWallet = async ({
   selectorOptions = {},
   uiOptions = {},
 }: ConnectWalletArgs): Promise<ConnectWalletRet> => {
+  if (linkOptions.usePulseVM) {
+    linkOptions.endpoints = PULSE_VM_DEFAULT_ENDPOINTS
+  }
+
   // Add RPC
   const rpcClass = linkOptions.usePulseVM ? JsonRpcPulseVM : JsonRpc
   const rpc = new rpcClass(linkOptions.endpoints)
@@ -39,8 +49,12 @@ export const ConnectWallet = async ({
 
   // Add Chain ID
   if (!linkOptions.chainId) {
-    const info = await rpc.get_info()
-    linkOptions.chainId = info.chain_id
+    if (linkOptions.usePulseVM) {
+      linkOptions.chainId = PULSE_VM_DEFAULT_CHAIN_ID
+    } else {
+      const info = await rpc.get_info()
+      linkOptions.chainId = info.chain_id
+    }
   }
 
   // Add storage

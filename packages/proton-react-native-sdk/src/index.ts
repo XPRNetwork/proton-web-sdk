@@ -19,7 +19,17 @@ interface ConnectWalletArgs {
   transportOptions: ReactNativeTransportOptions
 }
 
+const PULSE_VM_DEFAULT_ENDPOINTS = [
+  'https://pulsevm-devnet-01.metalblockchain.org/ext/bc/2T6FphmDo8szR3UERGsDsXaQPb52xUn2djnAt7S6LECbHDhc5L/rpc',
+]
+const PULSE_VM_DEFAULT_CHAIN_ID =
+  'bef02258ee702d2d8df016ce2f2cbcf6bfa986dcd8c8641acd9068b8f9c4c7ef'
+
 const ConnectWallet = async ({linkOptions, transportOptions}: ConnectWalletArgs) => {
+  if (linkOptions.usePulseVM) {
+    linkOptions.endpoints = PULSE_VM_DEFAULT_ENDPOINTS
+  }
+
   // Add RPC
   const rpcClass = linkOptions.usePulseVM ? JsonRpcPulseVM : JsonRpc
 
@@ -27,8 +37,12 @@ const ConnectWallet = async ({linkOptions, transportOptions}: ConnectWalletArgs)
 
   // Add chain ID if not present
   if (!linkOptions.chainId) {
-    const info = await linkOptions.client!.get_info()
-    linkOptions.chainId = info.chain_id
+    if (linkOptions.usePulseVM) {
+      linkOptions.chainId = PULSE_VM_DEFAULT_CHAIN_ID
+    } else {
+      const info = await linkOptions.client!.get_info()
+      linkOptions.chainId = info.chain_id
+    }
   }
 
   // Add storage if not present
