@@ -6,9 +6,11 @@ import type { RpcInterfaces } from '@proton/js'
 export let link: ProtonWebLink | Link | undefined
 export let session: LinkSession | undefined
 
+const USE_PULSE_VM = import.meta.env.VITE_USE_PULSE_VM === 'true'
 const REQUEST_ACCOUNT = 'taskly'
 const CHAIN_ID = '384da888112027f0321850a169f737c33e53b388aad48b5adace4bab97f437e0'
 const ENDPOINTS = ['https://proton.greymass.com']
+const TOKEN_CONTRACT = USE_PULSE_VM ? 'pulse.token' : 'eosio.token'
 
 const rpc = new JsonRpc(ENDPOINTS)
 
@@ -95,7 +97,7 @@ export const transfer = async ({ to, amount }: { to: string; amount: string }) =
              */
 
             // Token contract
-            account: 'eosio.token',
+            account: TOKEN_CONTRACT,
 
             // Action name
             name: 'transfer',
@@ -131,6 +133,8 @@ export const transfer = async ({ to, amount }: { to: string; amount: string }) =
 export async function getProtonAvatar(
   account: string,
 ): Promise<RpcInterfaces.UserInfo | undefined> {
+  if (USE_PULSE_VM) return undefined
+
   try {
     const result = await rpc.get_table_rows({
       code: 'eosio.proton',
