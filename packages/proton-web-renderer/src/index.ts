@@ -15,6 +15,7 @@ import {
   backAction,
   closeAction,
   demoMode,
+  embeddedMode,
   enabledWallets,
   error,
   manualAction,
@@ -65,7 +66,7 @@ export class WebRenderer implements UIRenderer {
     renderTarget,
   }: {
     enabledWallets?: UIWalletType[] | string[]
-    renderTarget?: HTMLElement | string
+    renderTarget?: HTMLElement | string | null
   } = {}): Promise<string> {
     if (!wallets) {
       wallets = ENABLED_WALLETS
@@ -290,7 +291,9 @@ export class WebRenderer implements UIRenderer {
     this.initialized = true
   }
 
-  private resolveRenderTarget(target: HTMLElement | string | undefined): HTMLElement {
+  private resolveRenderTarget(
+    target: HTMLElement | string | null | undefined
+  ): HTMLElement {
     if (target instanceof HTMLElement) {
       return target
     }
@@ -303,7 +306,7 @@ export class WebRenderer implements UIRenderer {
     return document.body
   }
 
-  setRenderTarget(target: HTMLElement | string): void {
+  setRenderTarget(target: HTMLElement | string | null): void {
     this.options.renderTarget = target
     if (!this.initialized || !this.element) {
       return
@@ -312,6 +315,7 @@ export class WebRenderer implements UIRenderer {
     if (this.element.parentNode !== parent) {
       parent.append(this.element)
     }
+    embeddedMode.set(parent !== document.body)
   }
 
   private appendDialogElement() {
@@ -322,6 +326,7 @@ export class WebRenderer implements UIRenderer {
     if (!existing) {
       const target = this.resolveRenderTarget(this.options.renderTarget)
       target.append(this.element)
+      embeddedMode.set(target !== document.body)
       this.offDOMContentLoaded()
 
       this.app = mount(App, {
