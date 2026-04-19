@@ -53,9 +53,15 @@ export const ConnectWallet = async ({
 
   if (!renderer) {
     renderer = new WebRenderer(uiOptions)
+  } else if (uiOptions.renderTarget) {
+    renderer.setRenderTarget(uiOptions.renderTarget)
   }
 
-  return await login({selectorOptions, linkOptions, transportOptions})
+  const result = await login({selectorOptions, linkOptions, transportOptions})
+  if (result) {
+    ;(result as ConnectWalletRet).renderer = renderer
+  }
+  return result
 }
 
 const login = async (

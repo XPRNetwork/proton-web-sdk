@@ -62,9 +62,17 @@ export class WebRenderer implements UIRenderer {
 
   async selectWallet({
     enabledWallets: wallets,
-  }: {enabledWallets?: UIWalletType[] | string[]} = {}): Promise<string> {
+    renderTarget,
+  }: {
+    enabledWallets?: UIWalletType[] | string[]
+    renderTarget?: HTMLElement | string
+  } = {}): Promise<string> {
     if (!wallets) {
       wallets = ENABLED_WALLETS
+    }
+
+    if (renderTarget) {
+      this.setRenderTarget(renderTarget)
     }
 
     enabledWallets.set(new Set(wallets as UIWalletType[]))
@@ -89,6 +97,9 @@ export class WebRenderer implements UIRenderer {
     if (payload.wallet_type === SUPPORTED_WALLETS.ANCHOR) {
       route = ROUTES.OTHER_ANCHOR_USE
     }
+    if (payload.renderTarget) {
+      this.setRenderTarget(payload.renderTarget)
+    }
     this.request(route, payload)
   }
 
@@ -96,6 +107,9 @@ export class WebRenderer implements UIRenderer {
     let route = ROUTES.WEBAUTH_SIGN
     if (payload.wallet_type === SUPPORTED_WALLETS.ANCHOR) {
       route = ROUTES.OTHER_ANCHOR_SIGN
+    }
+    if (payload.renderTarget) {
+      this.setRenderTarget(payload.renderTarget)
     }
     this.sign_request(route, payload)
   }
@@ -105,10 +119,16 @@ export class WebRenderer implements UIRenderer {
     if (payload.wallet_type === SUPPORTED_WALLETS.ANCHOR) {
       route = ROUTES.OTHER_ANCHOR_SIGN_MANUAL
     }
+    if (payload.renderTarget) {
+      this.setRenderTarget(payload.renderTarget)
+    }
     this.request(route, payload)
   }
 
   showError(payload: UIErrorPayload): void {
+    if (payload.renderTarget) {
+      this.setRenderTarget(payload.renderTarget)
+    }
     error.set(payload.data)
     this.show()
   }
@@ -117,6 +137,10 @@ export class WebRenderer implements UIRenderer {
     let route = ROUTES.WEBAUTH_SIGN
     if (payload.wallet_type === SUPPORTED_WALLETS.ANCHOR) {
       route = ROUTES.OTHER_ANCHOR_SIGN
+    }
+
+    if (payload.renderTarget) {
+      this.setRenderTarget(payload.renderTarget)
     }
 
     recoverError.set(payload.data)
@@ -266,13 +290,38 @@ export class WebRenderer implements UIRenderer {
     this.initialized = true
   }
 
+  private resolveRenderTarget(target: HTMLElement | string | undefined): HTMLElement {
+    if (target instanceof HTMLElement) {
+      return target
+    }
+    if (typeof target === 'string') {
+      const found = document.querySelector<HTMLElement>(target)
+      if (found) {
+        return found
+      }
+    }
+    return document.body
+  }
+
+  setRenderTarget(target: HTMLElement | string): void {
+    this.options.renderTarget = target
+    if (!this.initialized || !this.element) {
+      return
+    }
+    const parent = this.resolveRenderTarget(target)
+    if (this.element.parentNode !== parent) {
+      parent.append(this.element)
+    }
+  }
+
   private appendDialogElement() {
     const existing = document.getElementById(this.elementId)
     if (!this.element || !this.shadow) {
       throw new Error('The WebRenderer is not initialized. Call the initialize method first.')
     }
     if (!existing) {
-      document.body.append(this.element)
+      const target = this.resolveRenderTarget(this.options.renderTarget)
+      target.append(this.element)
       this.offDOMContentLoaded()
 
       this.app = mount(App, {
