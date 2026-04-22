@@ -11,14 +11,25 @@ export type UISpace =
   | 'var(--space-xl)'
   | 'var(--space-2xl)'
 
-export interface UIRendererOptions extends UIProps {
-  id?: string
+export type UIRendererEmbedTo = Element | string | (() => Element | null) | null
+
+export interface UIEmbedToPayload {
+  embedTo?: UIRendererEmbedTo
 }
 
-interface UIGenericPayload {
+export interface UIRendererOptions extends UIProps, UIEmbedToPayload {
+  id?: string
+  elementClass?: string
+}
+
+interface UIGenericPayload extends UIEmbedToPayload {
   wallet_type: UIWalletType | string
   onClose?: () => void
   onBack?: () => void
+}
+
+export interface UISelectWalletPayload extends UIEmbedToPayload {
+  enabledWallets?: UIWalletType[] | string[]
 }
 
 export interface UIRequestPayload extends UIGenericPayload {
@@ -28,9 +39,14 @@ export interface UIRequestPayload extends UIGenericPayload {
 export type UILoginPayload = UIRequestPayload
 export type UISignManuallyPayload = UIRequestPayload
 
-export interface UIErrorPayload {
+export interface UIErrorPayload extends UIEmbedToPayload {
   wallet_type: UIWalletType | string
   data: UIError
+}
+
+export interface UILoadingPayload extends UIEmbedToPayload {
+  message?: string
+  no_close?: boolean
 }
 
 export interface UISignPayload extends UIGenericPayload {
@@ -50,5 +66,6 @@ export interface UIRenderer {
   show(): void
   close(): void
   destroy(): void
-  showLoading(): void
+  showLoading(_?: UILoadingPayload): void
+  embedTo(_: UIRendererEmbedTo): void
 }

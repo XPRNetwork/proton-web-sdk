@@ -2,29 +2,17 @@ import {mount, unmount} from 'svelte'
 import type {
   UIErrorPayload,
   UIErrorRecoverPayload,
+  UILoadingPayload,
   UILoginPayload,
   UIRenderer,
+  UIRendererEmbedTo,
   UIRendererOptions,
   UIRequestPayload,
+  UISelectWalletPayload,
   UISignManuallyPayload,
   UISignPayload,
 } from './types'
-import {
-  active,
-  app_props,
-  backAction,
-  closeAction,
-  demoMode,
-  enabledWallets,
-  error,
-  manualAction,
-  qrRequestData,
-  recoverError,
-  router,
-  signRequestData,
-  theme,
-  walletSelect,
-} from './ui/store'
+import {createAppContext, theme, type UIAppContext} from './ui/store'
 import {addListener, flattenObject, toCssVars} from './utils'
 import App from './ui/App.svelte'
 import {DEMO_IMG, ENABLED_WALLETS, ROUTES, SUPPORTED_WALLETS} from './ui/constants'
@@ -49,32 +37,46 @@ export class WebRenderer implements UIRenderer {
   public initialized = false
   readonly options: UIRendererOptions
 
+  private appContext: UIAppContext
   private offDOMContentLoaded: () => void = () => void 0
   private elementId: string = ''
   private app: any
+  private cssRules: string[] = []
+  private target: Element | null = null
 
   constructor(options: UIRendererOptions = defaultUIRendererOptions) {
     this.options = options
+    this.appContext = createAppContext()
+
     if (typeof document !== 'undefined') {
-      this.initialize()
+      this.buildCssRules()
+
+      if (this.options.embedTo) {
+        this.embedTo(this.options.embedTo)
+      }
     }
   }
 
   async selectWallet({
     enabledWallets: wallets,
-  }: {enabledWallets?: UIWalletType[] | string[]} = {}): Promise<string> {
+    embedTo,
+  }: UISelectWalletPayload = {}): Promise<string> {
+    this.initialize()
+
     if (!wallets) {
       wallets = ENABLED_WALLETS
     }
+    if (embedTo !== undefined) {
+      this.embedTo(embedTo)
+    }
 
-    enabledWallets.set(new Set(wallets as UIWalletType[]))
-
-    router.push(ROUTES.WEBAUTH_CONNECT)
+    this.appContext.enabledWallets.set(new Set(wallets as UIWalletType[]))
+    this.appContext.router.push(ROUTES.WEBAUTH_CONNECT)
     this.show()
 
     try {
       return await new Promise<string>((resolve, reject) => {
-        walletSelect.set({
+        this.appContext.walletSelect.set({
           resolve,
           reject,
         })
@@ -85,6 +87,10 @@ export class WebRenderer implements UIRenderer {
   }
 
   login(payload: UILoginPayload): void {
+    if (payload.embedTo !== undefined) {
+      this.embedTo(payload.embedTo)
+    }
+
     let route = ROUTES.WEBAUTH_LOGIN_MOBILE
     if (payload.wallet_type === SUPPORTED_WALLETS.ANCHOR) {
       route = ROUTES.OTHER_ANCHOR_USE
@@ -93,6 +99,10 @@ export class WebRenderer implements UIRenderer {
   }
 
   sign(payload: UISignPayload): void {
+    if (payload.embedTo !== undefined) {
+      this.embedTo(payload.embedTo)
+    }
+
     let route = ROUTES.WEBAUTH_SIGN
     if (payload.wallet_type === SUPPORTED_WALLETS.ANCHOR) {
       route = ROUTES.OTHER_ANCHOR_SIGN
@@ -101,6 +111,10 @@ export class WebRenderer implements UIRenderer {
   }
 
   signManually(payload: UISignManuallyPayload): void {
+    if (payload.embedTo !== undefined) {
+      this.embedTo(payload.embedTo)
+    }
+
     let route = ROUTES.WEBAUTH_SIGN_MANUAL
     if (payload.wallet_type === SUPPORTED_WALLETS.ANCHOR) {
       route = ROUTES.OTHER_ANCHOR_SIGN_MANUAL
@@ -109,39 +123,62 @@ export class WebRenderer implements UIRenderer {
   }
 
   showError(payload: UIErrorPayload): void {
-    error.set(payload.data)
+    if (payload.embedTo !== undefined) {
+      this.embedTo(payload.embedTo)
+    }
+
+    this.initialize()
+    this.appContext.error.set(payload.data)
     this.show()
   }
 
   recoverError(payload: UIErrorRecoverPayload): void {
+    if (payload.embedTo !== undefined) {
+      this.embedTo(payload.embedTo)
+    }
+
+    this.initialize()
+
     let route = ROUTES.WEBAUTH_SIGN
     if (payload.wallet_type === SUPPORTED_WALLETS.ANCHOR) {
       route = ROUTES.OTHER_ANCHOR_SIGN
     }
 
-    recoverError.set(payload.data)
+    this.appContext.recoverError.set(payload.data)
     if (payload.onManual) {
-      manualAction.set(payload.onManual)
+      this.appContext.manualAction.set(payload.onManual)
     }
 
-    router.push(route)
+    this.appContext.router.push(route)
     this.show()
   }
 
-  showLoading(): void {
-    router.push(ROUTES.PREPARING_REQUEST)
+  showLoading(payload?: UILoadingPayload): void {
+    if (payload?.embedTo !== undefined) {
+      this.embedTo(payload.embedTo)
+    }
+
+    this.initialize()
+
+    this.appContext.router.push(ROUTES.PREPARING_REQUEST)
+    this.appContext.loadingMessage.set(payload?.message)
+    if (payload?.no_close) {
+      this.appContext.noClose.set(true)
+    }
     this.show()
   }
 
   show(): void {
-    active.set(true)
+    this.appContext.active.set(true)
   }
 
   close(): void {
-    active.set(false)
+    this.appContext.active.set(false)
   }
 
   async demo(): Promise<void> {
+    this.initialize()
+
     const qrRequestData: UIQRData = {
       code: DEMO_IMG,
       link: 'proton-dev:example',
@@ -151,7 +188,7 @@ export class WebRenderer implements UIRenderer {
     }
 
     return await new Promise((resolve) => {
-      demoMode.set({
+      this.appContext.demoMode.set({
         selectWallet: (wallet_type) => {
           this.login({
             data: qrRequestData,
@@ -188,9 +225,12 @@ export class WebRenderer implements UIRenderer {
             wallet_type,
           })
         },
+        showLoading: (payload) => {
+          this.showLoading(payload)
+        },
       })
-      enabledWallets.set(new Set(ENABLED_WALLETS))
-      router.push(ROUTES.WEBAUTH_CONNECT)
+      this.appContext.enabledWallets.set(new Set(ENABLED_WALLETS))
+      this.appContext.router.push(ROUTES.WEBAUTH_CONNECT)
       this.show()
     })
   }
@@ -199,43 +239,80 @@ export class WebRenderer implements UIRenderer {
     theme.set(value)
   }
 
-  destroy(): void {
+  embedTo(target: UIRendererEmbedTo): void {
+    if (!target) {
+      this.target = null
+    } else {
+      if (target instanceof Element) {
+        this.target = target
+      } else {
+        let resolveTarget: () => Element | null = () => null
+
+        if (typeof target === 'string') {
+          resolveTarget = () => document.querySelector(target)
+        } else {
+          resolveTarget = target
+        }
+
+        this.target = resolveTarget()
+      }
+    }
+
+    if (this.target === null) {
+      this.appContext.embeddedMode.set(false)
+    } else {
+      this.appContext.embeddedMode.set(true)
+    }
+  }
+
+  unmount(): void {
     unmount(this.app)
     this.element?.remove()
     this.offDOMContentLoaded()
+    this.initialized = false
+    this.shadow = undefined
+    this.app = undefined
+  }
+
+  destroy(): void {
+    this.unmount()
   }
 
   private sign_request(route: UIRouteValue, payload: UISignPayload): void {
+    this.initialize()
+
     if (payload.onBack) {
-      backAction.set(payload.onBack)
+      this.appContext.backAction.set(payload.onBack)
     }
 
     if (payload.onClose) {
-      closeAction.set(payload.onClose)
+      this.appContext.closeAction.set(payload.onClose)
     }
 
     if (payload.onManual) {
-      manualAction.set(payload.onManual)
+      this.appContext.manualAction.set(payload.onManual)
     }
 
-    signRequestData.set(payload.data)
+    this.appContext.signRequestData.set(payload.data)
 
-    router.push(route)
+    this.appContext.router.push(route)
     this.show()
   }
 
   private request(route: UIRouteValue, payload: UIRequestPayload): void {
-    qrRequestData.set(payload.data)
+    this.initialize()
+
+    this.appContext.qrRequestData.set(payload.data)
 
     if (payload.onBack) {
-      backAction.set(payload.onBack)
+      this.appContext.backAction.set(payload.onBack)
     }
 
     if (payload.onClose) {
-      closeAction.set(payload.onClose)
+      this.appContext.closeAction.set(payload.onClose)
     }
 
-    router.push(route)
+    this.appContext.router.push(route)
     this.show()
   }
 
@@ -247,10 +324,13 @@ export class WebRenderer implements UIRenderer {
     const {options} = this
     // Create the dialog element and its shadow root
     this.element = document.createElement('div')
+    if (options.elementClass) {
+      this.element.classList.add(options.elementClass)
+    }
     this.elementId = options.id || defaultUIRendererOptions.id
     this.element.id = this.elementId
 
-    app_props.set(options)
+    this.appContext.app_props.set(options)
 
     this.shadow = this.element.attachShadow({mode: 'closed'})
 
@@ -272,11 +352,20 @@ export class WebRenderer implements UIRenderer {
       throw new Error('The WebRenderer is not initialized. Call the initialize method first.')
     }
     if (!existing) {
-      document.body.append(this.element)
+      const target = this.target ?? document.body
+      target.append(this.element)
+
       this.offDOMContentLoaded()
 
       this.app = mount(App, {
         target: this.shadow,
+        props: {
+          onclose: () => {
+            this.appContext.resetState()
+            this.unmount()
+          },
+        },
+        context: new Map<string, any>([['appContext', this.appContext]]),
       })
 
       this.appendStyles()
@@ -284,37 +373,39 @@ export class WebRenderer implements UIRenderer {
   }
 
   private appendStyles() {
-    if (this.shadow) {
-      const {options} = this
-      if (options.themes && Object.keys(options.themes).length) {
-        const themes = options.themes
+    if (this.shadow && this.cssRules.length > 0) {
+      const sheet = new CSSStyleSheet()
+      sheet.replaceSync(this.cssRules.join(' '))
 
-        const rules: string[] = []
+      this.shadow.adoptedStyleSheets = [sheet]
+    }
+  }
 
-        Object.keys(themes).forEach((key) => {
-          const data: UIThemeOptions = themes[key]
+  private buildCssRules() {
+    const {options} = this
+    if (options.themes && Object.keys(options.themes).length) {
+      const themes = options.themes
 
-          const source = Object.keys(data).reduce((acc, chapter) => {
-            let prefix = chapter
-            if (chapter === 'base') {
-              prefix = ''
-            }
+      const rules: string[] = []
 
-            return Object.assign(acc, flattenObject(data[chapter], prefix))
-          }, {})
+      Object.keys(themes).forEach((key) => {
+        const data: UIThemeOptions = themes[key]
 
-          rules.push(`:host dialog[data-theme='${key}'] {
+        const source = Object.keys(data).reduce((acc, chapter) => {
+          let prefix = chapter
+          if (chapter === 'base') {
+            prefix = ''
+          }
+
+          return Object.assign(acc, flattenObject(data[chapter], prefix))
+        }, {})
+
+        rules.push(`:host dialog[data-theme='${key}'] {
               ${toCssVars(source, 'pw').join('\n')}
             }`)
-        })
+      })
 
-        if (rules.length > 0) {
-          const sheet = new CSSStyleSheet()
-          sheet.replaceSync(rules.join(' '))
-
-          this.shadow.adoptedStyleSheets = [sheet]
-        }
-      }
+      this.cssRules = rules
     }
   }
 }

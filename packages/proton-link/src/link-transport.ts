@@ -37,7 +37,9 @@ export interface LinkTransport {
     /** Can be implemented to modify request just after it has been created. */
     prepare?(request: SigningRequest, session?: LinkSession): Promise<SigningRequest>
     /** Called immediately when the transaction starts */
-    showLoading?(): void
+    showLoading?(payload?: {message?: string; no_close?: boolean}): void
+
+    hideLoading?(): void
     /** User agent reported to the signer. */
     userAgent?(): string
     /** Send session request payload, optional. Can return false to indicate it has to be sent over the socket. */

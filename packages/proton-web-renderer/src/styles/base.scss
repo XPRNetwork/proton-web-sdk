@@ -1,16 +1,14 @@
 @use './mixins.scss' as *;
 
 :host {
-  dialog,
-  dialog[data-theme='light'] {
-    @include light-theme;
-  }
+  .dialog {
+    &[data-theme='light'] {
+      @include light-theme;
+    }
 
-  dialog[data-theme='dark'] {
-    @include dark-theme;
-  }
-
-  dialog {
+    &[data-theme='dark'] {
+      @include dark-theme;
+    }
     /******************
         Colors
     ******************/
@@ -43,7 +41,7 @@
   }
 }
 
-dialog {
+.dialog {
   font-family: var(--text-font);
   color: var(--text-color-base);
 }

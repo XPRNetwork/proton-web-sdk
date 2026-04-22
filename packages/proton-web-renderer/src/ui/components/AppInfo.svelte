@@ -1,5 +1,8 @@
 <script lang="ts">
-  import {appInfo} from '../store'
+  import {getAppContext} from '../utils'
+
+  let appContext = getAppContext()
+  let {appInfo} = appContext
 
   const appName = $derived.by(() => $appInfo.name)
   const appLogo = $derived.by(() => $appInfo.logo)

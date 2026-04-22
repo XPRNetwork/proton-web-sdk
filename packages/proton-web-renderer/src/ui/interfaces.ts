@@ -1,5 +1,6 @@
 import type {Readable, Writable} from 'svelte/store'
 import type {ROUTES, SUPPORTED_WALLETS} from './constants'
+import type {UILoadingPayload} from '../types'
 
 export type UITheme = 'light' | 'dark' | string
 
@@ -117,6 +118,9 @@ export type UIDemo = {
   signManually: (walletType: string) => void
   // eslint-disable-next-line no-unused-vars
   timeout: (walletType: string) => void
+
+  // eslint-disable-next-line no-unused-vars
+  showLoading: (payload?: UILoadingPayload) => void
 }
 
 export interface WritableWithReset<T> extends Writable<T | undefined> {

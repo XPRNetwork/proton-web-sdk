@@ -1,53 +1,35 @@
 <script lang="ts">
-  import {active, backAction, router} from '../store'
   import Icon from './icons/Icon.svelte'
   import ButtonIcon from './ButtonIcon.svelte'
-  import {type Unsubscriber} from 'svelte/store'
-  import {onDestroy, onMount} from 'svelte'
 
   let {
     title,
     hideLogo = false,
+    hideClose = false,
     hideBack = false,
+    onback,
+    onclose,
   }: {
+    hideClose?: boolean
     hideBack?: boolean
     hideLogo?: boolean
     title: string
+    onback?: () => void
+    onclose?: () => void
   } = $props()
 
-  let unsubscribe: Unsubscriber | undefined
-
-  let showBack = $state(false)
-
   function close() {
-    active.set(false)
+    onclose?.()
   }
 
   function back() {
-    router.back()
-
-    if ($backAction) {
-      $backAction()
-      backAction.set(undefined)
-    }
+    onback?.()
   }
-
-  onMount(() => {
-    unsubscribe = router.onchange.subscribe((value) => {
-      showBack = !hideBack && (value.has_history || !!$backAction)
-    })
-  })
-
-  onDestroy(() => {
-    if (unsubscribe) {
-      unsubscribe()
-    }
-  })
 </script>
 
 <header class="dialog-header">
   <div class="slot left">
-    {#if showBack}
+    {#if !hideBack}
       <ButtonIcon icon="arrow-left" onclick={() => back()}></ButtonIcon>
     {/if}
   </div>
@@ -58,10 +40,11 @@
     {/if}
     {title}
   </div>
-
-  <div class="slot right">
-    <ButtonIcon icon="xmark" onclick={() => close()}></ButtonIcon>
-  </div>
+  {#if !hideClose}
+    <div class="slot right">
+      <ButtonIcon icon="xmark" onclick={() => close()}></ButtonIcon>
+    </div>
+  {/if}
 </header>
 
 <style lang="scss">

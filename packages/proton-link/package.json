@@ -1,6 +1,6 @@
 {
     "name": "@proton/link",
-    "version": "5.0.0",
+    "version": "5.0.1",
     "description": "Library for authenticating and signing transactions using the Proton Link protocol",
     "homepage": "https://github.com/XPRNetwork/proton-web-sdk",
     "bugs": {

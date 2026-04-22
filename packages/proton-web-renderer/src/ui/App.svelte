@@ -3,17 +3,6 @@
   import Header from './components/Header.svelte'
   import Modal from './components/Modal.svelte'
   import {type UITheme} from './interfaces'
-  import {
-    active,
-    app_props,
-    appInfo,
-    closeAction,
-    demoMode,
-    error,
-    router,
-    theme,
-    walletSelect,
-  } from './store'
   import ConnectWebAuth from './views/ConnectWebAuth.svelte'
   import GetWebAuth from './views/GetWebAuth.svelte'
   import UseAnchorWallet from './views/UseAnchorWallet.svelte'
@@ -22,18 +11,47 @@
   import type {Unsubscriber} from 'svelte/store'
   import {DEMO_IMG, ROUTES, SUPPORTED_WALLETS} from './constants'
   import GenericError from './views/GenericError.svelte'
+  import {getAppContext} from './utils'
+  import {theme} from './store'
+  import PendingState from './views/PendingState.svelte'
+
+  let {
+    onclose,
+  }: {
+    onclose?: () => void
+  } = $props()
 
   let title = $state('')
   let hideLogo = $state(false)
   let hideBackSource = $state(false)
+  let hideBackForRoute = $state(false)
 
-  let hideBack = $derived(!!$error || hideBackSource)
+  let appContext = getAppContext()
+  const {
+    error,
+    app_props,
+    appInfo,
+    router,
+    active,
+    walletSelect,
+    demoMode,
+    closeAction,
+    loadingMessage,
+    backAction,
+    noClose,
+  } = appContext
+
+  let hideBack = $derived(!!$error || $noClose || hideBackForRoute || hideBackSource)
+  let hideClose = $derived($noClose)
+
+  let loadingMsg = $derived.by(() => $loadingMessage ?? 'Preparing request...')
 
   const isOtherRegExp = /^other\-/
   const isSignRegExp = /\-sign$/
   const isSignManualRegExp = /\-manual\-sign$/
   let unsubscribeProps: Unsubscriber | undefined
   let unsubscribeRouter: Unsubscriber | undefined
+  let unsubscribeRouteChange: Unsubscriber | undefined
   let unsubscribeActive: Unsubscriber | undefined
 
   onMount(() => {
@@ -45,6 +63,11 @@
         appInfo.set(value.appInfo)
       }
     })
+
+    unsubscribeRouteChange = router.onchange.subscribe((value) => {
+      hideBackForRoute = !value.has_history && !$backAction
+    })
+
     unsubscribeRouter = router.subscribe((current) => {
       if (current.path) {
         if (isOtherRegExp.test(current.path)) {
@@ -95,6 +118,7 @@
           $closeAction()
           closeAction.set(undefined)
         }
+        onclose?.()
       }
     })
   })
@@ -145,9 +169,23 @@
 
   onDestroy(() => {
     unsubscribeProps?.()
+    unsubscribeRouteChange?.()
     unsubscribeRouter?.()
     unsubscribeActive?.()
   })
+
+  function onClose() {
+    active.set(false)
+  }
+
+  function onBack() {
+    router.back()
+
+    if ($backAction) {
+      $backAction()
+      backAction.set(undefined)
+    }
+  }
 </script>
 
 <svelte:head>
@@ -172,6 +210,8 @@
         >
         <button onclick={() => $demoMode.sign(SUPPORTED_WALLETS.ANCHOR)}>Sign with Anchor</button>
 
+        <button onclick={() => $demoMode.showLoading()}>Show loading</button>
+
         <select onchange={(e) => setLogo(e)}>
           <option value="">No logo</option>
           <option value="logo">Show logo</option>
@@ -186,7 +226,7 @@
       </div>
     {/if}
 
-    <Header {title} {hideLogo} {hideBack}></Header>
+    <Header {title} {hideLogo} {hideBack} {hideClose} onclose={onClose} onback={onBack}></Header>
 
     {#if $active}
       {#if $error}
@@ -208,7 +248,7 @@
       {:else if $router.path === ROUTES.OTHER_ANCHOR_SIGN_MANUAL}
         <RequestWithQRCode walletType="anchor" />
       {:else if $router.path === ROUTES.PREPARING_REQUEST}
-        <GenericError name="Preparing request..." />
+        <PendingState message={loadingMsg} />
       {/if}
     {/if}
   {/snippet}

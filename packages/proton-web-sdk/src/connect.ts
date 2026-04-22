@@ -1,6 +1,6 @@
 import ProtonLinkBrowserTransport from '@proton/browser-transport'
 import ProtonLink from '@proton/link'
-import type {LinkOptions, PermissionLevel} from '@proton/link'
+import type {Link, LinkOptions, PermissionLevel} from '@proton/link'
 import {ProtonWebLink} from './links/protonWeb'
 import {Storage} from './storage'
 import type {ConnectWalletArgs, ConnectWalletRet, LoginOptions, UIOptions} from './types'
@@ -51,35 +51,27 @@ export const ConnectWallet = async ({
     uiOptions.theme = uiTheme
   }
 
-  if (!renderer) {
-    renderer = new WebRenderer(uiOptions)
-  }
-
-  return await login({selectorOptions, linkOptions, transportOptions})
+  return await login({selectorOptions, linkOptions, transportOptions, uiOptions}).finally(() => {
+    renderer?.destroy()
+    renderer = undefined
+  })
 }
 
-const login = async (
-  loginOptions: LoginOptions
-): Promise<
-  | {
-      link: any
-      session: any
-      loginResult: any
-    }
-  | {
-      error: any
-    }
-> => {
+const login = async (loginOptions: LoginOptions): Promise<ConnectWalletRet> => {
   const doLogin = async (loginOptions: LoginOptions) => {
     // Initialize link and session
     let session: any
-    let link
+    let link: ProtonWebLink | Link
     let loginResult
 
     // Determine wallet type from storage or selector modal
     let walletType: string | null | undefined = loginOptions.selectorOptions
       ? loginOptions.selectorOptions.walletType
       : undefined
+
+    if (!renderer) {
+      renderer = new WebRenderer(loginOptions.uiOptions)
+    }
 
     if (!walletType) {
       if (loginOptions.linkOptions.restoreSession) {
@@ -120,13 +112,14 @@ const login = async (
       scheme = 'proton-dev'
     }
 
+    const linkRenderer = new WebRenderer({...loginOptions.uiOptions, id: 'proton-link-ui'})
     const options = {
       ...loginOptions.linkOptions,
       scheme,
       transport: new ProtonLinkBrowserTransport({
         ...loginOptions.transportOptions,
         walletType,
-        ui: renderer,
+        ui: linkRenderer,
       }) as any,
       walletType,
       chains: [],
@@ -191,7 +184,7 @@ const login = async (
       session.auth = {
         actor: session.auth.actor.toString(),
         permission: session.auth.permission.toString(),
-      } as any
+      }
       session.publicKey = session.publicKey ? session.publicKey.toString() : (undefined as any)
     }
 
@@ -199,12 +192,13 @@ const login = async (
       session,
       link,
       loginResult,
-    } as any
+      renderer: linkRenderer,
+    }
   }
 
   // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve) => {
-    let res = null
+    let res: ConnectWalletRet | null = null
     while (res === null) {
       res = await doLogin({...loginOptions})
     }

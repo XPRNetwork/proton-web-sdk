@@ -46,6 +46,8 @@ export class ProtonWebLink {
   transport: LinkTransport
   chainId: string
 
+  private windowCloseInterval: ReturnType<typeof setInterval> | null = null
+
   public get childWindow() {
     return _childWindow
   }
@@ -96,6 +98,9 @@ export class ProtonWebLink {
           this.closeChild(true)
           this.deferredLogin.reject('Trying to login')
           this.deferredLogin = undefined
+          if (this.transport.hideLoading) {
+            this.transport.hideLoading()
+          }
         }
 
         this.deferredTransact = {
@@ -105,7 +110,24 @@ export class ProtonWebLink {
           waitingForOpen: true,
         }
 
+        if (this.transport.showLoading) {
+          this.transport.showLoading({
+            message: 'Waiting for response...',
+            no_close: true,
+          })
+        }
+
         this.childWindow = window.open(this.childUrl('/auth'), '_blank', OPEN_SETTINGS)
+
+        if (this.windowCloseInterval) {
+          clearInterval(this.windowCloseInterval)
+        }
+
+        this.windowCloseInterval = setInterval(() => {
+          if (!this.childWindow) {
+            this.deferredTransact?.deferral.reject('window closes to login')
+          }
+        }, 1000)
 
         try {
           const res = await this.deferredTransact.deferral.promise
@@ -115,6 +137,13 @@ export class ProtonWebLink {
             this.transport.onFailure(undefined as any, error as any)
           }
           throw error
+        } finally {
+          if (this.transport.hideLoading) {
+            this.transport.hideLoading()
+          }
+          if (this.windowCloseInterval) {
+            clearInterval(this.windowCloseInterval)
+          }
         }
       },
       link: {
@@ -129,10 +158,30 @@ export class ProtonWebLink {
       this.closeChild(true)
       this.deferredTransact.deferral.reject('Trying to login')
       this.deferredTransact = undefined
+      if (this.transport.hideLoading) {
+        this.transport.hideLoading()
+      }
     }
 
     this.childWindow = window.open(this.childUrl('/login'), '_blank', OPEN_SETTINGS)
     this.deferredLogin = new Deferred()
+
+    if (this.transport.showLoading) {
+      this.transport.showLoading({
+        message: 'Waiting for response...',
+        no_close: true,
+      })
+    }
+
+    if (this.windowCloseInterval) {
+      clearInterval(this.windowCloseInterval)
+    }
+
+    this.windowCloseInterval = setInterval(() => {
+      if (!this.childWindow) {
+        this.deferredLogin?.reject('window closed')
+      }
+    }, 1000)
 
     try {
       this.storage!.write('wallet-type', 'webauth')
@@ -147,6 +196,13 @@ export class ProtonWebLink {
     } catch (e) {
       console.error(e)
       throw e
+    } finally {
+      if (this.transport.hideLoading) {
+        this.transport.hideLoading()
+      }
+      if (this.windowCloseInterval) {
+        clearInterval(this.windowCloseInterval)
+      }
     }
   }
 
