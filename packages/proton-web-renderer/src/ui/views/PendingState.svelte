@@ -9,7 +9,7 @@
   {#snippet content()}
     <div class="wrap">
       <div class="core">
-        <Spinner class="pending-spinner" strokeWidth={10} />
+        <Spinner class="pending-spinner" strokeWidth={15} />
         <div class="core__label">
           {message}
         </div>
@@ -22,8 +22,8 @@
   @use '../../styles/mixins.scss';
 
   :global(.pending-spinner) {
-    width: 80px;
-    height: 80px;
+    width: 72px;
+    height: 72px;
     margin-inline: auto;
     --countdown-background: transparent;
   }
