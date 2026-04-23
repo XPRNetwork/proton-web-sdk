@@ -4,8 +4,10 @@
   import QRCode from '../components/QRCode.svelte'
   import Tabs from '../components/Tabs.svelte'
   import {AUTH_TYPES} from '../constants'
-  import {qrRequestData} from '../store'
+  import {getAppContext} from '../utils'
 
+  let appContext = getAppContext()
+  let {qrRequestData} = appContext
   const tabs = [
     {
       name: AUTH_TYPES.MOBILE,

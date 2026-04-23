@@ -24,8 +24,7 @@
 <style lang="scss">
   @use '../../styles/mixins.scss';
   article {
-    height: 452px;
-    min-height: 0;
+    min-height: 452px;
     display: grid;
     grid-template-rows: 1fr max-content;
     grid-template-areas: 'content' 'footer';

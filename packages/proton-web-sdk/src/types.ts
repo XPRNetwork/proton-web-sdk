@@ -1,7 +1,7 @@
 import type {Link, LinkOptions, LinkSession, LinkStorage, LoginResult} from '@proton/link'
 import type {BrowserTransportOptions} from '@proton/browser-transport'
 import type {ProtonWebLink} from './links/protonWeb'
-import type {UIRendererOptions} from '@proton/web-renderer'
+import type {UIRenderer, UIRendererOptions} from '@proton/web-renderer'
 
 type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
 
@@ -32,6 +32,7 @@ export interface ConnectWalletRet {
   link?: ProtonWebLink | Link
   loginResult?: LoginResult
   error?: any
+  renderer?: UIRenderer
 }
 
 export interface WalletItem {
@@ -43,4 +44,5 @@ export interface LoginOptions {
   selectorOptions: SelectorOptions
   linkOptions: LocalLinkOptions
   transportOptions: BrowserTransportOptions
+  uiOptions: UIOptions
 }

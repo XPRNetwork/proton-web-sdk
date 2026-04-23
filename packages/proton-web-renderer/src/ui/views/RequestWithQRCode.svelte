@@ -3,8 +3,10 @@
   import Icon from '../components/icons/Icon.svelte'
   import Layout from '../components/Layout.svelte'
   import QRCode from '../components/QRCode.svelte'
-  import {qrRequestData} from '../store'
+  import {getAppContext} from '../utils'
 
+  let appContext = getAppContext()
+  let {qrRequestData} = appContext
   let {
     walletType = 'webauth',
   }: {

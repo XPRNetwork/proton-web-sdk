@@ -7,7 +7,10 @@
   import WalletButton from '../components/WalletButton.svelte'
   import {ROUTES, SUPPORTED_WALLETS} from '../constants'
   import {type UIWalletType} from '../interfaces'
-  import {demoMode, enabledWallets, router, walletSelect} from '../store'
+  import {getAppContext} from '../utils'
+
+  let appContext = getAppContext()
+  let {demoMode, enabledWallets, router, walletSelect} = appContext
 
   const noWallets = $derived($enabledWallets?.size === 0)
 

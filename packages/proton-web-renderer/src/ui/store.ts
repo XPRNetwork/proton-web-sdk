@@ -17,25 +17,8 @@ import type {
 
 const defaultUIProps: UIProps = {}
 
-export const app_props = writable<UIProps>(defaultUIProps)
-
-/** Whether or not the interface is active in the browser */
-export const active = writable<boolean>(false)
-
+// Theme is global for all widgets
 export const theme = writable<UITheme>('dark')
-
-export const appInfo = writable<UIAppInfo>({})
-
-export const closeAction = writable<(() => void) | undefined>(undefined)
-export const backAction = writable<(() => void) | undefined>(undefined)
-export const manualAction = writable<(() => void) | undefined>(undefined)
-
-export const error = writable<UIError | undefined>(undefined)
-export const recoverError = writable<UIError | undefined>(undefined)
-
-export const enabledWallets = writable<Set<UIWalletType> | undefined>(undefined)
-
-export const demoMode = writable<UIDemo | undefined>(undefined)
 
 const defaultUIRouterState: UIRouterState = {
   path: undefined,
@@ -77,8 +60,6 @@ const initRouter = (): UIRouter => {
   }
 }
 
-export const router = initRouter()
-
 export function initWritableWithReset<T>(): WritableWithReset<T> {
   const {set, subscribe, update} = writable<T | undefined>(undefined)
   return {
@@ -89,26 +70,78 @@ export function initWritableWithReset<T>(): WritableWithReset<T> {
   }
 }
 
-export const walletSelect = initWritableWithReset<UIWalletSelectResponse>()
+export function createAppContext() {
+  const app_props = writable<UIProps>(defaultUIProps)
 
-export const qrRequestData = initWritableWithReset<UIQRData>()
+  /** Whether or not the interface is active in the browser */
+  const active = writable<boolean>(false)
 
-export const signRequestData = initWritableWithReset<UISignData>()
+  const appInfo = writable<UIAppInfo>({})
 
-// Reset data in all stores
-export function resetState() {
-  active.set(false)
-  demoMode.set(undefined)
+  /** Whether the dialog is mounted into a custom renderTarget (non-modal mode) */
+  const embeddedMode = writable<boolean>(false)
 
-  router.set({...defaultUIRouterState})
-  app_props.set({...defaultUIProps})
+  const closeAction = writable<(() => void) | undefined>(undefined)
+  const backAction = writable<(() => void) | undefined>(undefined)
+  const manualAction = writable<(() => void) | undefined>(undefined)
 
-  error.set(undefined)
-  walletSelect.reset()
-  backAction.set(undefined)
-  closeAction.set(undefined)
-  manualAction.set(undefined)
-  signRequestData.reset()
-  recoverError.set(undefined)
-  enabledWallets.set(undefined)
+  const error = writable<UIError | undefined>(undefined)
+  const recoverError = writable<UIError | undefined>(undefined)
+
+  const enabledWallets = writable<Set<UIWalletType> | undefined>(undefined)
+
+  const demoMode = writable<UIDemo | undefined>(undefined)
+
+  const router = initRouter()
+
+  const walletSelect = initWritableWithReset<UIWalletSelectResponse>()
+
+  const qrRequestData = initWritableWithReset<UIQRData>()
+
+  const signRequestData = initWritableWithReset<UISignData>()
+
+  const loadingMessage = writable<string | undefined>(undefined)
+  const noClose = writable<boolean>(false)
+
+  function resetState() {
+    active.set(false)
+    demoMode.set(undefined)
+
+    router.set({...defaultUIRouterState})
+    app_props.set({...defaultUIProps})
+
+    error.set(undefined)
+    walletSelect.reset()
+    backAction.set(undefined)
+    closeAction.set(undefined)
+    manualAction.set(undefined)
+    signRequestData.reset()
+    recoverError.set(undefined)
+    enabledWallets.set(undefined)
+    loadingMessage.set(undefined)
+    noClose.set(false)
+  }
+
+  return {
+    resetState,
+    app_props,
+    active,
+    appInfo,
+    closeAction,
+    backAction,
+    manualAction,
+    error,
+    recoverError,
+    enabledWallets,
+    demoMode,
+    router,
+    walletSelect,
+    qrRequestData,
+    signRequestData,
+    embeddedMode,
+    loadingMessage,
+    noClose,
+  }
 }
+
+export type UIAppContext = ReturnType<typeof createAppContext>

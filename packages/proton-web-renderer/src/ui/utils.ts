@@ -1,3 +1,6 @@
+import {getContext} from 'svelte'
+import type {UIAppContext} from './store'
+
 export function eventSelf(fn) {
   return function (...args) {
     const event = /** @type {Event} */ args[0]
@@ -19,4 +22,8 @@ export function eventOnce(fn) {
     // @ts-expect-error this is unknown
     return fn?.apply(this, args)
   }
+}
+
+export function getAppContext(): UIAppContext {
+  return getContext<UIAppContext>('appContext')
 }

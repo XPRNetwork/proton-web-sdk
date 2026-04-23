@@ -2,14 +2,17 @@
   import Countdown from '../components/Countdown.svelte'
   import ErrorDisplay from '../components/ErrorDisplay.svelte'
   import Layout from '../components/Layout.svelte'
-
-  import {demoMode, manualAction, recoverError, signRequestData} from '../store'
+  import {getAppContext} from '../utils'
 
   let {
     walletType = 'webauth',
   }: {
     walletType?: 'webauth' | 'anchor'
   } = $props()
+
+  let appContext = getAppContext()
+
+  let {signRequestData, manualAction, demoMode, recoverError} = appContext
 
   const end = $derived.by(() => {
     const value = $signRequestData?.timeout ?? 60 * 1000 * 2

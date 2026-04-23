@@ -42,8 +42,12 @@ export class BrowserTransport implements LinkTransport {
     }
   }
 
-  public async showLoading() {
-    this.ui?.showLoading()
+  public async showLoading(payload?: {message?: string}) {
+    this.ui?.showLoading(payload)
+  }
+
+  public hideLoading() {
+    this.hide()
   }
 
   public onSessionRequest(
