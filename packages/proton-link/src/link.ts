@@ -135,6 +135,8 @@ export class LinkChain implements AbiProvider {
     /** API client instance used to communicate with the chain. */
     public client: JsonRpcApi
 
+    readonly usePulseVM: boolean
+
     private abiCache = new Map<string, ABIDef>()
     private pendingAbis = new Map<string, Promise<RpcInterfaces.GetAbiResult>>()
 
@@ -145,6 +147,7 @@ export class LinkChain implements AbiProvider {
         {usePulseVM}: {usePulseVM?: boolean} = {}
     ) {
         this.chainId = ChainId.from(chainId)
+        this.usePulseVM = !!usePulseVM
         const rpcClass = usePulseVM ? JsonRpcPulseVM : JsonRpc
         this.client = typeof clientOrUrl === 'string' ? new rpcClass(clientOrUrl) : clientOrUrl
     }
@@ -432,7 +435,10 @@ export class Link {
                 }).toJSON()
                 const signedTxParsed = Serializer.objectify(signedTx)
                 const packedTx = PackedTransaction.fromSigned(signedTx)
-                const res = await c.client.push_transaction({
+                const issueTxMethod = c.usePulseVM
+                    ? c.client.issue_transaction
+                    : c.client.push_transaction
+                const res = await issueTxMethod({
                     serializedTransaction: packedTx.packed_trx.array,
                     serializedContextFreeData: packedTx.packed_context_free_data.array,
                     signatures: signedTxParsed.signatures,
