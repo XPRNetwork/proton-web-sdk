@@ -1,6 +1,6 @@
 {
     "name": "@proton/signing-request",
-    "version": "5.1.0-rc-0",
+    "version": "5.1.0-rc-1",
     "description": "Proton Signing Request (ESR / EEP-7) encoder and decoder",
     "homepage": "https://github.com/XPRNetwork/proton-web-sdk",
     "bugs": {
