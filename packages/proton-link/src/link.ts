@@ -436,8 +436,8 @@ export class Link {
                 const signedTxParsed = Serializer.objectify(signedTx)
                 const packedTx = PackedTransaction.fromSigned(signedTx)
                 const issueTxMethod = c.usePulseVM
-                    ? c.client.issue_transaction
-                    : c.client.push_transaction
+                    ? c.client.issue_transaction.bind(c.client)
+                    : c.client.push_transaction.bind(c.client)
                 const res = await issueTxMethod({
                     serializedTransaction: packedTx.packed_trx.array,
                     serializedContextFreeData: packedTx.packed_context_free_data.array,
