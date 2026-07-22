@@ -120,10 +120,6 @@
     scrollbar-width: thin;
   }
 
-  @supports (-moz-osx-font-smoothing: grayscale) {
-    scrollbar-width: none;
-  }
-
   @supports selector(::-webkit-scrollbar) {
     scrollbar-gutter: stable;
     scrollbar-width: auto;
@@ -141,6 +137,10 @@
       background: var(--scroll-thumb-background);
       border-radius: 3px;
     }
+  }
+
+  @supports (-moz-osx-font-smoothing: grayscale) {
+    scrollbar-width: none;
   }
 }
 
