@@ -1,6 +1,6 @@
 {
   "name": "@proton/web-renderer",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "UI layer for Proton Web SDK",
   "homepage": "https://github.com/XPRNetwork/proton-web-sdk",
   "bugs": {
