@@ -22,6 +22,7 @@ export class BrowserTransport implements LinkTransport {
   private requestStatus: boolean
   private requestAccount: string
   private walletType: string
+  private returnUrl?: string | (() => string)
   private activeRequest?: SigningRequest
   // eslint-disable-next-line no-unused-vars
   private activeCancel?: (reason: string | Error) => void
@@ -33,6 +34,7 @@ export class BrowserTransport implements LinkTransport {
     this.requestAccount = options.requestAccount || ''
     this.walletType = options.walletType || 'proton'
     this.storage = new Storage(options.storagePrefix || 'proton-link')
+    this.returnUrl = options.returnUrl
     this.showingManual = false
 
     if (options.ui) {
@@ -46,13 +48,20 @@ export class BrowserTransport implements LinkTransport {
     this.ui?.showLoading()
   }
 
+  private getReturnUrl(): string {
+    if (typeof this.returnUrl === 'function') {
+      return this.returnUrl()
+    }
+    return this.returnUrl || generateReturnUrl()
+  }
+
   public onSessionRequest(
     session: LinkSession,
     request: SigningRequest,
     cancel: (_reason: string | Error) => void
   ) {
     if (session.metadata.sameDevice) {
-      request.setInfoKey('return_path', generateReturnUrl())
+      request.setInfoKey('return_path', this.getReturnUrl())
     }
 
     if (session.type === 'fallback') {
@@ -232,7 +241,7 @@ export class BrowserTransport implements LinkTransport {
     }
   ) {
     const sameDeviceRequest = request.clone()
-    const returnUrl = generateReturnUrl()
+    const returnUrl = this.getReturnUrl()
     sameDeviceRequest.setInfoKey('same_device', true)
     sameDeviceRequest.setInfoKey('return_path', returnUrl)
 

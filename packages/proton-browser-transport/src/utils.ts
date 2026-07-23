@@ -53,7 +53,8 @@ export function isAndroidWebView() {
 }
 
 export function isMobile() {
-  return typeof window.orientation !== 'undefined' || navigator.userAgent.indexOf('IEMobile') !== -1
+  // window.orientation is removed in modern Chrome for Android, rely on UA-based checks
+  return isAndroid() || isAppleHandheld() || navigator.userAgent.indexOf('IEMobile') !== -1
 }
 
 /** Generate a return url that Proton will redirect back to w/o reload. */
@@ -100,10 +101,9 @@ export function generateReturnUrl() {
     return 'android-app://webview'
   }
 
-  if (isAndroid() && isChromeMobile()) {
-    return 'android-app://com.android.chrome'
-  }
-
+  // stock Chrome on Android: a bare `android-app://com.android.chrome` intent relaunches
+  // Chrome on a new tab instead of returning to the originating one, orphaning the pending
+  // request — fall through to the current URL so the flow completes on the dApp's origin
   return window.location.href
 }
 
