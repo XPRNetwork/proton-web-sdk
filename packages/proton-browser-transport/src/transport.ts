@@ -8,7 +8,7 @@ import type {
   SigningRequest,
 } from '@proton/link'
 import {Storage} from './storage'
-import {generateReturnUrl, isMobile, parseErrorMessage} from './utils'
+import {closeDuplicateReturnTab, generateReturnUrl, isMobile, parseErrorMessage} from './utils'
 import {type BrowserTransportOptions, SkipToManual} from './types'
 import GenerateQrCode from './qrcode'
 import {WebRenderer} from '@proton/web-renderer'
@@ -36,6 +36,8 @@ export class BrowserTransport implements LinkTransport {
     this.storage = new Storage(options.storagePrefix || 'proton-link')
     this.returnUrl = options.returnUrl
     this.showingManual = false
+
+    closeDuplicateReturnTab()
 
     if (options.ui) {
       this.ui = options.ui

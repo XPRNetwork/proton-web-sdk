@@ -104,7 +104,27 @@ export function generateReturnUrl() {
   // stock Chrome on Android: a bare `android-app://com.android.chrome` intent relaunches
   // Chrome on a new tab instead of returning to the originating one, orphaning the pending
   // request — fall through to the current URL so the flow completes on the dApp's origin
+  if (isAndroid()) {
+    // the wallet's return navigation always opens a NEW Chrome tab (Android cannot focus
+    // the originating one); tag the URL so the duplicate tab can close itself on load and
+    // drop the user back on the original tab (see closeDuplicateReturnTab)
+    return window.location.href.split('#')[0] + RETURN_TAB_FRAGMENT
+  }
+
   return window.location.href
+}
+
+export const RETURN_TAB_FRAGMENT = '#webauth-return'
+
+/**
+ * Close this tab if it was spawned by the wallet's return redirect on Android.
+ * Tabs opened by an external app intent are allowed to close themselves, which
+ * lands the user back on the originating tab where the pending request completes.
+ */
+export function closeDuplicateReturnTab() {
+  if (isAndroid() && window.location.hash.startsWith(RETURN_TAB_FRAGMENT)) {
+    window.close()
+  }
 }
 
 export function parseErrorMessage(error: any) {
