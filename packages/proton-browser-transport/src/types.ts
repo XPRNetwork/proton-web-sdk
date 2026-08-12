@@ -11,6 +11,11 @@ export interface BrowserTransportOptions {
   walletType?: string
   /** Local storage prefix, defaults to `proton-link`. */
   storagePrefix?: string
+  /**
+   * Return url (or factory) set as `return_path` on same-device requests,
+   * overriding the per-user-agent default from `generateReturnUrl()`.
+   */
+  returnUrl?: string | (() => string)
 
   ui?: UIRenderer
 }
