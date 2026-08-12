@@ -1,6 +1,6 @@
 {
   "name": "@proton/browser-transport",
-  "version": "5.1.0-rc-3",
+  "version": "5.1.0-rc-4",
   "description": "Vanilla JS browser transport for Proton Link",
   "homepage": "https://github.com/XPRNetwork/proton-web-sdk",
   "bugs": {
