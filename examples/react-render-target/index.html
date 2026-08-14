@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Proton Web SDK - renderTarget example</title>
+    <style>
+      :root {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        color: #1a1a2e;
+        background: radial-gradient(circle at 30% 20%, #eef1ff 0%, #f5f6fb 60%);
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+      }
+      .page {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 64px 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 26px;
+      }
+      p {
+        margin: 0;
+        color: #4a4a68;
+        line-height: 1.5;
+      }
+      code {
+        padding: 1px 6px;
+        background: #eef0fa;
+        border-radius: 4px;
+        font-size: 0.9em;
+      }
+      button {
+        align-self: flex-start;
+        padding: 12px 20px;
+        font-size: 14px;
+        font-weight: 600;
+        color: white;
+        background: #7543e3;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: transform 0.08s ease, box-shadow 0.15s ease, background 0.15s ease;
+        box-shadow: 0 6px 18px -8px rgba(117, 67, 227, 0.6);
+      }
+      button:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 22px -8px rgba(117, 67, 227, 0.7);
+      }
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      button.secondary {
+        background: transparent;
+        color: #7543e3;
+        box-shadow: inset 0 0 0 1px #d7cdf8;
+      }
+      .actions {
+        display: flex;
+        gap: 12px;
+      }
+      .status {
+        padding: 12px 16px;
+        background: white;
+        border: 1px solid #e3e3ef;
+        border-radius: 10px;
+        font-family: ui-monospace, SFMono-Regular, monospace;
+        font-size: 13px;
+      }
+      .status.muted {
+        background: rgba(255, 255, 255, 0.6);
+        border-color: rgba(255, 255, 255, 0.9);
+        color: #2a2a45;
+      }
+
+      .backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(16, 18, 37, 0.55);
+        backdrop-filter: blur(4px);
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        z-index: 100;
+        animation: fade 0.18s ease-out;
+      }
+      .modal {
+        width: min(880px, 100%);
+        min-height: 520px;
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        background: #020305;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 30px 80px -20px rgba(20, 18, 55, 0.45);
+        animation: pop 0.22s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+      }
+      .message {
+        padding: 32px;
+        background: linear-gradient(160deg, #7543e3 0%, #4b23b8 100%);
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 24px;
+      }
+      .message-body {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .message h2 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+      }
+      .message > .message-body > p {
+        color: rgba(255, 255, 255, 0.85);
+        line-height: 1.55;
+        margin: 0;
+      }
+      .message .status.muted {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.95);
+      }
+      .message button {
+        align-self: flex-start;
+        background: white;
+        color: #4b23b8;
+        box-shadow: none;
+      }
+      .message button:hover:not(:disabled) {
+        background: #f1ecff;
+      }
+
+      .tasks {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .task {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 14px 16px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 12px;
+        transition: background 0.2s ease, border-color 0.2s ease;
+      }
+      .task.active {
+        background: rgba(255, 255, 255, 0.18);
+        border-color: rgba(255, 255, 255, 0.35);
+      }
+      .task.done {
+        background: rgba(34, 197, 94, 0.15);
+        border-color: rgba(34, 197, 94, 0.4);
+      }
+      .task-bullet {
+        flex-shrink: 0;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.18);
+        color: white;
+        font-size: 12px;
+        font-weight: 700;
+        display: grid;
+        place-items: center;
+      }
+      .task.done .task-bullet {
+        background: #22c55e;
+      }
+      .task-body {
+        flex: 1;
+        min-width: 0;
+        line-height: 1.4;
+      }
+      .task-label {
+        font-weight: 600;
+        font-size: 14px;
+      }
+      .task-sub {
+        margin-top: 2px;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.8);
+        font-family: ui-monospace, SFMono-Regular, monospace;
+        word-break: break-all;
+      }
+
+      .render-target {
+        position: relative;
+        background: #fafaff;
+      }
+
+      .success {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 32px;
+        text-align: center;
+        background: #020305;
+        color: #e7e9f5;
+        animation: pop 0.24s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+      }
+      .success-ring {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        color: white;
+        background: linear-gradient(160deg, #22c55e 0%, #15803d 100%);
+        box-shadow: 0 12px 28px -10px rgba(34, 197, 94, 0.6);
+        margin-bottom: 8px;
+      }
+      .success h3 {
+        margin: 0;
+        font-size: 20px;
+        color: #f6f7fb;
+      }
+      .success .account {
+        margin: 0;
+        padding: 6px 12px;
+        background: rgba(117, 67, 227, 0.18);
+        color: #c5b4ff;
+        border-radius: 999px;
+        font-family: ui-monospace, SFMono-Regular, monospace;
+        font-size: 13px;
+      }
+      .success-hint {
+        margin: 8px 0 0;
+        max-width: 260px;
+        color: #9ca0b8;
+        line-height: 1.5;
+        font-size: 14px;
+      }
+      .success button.burn {
+        margin-top: 24px;
+        align-self: center;
+        background: linear-gradient(160deg, #ff6b6b 0%, #c83535 100%);
+        box-shadow: 0 10px 22px -10px rgba(200, 53, 53, 0.6);
+      }
+      .success button.burn:hover:not(:disabled) {
+        background: linear-gradient(160deg, #ff7e7e 0%, #d94141 100%);
+      }
+
+      @keyframes fade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes pop {
+        from { opacity: 0; transform: translateY(8px) scale(0.98); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+      }
+
+      @media (max-width: 640px) {
+        .modal {
+          grid-template-columns: 1fr;
+          min-height: 0;
+        }
+        .render-target {
+          min-height: 460px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

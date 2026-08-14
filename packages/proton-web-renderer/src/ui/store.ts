@@ -19,6 +19,9 @@ const defaultUIProps: UIProps = {}
 
 export const app_props = writable<UIProps>(defaultUIProps)
 
+/** Whether the dialog is mounted into a custom renderTarget (non-modal mode) */
+export const embeddedMode = writable<boolean>(false)
+
 /** Whether or not the interface is active in the browser */
 export const active = writable<boolean>(false)
 
