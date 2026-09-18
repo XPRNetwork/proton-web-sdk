@@ -45,6 +45,10 @@ export class ProtonWebLink {
   testUrl: string | undefined
   transport: LinkTransport
   chainId: string
+  // The dApp's own account (transportOptions.requestAccount). The ESR flow carries it as `req_account`, which is how
+  // the mobile wallet names the requester; the web wallet gets nothing but document.referrer, which browsers may
+  // strip, and then shows "Unknown Requestor". Passing it lets webauth.com name the requester the same way.
+  requestAccount = ''
 
   public get childWindow() {
     return _childWindow
@@ -73,7 +77,10 @@ export class ProtonWebLink {
       : this.scheme === 'proton'
         ? 'https://webauth.com'
         : 'https://testnet.webauth.com'
-    return `${base}${path}`
+    const query = this.requestAccount
+      ? `?requestAccount=${encodeURIComponent(this.requestAccount)}`
+      : ''
+    return `${base}${path}${query}`
   }
 
   closeChild(force = false) {
@@ -125,7 +132,8 @@ export class ProtonWebLink {
     }
   }
 
-  async login() {
+  async login(requestAccount = '') {
+    this.requestAccount = requestAccount
     if (this.deferredTransact) {
       this.closeChild(true)
       this.deferredTransact.deferral.reject('Trying to login')
@@ -151,7 +159,8 @@ export class ProtonWebLink {
     }
   }
 
-  async restoreSession(/* requestAccount */ _: string, auth: any) {
+  async restoreSession(requestAccount: string, auth: any) {
+    this.requestAccount = requestAccount || ''
     return this.createSession(auth)
   }
 
@@ -207,6 +216,7 @@ export class ProtonWebLink {
               data: {
                 transaction: this.deferredTransact.transaction,
                 params: this.deferredTransact.params,
+                requestAccount: this.requestAccount || undefined,
               },
             }),
             '*'
