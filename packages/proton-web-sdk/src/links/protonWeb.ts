@@ -28,6 +28,9 @@ class Deferred {
 
 // Need to keep outside class since it messes with reactivity like Vuex
 let _childWindow: Window | null = null
+// The last popup opened. closeChild() clears _childWindow as soon as the popup closes, which can be just before its
+// final message is handled; replies are matched against this instead.
+let _lastChildWindow: Window | null = null
 
 export class ProtonWebLink {
   deferredTransact:
@@ -56,6 +59,7 @@ export class ProtonWebLink {
 
   public set childWindow(window: Window | null) {
     _childWindow = window
+    if (window) _lastChildWindow = window
   }
 
   constructor(options: LinkOptions & {testUrl?: string}) {
@@ -185,10 +189,10 @@ export class ProtonWebLink {
   }
 
   async onEvent(e: MessageEvent) {
-    if (
-      e.origin.indexOf('https://webauth.com') === -1 &&
-      e.origin.indexOf('https://testnet.webauth.com') === -1
-    ) {
+    // Only our own popup, on the exact wallet origin. `indexOf` also accepted e.g. https://webauth.com.example.org,
+    // and any window could post, so another page could deliver a forged "loginSuccess" / "transactionSuccess".
+    const expectedOrigin = new URL(this.childUrl('/')).origin
+    if (e.origin !== expectedOrigin || !_lastChildWindow || e.source !== _lastChildWindow) {
       return
     }
 
