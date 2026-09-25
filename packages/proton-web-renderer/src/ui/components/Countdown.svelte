@@ -114,6 +114,7 @@
   }
 
   .content {
+    position: relative;
     background: black;
     border-radius: inherit;
     box-sizing: border-box;
@@ -124,7 +125,7 @@
     align-items: center;
     border: 1px solid rgba(var(--countdown-background), 0.05);
     background: rgba(var(--countdown-background), 0.05);
-    z-index: -1;
+    z-index: 0;
   }
 
   .label {

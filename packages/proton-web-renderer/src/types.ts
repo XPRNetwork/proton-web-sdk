@@ -13,12 +13,14 @@ export type UISpace =
 
 export interface UIRendererOptions extends UIProps {
   id?: string
+  renderTarget?: HTMLElement | string | null
 }
 
 interface UIGenericPayload {
   wallet_type: UIWalletType | string
   onClose?: () => void
   onBack?: () => void
+  renderTarget?: HTMLElement | string | null
 }
 
 export interface UIRequestPayload extends UIGenericPayload {
@@ -31,6 +33,7 @@ export type UISignManuallyPayload = UIRequestPayload
 export interface UIErrorPayload {
   wallet_type: UIWalletType | string
   data: UIError
+  renderTarget?: HTMLElement | string | null
 }
 
 export interface UISignPayload extends UIGenericPayload {
@@ -51,4 +54,5 @@ export interface UIRenderer {
   close(): void
   destroy(): void
   showLoading(): void
+  setRenderTarget(_: HTMLElement | string | null): void
 }

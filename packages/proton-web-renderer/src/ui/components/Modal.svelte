@@ -1,7 +1,8 @@
 <script lang="ts">
   import type {Unsubscriber} from 'svelte/store'
 
-  import {active, resetState, theme} from '../store'
+  import {active, embeddedMode, resetState, theme} from '../store'
+  import {get} from 'svelte/store'
   import {onDestroy, onMount, type Snippet} from 'svelte'
   import {on} from 'svelte/events'
   import {eventSelf} from '../utils'
@@ -20,7 +21,11 @@
     unsubscribe = active.subscribe((value) => {
       if (dialog) {
         if (value && !dialog.open) {
-          dialog.showModal()
+          if (get(embeddedMode)) {
+            dialog.show()
+          } else {
+            dialog.showModal()
+          }
         } else if (!value && dialog.open) {
           dialog.close()
           resetState()
@@ -73,7 +78,7 @@
   })
 </script>
 
-<dialog bind:this={dialog} data-theme={$theme}>
+<dialog bind:this={dialog} data-theme={$theme} data-embedded={$embeddedMode ? 'true' : undefined}>
   {@render content?.()}
 </dialog>
 
@@ -99,6 +104,19 @@
 
     &::backdrop {
       background: rgba(0, 0, 0, 0.75);
+    }
+
+    &[data-embedded='true'] {
+      position: absolute;
+      inset: 0;
+      margin: 0;
+      width: 100%;
+      max-width: 100%;
+      height: 100%;
+      max-height: 100%;
+      border: none;
+      border-radius: 0;
+      --max-modal-content-height: 100%;
     }
   }
 
